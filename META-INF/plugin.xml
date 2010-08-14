@@ -1,0 +1,27 @@
+<idea-plugin version="2">
+  <name>Tabdir</name>
+  <!--<description>TODO</description>-->
+  <description>TODO</description>
+  <version>1.0</version>
+  <vendor>vladimir</vendor>
+  <idea-version since-build="9000"/>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+      <component>
+          <implementation-class>ru.crazycoder.plugins.tabdir.ListenerRegistratorComponent</implementation-class>
+      </component>
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+</idea-plugin>
