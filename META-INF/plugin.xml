@@ -1,4 +1,5 @@
 <idea-plugin version="2">
+  <id>ru.crazycoder.plugins.tabdir</id>
   <name>Tabdir</name>
   <!--<description>TODO</description>-->
   <description>TODO</description>
@@ -11,10 +12,7 @@
   </application-components>
 
   <project-components>
-    <!-- Add your project components here -->
-      <component>
-          <implementation-class>ru.crazycoder.plugins.tabdir.ListenerRegistratorComponent</implementation-class>
-      </component>
+
   </project-components>
 
   <actions>
@@ -22,6 +20,7 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
+      <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
     <!-- Add your extensions here -->
   </extensions>
 </idea-plugin>
