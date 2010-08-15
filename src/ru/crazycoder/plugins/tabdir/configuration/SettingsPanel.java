@@ -43,7 +43,7 @@ public class SettingsPanel {
 
     public void getData(Configuration data) {
         data.setReduceDirNames(reduceDirNamesCB.isSelected());
-        data.setFilesExtensions(extensionsTA.getText());
+        data.setFilesExtensions(extensionsTA.getText().trim());
         data.setMaxDirsToShow((Integer) dirsToShowModel.getValue());
         data.setCharsInName((Integer) charsInNameModel.getValue());
         data.setUseExtensions((Configuration.UseExtensionsEnum) useSwitchCB.getModel().getSelectedItem());
