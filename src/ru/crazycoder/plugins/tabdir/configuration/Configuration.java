@@ -18,6 +18,12 @@ import org.jdom.Element;
         }
 )
 public class Configuration implements PersistentStateComponent<Element> {
+    private boolean reduceDirNames;
+    private int charsInName;
+    private int maxDirsToShow;
+    private boolean notExtensions;
+    private String filesExtensions;
+
     @Override
     public Element getState() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -26,5 +32,45 @@ public class Configuration implements PersistentStateComponent<Element> {
     @Override
     public void loadState(Element state) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isReduceDirNames() {
+        return reduceDirNames;
+    }
+
+    public void setReduceDirNames(final boolean reduceDirNames) {
+        this.reduceDirNames = reduceDirNames;
+    }
+
+    public String getFilesExtensions() {
+        return filesExtensions;
+    }
+
+    public void setFilesExtensions(final String filesExtensions) {
+        this.filesExtensions = filesExtensions;
+    }
+
+    public int getCharsInName() {
+        return charsInName;
+    }
+
+    public void setCharsInName(final int charsInName) {
+        this.charsInName = charsInName;
+    }
+
+    public int getMaxDirsToShow() {
+        return maxDirsToShow;
+    }
+
+    public void setMaxDirsToShow(final int maxDirsToShow) {
+        this.maxDirsToShow = maxDirsToShow;
+    }
+
+    public boolean isNotExtensions() {
+        return notExtensions;
+    }
+
+    public void setNotExtensions(final boolean notExtensions) {
+        this.notExtensions = notExtensions;
     }
 }
