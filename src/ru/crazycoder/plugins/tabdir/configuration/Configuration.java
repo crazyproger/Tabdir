@@ -4,7 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StorageScheme;
-import org.jdom.Element;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 
 /**
  * User: crazycoder
@@ -17,21 +17,30 @@ import org.jdom.Element;
                 @Storage(id = "dir", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)
         }
 )
-public class Configuration implements PersistentStateComponent<Element> {
+public class Configuration implements PersistentStateComponent<Configuration> {
     private boolean reduceDirNames;
     private int charsInName;
     private int maxDirsToShow;
     private UseExtensionsEnum useExtensions;
     private String filesExtensions;
 
-    @Override
-    public Element getState() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Configuration() {
+        // set default values to configuration
+        reduceDirNames = true;
+        charsInName = 5;
+        maxDirsToShow = 3;
+        useExtensions = UseExtensionsEnum.DO_NOT_USE;
+        filesExtensions = "java\ngroovy";
     }
 
     @Override
-    public void loadState(Element state) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public Configuration getState() {
+        return this;
+    }
+
+    @Override
+    public void loadState(Configuration state) {
+        XmlSerializerUtil.copyBean(state, this);
     }
 
     enum UseExtensionsEnum {

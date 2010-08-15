@@ -12,54 +12,65 @@ import javax.swing.*;
  * Time: 6:42:34 PM
  */
 public class Settings implements SearchableConfigurable {
+
+    private final Configuration configuration;
+
+    private SettingsPanel settingsPanel;
+
+    public Settings(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     public JComponent createComponent() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        settingsPanel = new SettingsPanel();
+        settingsPanel.setData(configuration);
+        return settingsPanel.getRootPanel();
     }
 
     @Override
     public boolean isModified() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return settingsPanel != null && settingsPanel.isModified(configuration);
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        settingsPanel.getData(configuration);
     }
 
     @Override
     public void reset() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        settingsPanel.setData(configuration);
     }
 
     @Override
     public void disposeUIResources() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        settingsPanel = null;
     }
 
     @Nls
     @Override
     public String getDisplayName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "Tabdir";
     }
 
     @Override
     public Icon getIcon() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public String getHelpTopic() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public String getId() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "Tabdir.Configuration";
     }
 
     @Override
     public Runnable enableSearch(String option) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }

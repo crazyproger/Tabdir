@@ -49,8 +49,6 @@ public class SettingsPanel {
         data.setUseExtensions((Configuration.UseExtensionsEnum) useSwitchCB.getModel().getSelectedItem());
     }
 
-    // todo test it
-
     public boolean isModified(Configuration data) {
         if (reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
         if (extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)

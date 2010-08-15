@@ -20,8 +20,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
+        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.Configuration"
+                            serviceInterface="ru.crazycoder.plugins.tabdir.configuration.Configuration"/>
         <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.Settings"/>
-        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.Settings"/>
         <!-- Add your extensions here -->
     </extensions>
 </idea-plugin>
