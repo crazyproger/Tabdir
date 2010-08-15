@@ -17,6 +17,8 @@ public class SettingsPanel {
     private JCheckBox reduceDirNamesCB;
     private JSpinner charsInNameSpinner;
     private JPanel charsInDirPanel;
+    private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 0, 10, 1);
+    private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 0, 20, 1);
 
     public SettingsPanel() {
         reduceDirNamesCB.addChangeListener(new ChangeListener() {
@@ -25,5 +27,7 @@ public class SettingsPanel {
                 charsInDirPanel.setEnabled(reduceDirNamesCB.isSelected());
             }
         });
+        dirsToShowSpinner.setModel(dirsToShowModel);
+        charsInNameSpinner.setModel(charsInNameModel);
     }
 }
