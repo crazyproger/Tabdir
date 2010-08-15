@@ -9,8 +9,8 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiShortNamesCache;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 /**
  * User: crazycoder
@@ -22,33 +22,33 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
     @Override
     public String getEditorTabTitle(Project project, VirtualFile file) {
         PsiShortNamesCache namesCache = JavaPsiFacade.getInstance(project).getShortNamesCache();
-        PsiFile[] similarFiles = namesCache.getFilesByName(file.getName());
-        if (similarFiles.length < 2) {
+        PsiFile[] similarPsiFiles = namesCache.getFilesByName(file.getName());
+        if (similarPsiFiles.length < 2) {
             return file.getPresentableName();
         }
         List<String> prefixes = new ArrayList<String>();
-        VirtualFile[] similarVirtualFiles = toVirtualFiles(similarFiles);
-        if (similarVirtualFiles.length == 2) {
-            // when 2 - the simplest case
-            VirtualFile ancestor = VfsUtil.getCommonAncestor(similarVirtualFiles[0], similarVirtualFiles[1]);
-            String relativePath = VfsUtil.getRelativePath(file, ancestor, '/');
-            if (relativePath.indexOf('/') != -1) {
-                List<String> pathElements = StringUtil.split(relativePath, "/");
+        VirtualFile[] similarFiles = toVirtualFiles(similarPsiFiles);
+        SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(new Comparator<VirtualFile>() {
+            @Override
+            public int compare(VirtualFile file1, VirtualFile file2) {
+                return file1.getPath().length() - file2.getPath().length();
+            }
+        });
+        for (VirtualFile similarFile : similarFiles) {
+            if (file.equals(similarFile)) {
+                continue;
+            }
+            ancestors.add(VfsUtil.getCommonAncestor(similarFile, file));
+        }
+
+        for (VirtualFile ancestor : ancestors) {
+            String relativePath = VfsUtil.getRelativePath(file, ancestor, File.separatorChar);
+            if (relativePath.indexOf(File.separatorChar) != -1) {
+                List<String> pathElements = StringUtil.split(relativePath, File.separator);
                 prefixes.add(pathElements.get(0));
             }
         }
-//        VirtualFile[] ancestors = VfsUtil.getCommonAncestors(toVirtualFiles(similarFiles));
-//        for (VirtualFile ancestor : ancestors) {
-//            Messages.showInfoMessage(ancestor.getPath(),"OOPS");
-//        }
 
-//        String ancestor = null;
-//        for (PsiFile similarFile : similarFiles) {
-//            ancestor = VfsUtil.getCommonAncestor(file, similarFile.getVirtualFile()).getName();
-//        }
-//        if (ancestor != null) {
-//            return "["+ancestor+"]"+file.getPresentableName();
-//        }
         String prefix = "";
         if (prefixes.size() > 0) {
             prefix = "[" + StringUtil.join(prefixes, "|") + "]";
