@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiShortNamesCache;
+import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.Configuration;
 
 import java.io.File;
@@ -59,11 +60,30 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
             }
         }
 
-        String prefix = "";
         if (prefixes.size() > 0) {
-            prefix = "[" + StringUtil.join(prefixes, "|") + "]";
+            String prefix = formatPrefix(prefixes);
+            return prefix + file.getPresentableName();
         }
-        return prefix + file.getPresentableName();
+        return null;
+    }
+
+    private String formatPrefix(List<String> prefixes) {
+        StringBuilder buffer = new StringBuilder();
+        int i = 0;
+        for (String prefix : prefixes) {
+            if (configuration.isReduceDirNames()) {
+                String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
+                buffer.append(reducedDir);
+            } else {
+                buffer.append(prefix);
+            }
+            buffer.append("|");
+            i++;
+            if (i == configuration.getMaxDirsToShow()) {
+                break;
+            }
+        }
+        return "[" + StringUtils.removeEnd(buffer.toString(), "|") + "]";
     }
 
     private boolean needProcessFile(VirtualFile file) {
