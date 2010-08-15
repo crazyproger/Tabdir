@@ -1,26 +1,25 @@
 <idea-plugin version="2">
-  <id>ru.crazycoder.plugins.tabdir</id>
-  <name>Tabdir</name>
-  <!--<description>TODO</description>-->
-  <description>TODO</description>
-  <version>1.0</version>
-  <vendor>vladimir</vendor>
-  <idea-version since-build="9000"/>
+    <id>ru.crazycoder.plugins.tabdir</id>
+    <name>Tabdir</name>
+    <description>Add differences in pathes of files with same name into editor tab.</description>
+    <version>1.0</version>
+    <vendor>crazycoder</vendor>
+    <idea-version since-build="9000"/>
 
-  <application-components>
-    <!-- Add your application components here -->
-  </application-components>
+    <application-components>
+        <!-- Add your application components here -->
+    </application-components>
 
-  <project-components>
+    <project-components>
 
-  </project-components>
+    </project-components>
 
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
 
-  <extensions defaultExtensionNs="com.intellij">
-      <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
-    <!-- Add your extensions here -->
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
+        <!-- Add your extensions here -->
+    </extensions>
 </idea-plugin>
