@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiShortNamesCache;
+import ru.crazycoder.plugins.tabdir.configuration.Configuration;
 
 import java.io.File;
 import java.util.*;
@@ -19,8 +20,17 @@ import java.util.*;
  */
 public class SameFilenameTitleProvider implements EditorTabTitleProvider {
 
+    private final Configuration configuration;
+
+    public SameFilenameTitleProvider(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     public String getEditorTabTitle(Project project, VirtualFile file) {
+        if (!needProcessFile(file)) {
+            return null;
+        }
         PsiShortNamesCache namesCache = JavaPsiFacade.getInstance(project).getShortNamesCache();
         PsiFile[] similarPsiFiles = namesCache.getFilesByName(file.getName());
         if (similarPsiFiles.length < 2) {
@@ -54,6 +64,15 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
             prefix = "[" + StringUtil.join(prefixes, "|") + "]";
         }
         return prefix + file.getPresentableName();
+    }
+
+    private boolean needProcessFile(VirtualFile file) {
+        if (file.getExtension() != null) {
+            String[] extensions = StringUtil.splitByLines(configuration.getFilesExtensions());
+            boolean isInExtensionsConfig = Arrays.asList(extensions).contains(file.getExtension());
+            return isInExtensionsConfig == configuration.getUseExtensions().getValue();
+        }
+        return true;
     }
 
     private VirtualFile[] toVirtualFiles(PsiFile[] array) {

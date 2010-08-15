@@ -43,7 +43,7 @@ public class Configuration implements PersistentStateComponent<Configuration> {
         XmlSerializerUtil.copyBean(state, this);
     }
 
-    enum UseExtensionsEnum {
+    public enum UseExtensionsEnum {
         DO_NOT_USE("Do not use", false),
         USE("Use", true);
 
