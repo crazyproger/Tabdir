@@ -21,7 +21,7 @@ public class Configuration implements PersistentStateComponent<Element> {
     private boolean reduceDirNames;
     private int charsInName;
     private int maxDirsToShow;
-    private boolean notExtensions;
+    private UseExtensionsEnum useExtensions;
     private String filesExtensions;
 
     @Override
@@ -32,6 +32,28 @@ public class Configuration implements PersistentStateComponent<Element> {
     @Override
     public void loadState(Element state) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    enum UseExtensionsEnum {
+        DO_NOT_USE("Do not use", false),
+        USE("Use", true);
+
+        private String shownText;
+        private boolean value;
+
+        UseExtensionsEnum(String text, boolean value) {
+            this.shownText = text;
+            this.value = value;
+        }
+
+        public boolean getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return shownText;
+        }
     }
 
     public boolean isReduceDirNames() {
@@ -66,11 +88,11 @@ public class Configuration implements PersistentStateComponent<Element> {
         this.maxDirsToShow = maxDirsToShow;
     }
 
-    public boolean isNotExtensions() {
-        return notExtensions;
+    public UseExtensionsEnum getUseExtensions() {
+        return useExtensions;
     }
 
-    public void setNotExtensions(final boolean notExtensions) {
-        this.notExtensions = notExtensions;
+    public void setUseExtensions(final UseExtensionsEnum useExtensions) {
+        this.useExtensions = useExtensions;
     }
 }
