@@ -19,7 +19,7 @@
     <name>Tabdir</name>
     <description>Add differences in pathes of files with same name into editor tab.</description>
     <version>1.0</version>
-    <vendor>crazycoder</vendor>
+    <vendor>Vladimir Rudev</vendor>
     <idea-version since-build="95.429"/>
 
     <application-components>
