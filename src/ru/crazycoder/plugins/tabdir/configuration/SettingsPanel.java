@@ -87,8 +87,8 @@ public class SettingsPanel {
         data.setMaxDirsToShow((Integer) dirsToShowModel.getValue());
         data.setCharsInName((Integer) charsInNameModel.getValue());
         data.setUseExtensions((Configuration.UseExtensionsEnum) useSwitchCB.getModel().getSelectedItem());
-        data.setTitleFormat(titleFormatTF.getText());
-        data.setDirSeparator(dirSeparatorTF.getText());
+        data.setTitleFormat(titleFormatTF.getText().trim());
+        data.setDirSeparator(dirSeparatorTF.getText().trim());
     }
 
     public boolean isModified(Configuration data) {
