@@ -35,7 +35,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 )
 public class Configuration implements PersistentStateComponent<Configuration> {
 
-    private static final String DEFAULT_TITLE_FORMAT = "[${1}] ${2}";
+    private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
 
     private boolean reduceDirNames;
