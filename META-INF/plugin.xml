@@ -18,9 +18,12 @@
     <id>ru.crazycoder.plugins.tabdir</id>
     <name>Tabdir</name>
     <description>Add differences in pathes of files with same name into editor tab.</description>
-    <version>1.0</version>
+    <version>1.1</version>
     <vendor>Vladimir Rudev</vendor>
     <idea-version since-build="95.429"/>
+    <change-notes>
+        1.1 Add possibility to configure tab title format.
+    </change-notes>
 
     <application-components>
         <!-- Add your application components here -->
