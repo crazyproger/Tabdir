@@ -16,9 +16,15 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
+import ru.crazycoder.plugins.tabdir.TitleFormatter;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: crazycoder
@@ -50,6 +56,18 @@ public class SettingsPanel {
         dirsToShowSpinner.setModel(dirsToShowModel);
         charsInNameSpinner.setModel(charsInNameModel);
         useSwitchCB.setModel(new DefaultComboBoxModel(Configuration.UseExtensionsEnum.values()));
+        dirSeparatorTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
+        titleFormatTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
+        dirsToShowSpinner.addChangeListener(new ExampleUpdaterChangeListener());
+        charsInNameSpinner.addChangeListener(new ExampleUpdaterChangeListener());
+    }
+
+    private void updateExample() {
+        Configuration configuration = new Configuration();
+        getData(configuration);
+        List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
+        String formattedExample = TitleFormatter.format(examplePrefixes, "FileName", configuration);
+        this.formattedExample.setText("a\tb");
     }
 
     public void setData(Configuration data) {
@@ -60,6 +78,7 @@ public class SettingsPanel {
         useSwitchCB.getModel().setSelectedItem(data.getUseExtensions());
         dirSeparatorTF.setText(data.getDirSeparator());
         titleFormatTF.setText(data.getTitleFormat());
+        updateExample();
     }
 
     public void getData(Configuration data) {
@@ -82,6 +101,30 @@ public class SettingsPanel {
         if (!dirSeparatorTF.getText().equals(data.getDirSeparator())) return true;
         if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
         return false;
+    }
+
+    class ExampleUpdaterDocumentListener implements DocumentListener {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            updateExample();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            updateExample();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            updateExample();
+        }
+    }
+
+    class ExampleUpdaterChangeListener implements ChangeListener {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            updateExample();
+        }
     }
 
     public JPanel getRootPanel() {

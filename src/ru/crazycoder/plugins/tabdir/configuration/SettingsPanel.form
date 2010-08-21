@@ -151,6 +151,9 @@
                 <properties>
                   <text value="Label"/>
                 </properties>
+                <clientProperties>
+                  <html.disable class="java.lang.Boolean" value="true"/>
+                </clientProperties>
               </component>
             </children>
           </grid>

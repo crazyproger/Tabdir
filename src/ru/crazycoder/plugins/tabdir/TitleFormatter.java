@@ -33,7 +33,7 @@ public class TitleFormatter {
         this.configuration = configuration;
     }
 
-    public String format(List<String> prefixes, String tabName, Configuration configuration) {
+    public static String format(List<String> prefixes, String tabName, Configuration configuration) {
         return "[" + joinPrefixes(prefixes, configuration) + "]" + tabName;
     }
 
@@ -41,7 +41,7 @@ public class TitleFormatter {
         return format(prefixes, tabName, configuration);
     }
 
-    private String joinPrefixes(List<String> prefixes, Configuration configuration) {
+    private static String joinPrefixes(List<String> prefixes, Configuration configuration) {
         StringBuilder buffer = new StringBuilder();
         int i = 0;
         for (String prefix : prefixes) {
