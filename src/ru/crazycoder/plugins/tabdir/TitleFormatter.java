@@ -19,6 +19,7 @@ package ru.crazycoder.plugins.tabdir;
 import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.Configuration;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -34,7 +35,8 @@ public class TitleFormatter {
     }
 
     public static String format(List<String> prefixes, String tabName, Configuration configuration) {
-        return "[" + joinPrefixes(prefixes, configuration) + "]" + tabName;
+        String joinedPrefixes = joinPrefixes(prefixes, configuration);
+        return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
     }
 
     public String format(List<String> prefixes, String tabName) {
