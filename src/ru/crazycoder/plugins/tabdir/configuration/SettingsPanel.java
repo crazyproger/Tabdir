@@ -67,7 +67,7 @@ public class SettingsPanel {
         getData(configuration);
         List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
         String formattedExample = TitleFormatter.format(examplePrefixes, "FileName", configuration);
-        this.formattedExample.setText("a\tb");
+        this.formattedExample.setText(formattedExample);
     }
 
     public void setData(Configuration data) {
