@@ -78,8 +78,7 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
         }
 
         if (prefixes.size() > 0) {
-            String prefix = formatter.format(prefixes);
-            return prefix + file.getPresentableName();
+            return formatter.format(prefixes, file.getPresentableName());
         }
         return null;
     }

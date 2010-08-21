@@ -33,7 +33,15 @@ public class TitleFormatter {
         this.configuration = configuration;
     }
 
-    public String format(List<String> prefixes) {
+    public String format(List<String> prefixes, String tabName, Configuration configuration) {
+        return "[" + joinPrefixes(prefixes, configuration) + "]" + tabName;
+    }
+
+    public String format(List<String> prefixes, String tabName) {
+        return format(prefixes, tabName, configuration);
+    }
+
+    private String joinPrefixes(List<String> prefixes, Configuration configuration) {
         StringBuilder buffer = new StringBuilder();
         int i = 0;
         for (String prefix : prefixes) {
@@ -43,13 +51,13 @@ public class TitleFormatter {
             } else {
                 buffer.append(prefix);
             }
-            buffer.append("|");
+            buffer.append(configuration.getDirSeparator());
             i++;
             if (i == configuration.getMaxDirsToShow()) {
                 break;
             }
         }
-        return "[" + StringUtils.removeEnd(buffer.toString(), "|") + "]";
+        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
     }
 }
 
