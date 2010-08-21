@@ -34,11 +34,17 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
         }
 )
 public class Configuration implements PersistentStateComponent<Configuration> {
+
+    private static final String DEFAULT_TITLE_FORMAT = "[${1}] ${2}";
+    private static final String DEFAULT_DIR_SEPARATOR = "|";
+
     private boolean reduceDirNames;
     private int charsInName;
     private int maxDirsToShow;
     private UseExtensionsEnum useExtensions;
     private String filesExtensions;
+    private String dirSeparator;
+    private String titleFormat;
 
     public Configuration() {
         // set default values to configuration
@@ -47,6 +53,8 @@ public class Configuration implements PersistentStateComponent<Configuration> {
         maxDirsToShow = 3;
         useExtensions = UseExtensionsEnum.DO_NOT_USE;
         filesExtensions = "java\ngroovy";
+        dirSeparator = DEFAULT_DIR_SEPARATOR;
+        titleFormat = DEFAULT_TITLE_FORMAT;
     }
 
     @Override
@@ -119,5 +127,21 @@ public class Configuration implements PersistentStateComponent<Configuration> {
 
     public void setUseExtensions(final UseExtensionsEnum useExtensions) {
         this.useExtensions = useExtensions;
+    }
+
+    public String getDirSeparator() {
+        return dirSeparator;
+    }
+
+    public void setDirSeparator(String dirSeparator) {
+        this.dirSeparator = dirSeparator;
+    }
+
+    public String getTitleFormat() {
+        return titleFormat;
+    }
+
+    public void setTitleFormat(String titleFormat) {
+        this.titleFormat = titleFormat;
     }
 }

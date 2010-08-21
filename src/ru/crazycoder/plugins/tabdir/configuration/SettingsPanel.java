@@ -33,6 +33,9 @@ public class SettingsPanel {
     private JCheckBox reduceDirNamesCB;
     private JSpinner charsInNameSpinner;
     private JLabel charsLabel;
+    private JTextField titleFormatTF;
+    private JTextField dirSeparatorTF;
+    private JLabel formattedExample;
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
@@ -55,6 +58,8 @@ public class SettingsPanel {
         dirsToShowModel.setValue(data.getMaxDirsToShow());
         charsInNameModel.setValue(data.getCharsInName());
         useSwitchCB.getModel().setSelectedItem(data.getUseExtensions());
+        dirSeparatorTF.setText(data.getDirSeparator());
+        titleFormatTF.setText(data.getTitleFormat());
     }
 
     public void getData(Configuration data) {
@@ -63,6 +68,8 @@ public class SettingsPanel {
         data.setMaxDirsToShow((Integer) dirsToShowModel.getValue());
         data.setCharsInName((Integer) charsInNameModel.getValue());
         data.setUseExtensions((Configuration.UseExtensionsEnum) useSwitchCB.getModel().getSelectedItem());
+        data.setTitleFormat(titleFormatTF.getText());
+        data.setDirSeparator(dirSeparatorTF.getText());
     }
 
     public boolean isModified(Configuration data) {
@@ -71,6 +78,8 @@ public class SettingsPanel {
             return true;
         if ((Integer) dirsToShowModel.getValue() != data.getMaxDirsToShow()) return true;
         if ((Integer) charsInNameModel.getValue() != data.getCharsInName()) return true;
+        if (!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
+        if (!dirSeparatorTF.getText().equals(data.getDirSeparator())) return true;
         if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
         return false;
     }
