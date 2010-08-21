@@ -107,7 +107,7 @@ public class SettingsPanel {
         if ((Integer) dirsToShowModel.getValue() != data.getMaxDirsToShow()) return true;
         if ((Integer) charsInNameModel.getValue() != data.getCharsInName()) return true;
         if (!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
-        if (!dirSeparatorTF.getText().equals(data.getDirSeparator())) return true;
+        if (!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
         if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
         return false;
     }
