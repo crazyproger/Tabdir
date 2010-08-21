@@ -42,6 +42,7 @@ public class SettingsPanel {
     private JTextField titleFormatTF;
     private JTextField dirSeparatorTF;
     private JLabel formattedExample;
+    private JLabel formatInfo;
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
@@ -70,8 +71,10 @@ public class SettingsPanel {
         String formattedExample;
         try {
             formattedExample = TitleFormatter.format(examplePrefixes, exampleFileName, configuration);
+            formatInfo.setText("<html><font color=green> Ok</font></html>");
         } catch (Exception e) {
             formattedExample = exampleFileName;
+            formatInfo.setText("<html><font color=red> Bad</font></html>");
         }
         this.formattedExample.setText(formattedExample);
     }
