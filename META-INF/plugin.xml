@@ -38,6 +38,8 @@
         <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
         <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.Configuration"
                             serviceInterface="ru.crazycoder.plugins.tabdir.configuration.Configuration"/>
+        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"
+                            serviceInterface="ru.crazycoder.plugins.tabdir.TitleFormatter"/>
         <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.Settings"/>
         <!-- Add your extensions here -->
     </extensions>

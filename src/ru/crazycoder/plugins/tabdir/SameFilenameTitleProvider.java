@@ -24,7 +24,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiShortNamesCache;
-import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.Configuration;
 
 import java.io.File;
@@ -38,9 +37,11 @@ import java.util.*;
 public class SameFilenameTitleProvider implements EditorTabTitleProvider {
 
     private final Configuration configuration;
+    private final TitleFormatter formatter;
 
-    public SameFilenameTitleProvider(Configuration configuration) {
+    public SameFilenameTitleProvider(Configuration configuration, TitleFormatter formatter) {
         this.configuration = configuration;
+        this.formatter = formatter;
     }
 
     @Override
@@ -77,29 +78,10 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
         }
 
         if (prefixes.size() > 0) {
-            String prefix = formatPrefix(prefixes);
+            String prefix = formatter.format(prefixes);
             return prefix + file.getPresentableName();
         }
         return null;
-    }
-
-    private String formatPrefix(List<String> prefixes) {
-        StringBuilder buffer = new StringBuilder();
-        int i = 0;
-        for (String prefix : prefixes) {
-            if (configuration.isReduceDirNames()) {
-                String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
-                buffer.append(reducedDir);
-            } else {
-                buffer.append(prefix);
-            }
-            buffer.append("|");
-            i++;
-            if (i == configuration.getMaxDirsToShow()) {
-                break;
-            }
-        }
-        return "[" + StringUtils.removeEnd(buffer.toString(), "|") + "]";
     }
 
     private boolean needProcessFile(VirtualFile file) {
