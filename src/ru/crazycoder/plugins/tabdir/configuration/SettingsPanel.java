@@ -32,6 +32,7 @@ import java.util.List;
  * Time: 8:09:17 PM
  */
 public class SettingsPanel {
+
     private JPanel rootPanel;
     private JComboBox useSwitchCB;
     private JTextArea extensionsTA;
@@ -93,26 +94,28 @@ public class SettingsPanel {
     public void getData(Configuration data) {
         data.setReduceDirNames(reduceDirNamesCB.isSelected());
         data.setFilesExtensions(extensionsTA.getText().trim());
-        data.setMaxDirsToShow((Integer) dirsToShowModel.getValue());
-        data.setCharsInName((Integer) charsInNameModel.getValue());
-        data.setUseExtensions((Configuration.UseExtensionsEnum) useSwitchCB.getModel().getSelectedItem());
+        data.setMaxDirsToShow((Integer)dirsToShowModel.getValue());
+        data.setCharsInName((Integer)charsInNameModel.getValue());
+        data.setUseExtensions((Configuration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
         data.setTitleFormat(titleFormatTF.getText().trim());
         data.setDirSeparator(dirSeparatorTF.getText().trim());
     }
 
     public boolean isModified(Configuration data) {
-        if (reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
-        if (extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)
+        if(reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
+        if(extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)
             return true;
-        if ((Integer) dirsToShowModel.getValue() != data.getMaxDirsToShow()) return true;
-        if ((Integer) charsInNameModel.getValue() != data.getCharsInName()) return true;
-        if (!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
-        if (!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
-        if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
+        if((Integer)dirsToShowModel.getValue() != data.getMaxDirsToShow()) return true;
+        if((Integer)charsInNameModel.getValue() != data.getCharsInName()) return true;
+        if(!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
+        if(!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
+        if(useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
         return false;
     }
 
-    class ExampleUpdaterDocumentListener implements DocumentListener {
+    class ExampleUpdaterDocumentListener
+            implements DocumentListener {
+
         @Override
         public void insertUpdate(DocumentEvent e) {
             updateExample();
@@ -129,7 +132,9 @@ public class SettingsPanel {
         }
     }
 
-    class ExampleUpdaterChangeListener implements ChangeListener {
+    class ExampleUpdaterChangeListener
+            implements ChangeListener {
+
         @Override
         public void stateChanged(ChangeEvent e) {
             updateExample();

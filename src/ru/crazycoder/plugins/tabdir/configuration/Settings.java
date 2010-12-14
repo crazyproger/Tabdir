@@ -27,7 +27,8 @@ import javax.swing.*;
  * Date: Aug 15, 2010
  * Time: 6:42:34 PM
  */
-public class Settings implements SearchableConfigurable {
+public class Settings
+        implements SearchableConfigurable {
 
     private final Configuration configuration;
 

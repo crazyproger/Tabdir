@@ -29,11 +29,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
  */
 @State(
         name = "TabdirConfiguration",
-        storages = {
-                @Storage(id = "dir", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)
-        }
-)
-public class Configuration implements PersistentStateComponent<Configuration> {
+        storages = {@Storage(id = "dir", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
+public class Configuration
+        implements PersistentStateComponent<Configuration> {
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";

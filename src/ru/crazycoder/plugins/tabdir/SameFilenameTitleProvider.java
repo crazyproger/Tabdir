@@ -34,7 +34,8 @@ import java.util.*;
  * Date: Aug 14, 2010
  * Time: 7:06:45 PM
  */
-public class SameFilenameTitleProvider implements EditorTabTitleProvider {
+public class SameFilenameTitleProvider
+        implements EditorTabTitleProvider {
 
     private final Configuration configuration;
     private final TitleFormatter formatter;
@@ -46,12 +47,12 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
 
     @Override
     public String getEditorTabTitle(Project project, VirtualFile file) {
-        if (!needProcessFile(file)) {
+        if(!needProcessFile(file)) {
             return null;
         }
         PsiShortNamesCache namesCache = JavaPsiFacade.getInstance(project).getShortNamesCache();
         PsiFile[] similarPsiFiles = namesCache.getFilesByName(file.getName());
-        if (similarPsiFiles.length < 2) {
+        if(similarPsiFiles.length < 2) {
             return file.getPresentableName();
         }
         List<String> prefixes = new ArrayList<String>();
@@ -63,7 +64,7 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
             }
         });
         for (VirtualFile similarFile : similarFiles) {
-            if (file.equals(similarFile)) {
+            if(file.equals(similarFile)) {
                 continue;
             }
             ancestors.add(VfsUtil.getCommonAncestor(similarFile, file));
@@ -71,13 +72,13 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
 
         for (VirtualFile ancestor : ancestors) {
             String relativePath = VfsUtil.getRelativePath(file, ancestor, File.separatorChar);
-            if (relativePath.indexOf(File.separatorChar) != -1) {
+            if(relativePath.indexOf(File.separatorChar) != -1) {
                 List<String> pathElements = StringUtil.split(relativePath, File.separator);
                 prefixes.add(pathElements.get(0));
             }
         }
 
-        if (prefixes.size() > 0) {
+        if(prefixes.size() > 0) {
             try {
                 return formatter.format(prefixes, file.getPresentableName());
             } catch (Exception e) {
@@ -88,7 +89,7 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
     }
 
     private boolean needProcessFile(VirtualFile file) {
-        if (file.getExtension() != null) {
+        if(file.getExtension() != null) {
             String[] extensions = StringUtil.splitByLines(configuration.getFilesExtensions());
             boolean isInExtensionsConfig = Arrays.asList(extensions).contains(file.getExtension());
             return isInExtensionsConfig == configuration.getUseExtensions().getValue();
