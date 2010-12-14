@@ -17,7 +17,10 @@
 package ru.crazycoder.plugins.tabdir;
 
 import com.intellij.openapi.fileEditor.impl.EditorTabTitleProvider;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -59,8 +62,29 @@ public class SameFilenameTitleProvider
         if(!needProcessFile(file)) {
             return null;
         }
+        return relativeToSourceTitle(project, file);
 //        return relativeToProjectTitle(project, file);
-        return titleWithDiffs(project, file);
+//        return titleWithDiffs(project, file);
+    }
+
+    private String relativeToSourceTitle(final Project project, final VirtualFile file) {
+        Module module = ModuleUtil.findModuleForFile(file, project);
+        if(module == null) {
+            return null;
+        }
+        String filePath = file.getPath();
+        VirtualFile[] sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots();
+        VirtualFile currentSourceRoot = null;
+        for (VirtualFile sourceRoot : sourceRoots) {
+            if(filePath.startsWith(sourceRoot.getPath())) {
+                currentSourceRoot = sourceRoot;
+                break;
+            }
+        }
+        if(currentSourceRoot == null) {
+            return null;
+        }
+        return FileUtil.getRelativePath(currentSourceRoot.getPath(), filePath, File.separatorChar);
     }
 
     private String relativeToProjectTitle(final Project project, final VirtualFile file) {
@@ -72,10 +96,10 @@ public class SameFilenameTitleProvider
         String filePath = file.getPath();
 
         VirtualFile projectBaseDir = project.getBaseDir();
-        if(projectBaseDir != null) {
-            return FileUtil.getRelativePath(projectBaseDir.getPath(), filePath, File.separatorChar);
+        if(projectBaseDir == null) {
+            return null;
         }
-        return null;
+        return FileUtil.getRelativePath(projectBaseDir.getPath(), filePath, File.separatorChar);
     }
 
     private String titleWithDiffs(final Project project, final VirtualFile file) {
