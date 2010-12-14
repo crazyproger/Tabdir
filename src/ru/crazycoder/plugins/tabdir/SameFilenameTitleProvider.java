@@ -18,9 +18,12 @@ package ru.crazycoder.plugins.tabdir;
 
 import com.intellij.openapi.fileEditor.impl.EditorTabTitleProvider;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiShortNamesCache;
@@ -39,6 +42,12 @@ public class SameFilenameTitleProvider
 
     private final Configuration configuration;
     private final TitleFormatter formatter;
+    private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
+        @Override
+        public int compare(VirtualFile file1, VirtualFile file2) {
+            return file1.getPath().length() - file2.getPath().length();
+        }
+    };
 
     public SameFilenameTitleProvider(Configuration configuration, TitleFormatter formatter) {
         this.configuration = configuration;
@@ -46,23 +55,51 @@ public class SameFilenameTitleProvider
     }
 
     @Override
-    public String getEditorTabTitle(Project project, VirtualFile file) {
+    public String getEditorTabTitle(final Project project, final VirtualFile file) {
         if(!needProcessFile(file)) {
             return null;
         }
+//        return relativeToProjectTitle(project, file);
+        return titleWithDiffs(project, file);
+    }
+
+    private String relativeToProjectTitle(final Project project, final VirtualFile file) {
+        VirtualFileSystem virtualFileSystem = file.getFileSystem();
+        if(!(virtualFileSystem instanceof LocalFileSystem)) {
+            // unknown filesystem
+            return null;
+        }
+        String filePath = file.getPath();
+
+        VirtualFile projectBaseDir = project.getBaseDir();
+        if(projectBaseDir != null) {
+            return FileUtil.getRelativePath(projectBaseDir.getPath(), filePath, File.separatorChar);
+        }
+        return null;
+    }
+
+    private String titleWithDiffs(final Project project, final VirtualFile file) {
         PsiShortNamesCache namesCache = JavaPsiFacade.getInstance(project).getShortNamesCache();
         PsiFile[] similarPsiFiles = namesCache.getFilesByName(file.getName());
         if(similarPsiFiles.length < 2) {
             return file.getPresentableName();
         }
+        List<String> prefixes = calculatePrefixes(file, similarPsiFiles);
+
+        if(prefixes.size() > 0) {
+            try {
+                return formatter.format(prefixes, file.getPresentableName());
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private List<String> calculatePrefixes(final VirtualFile file, final PsiFile[] similarPsiFiles) {
         List<String> prefixes = new ArrayList<String>();
         VirtualFile[] similarFiles = toVirtualFiles(similarPsiFiles);
-        SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(new Comparator<VirtualFile>() {
-            @Override
-            public int compare(VirtualFile file1, VirtualFile file2) {
-                return file1.getPath().length() - file2.getPath().length();
-            }
-        });
+        SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(comparator);
         for (VirtualFile similarFile : similarFiles) {
             if(file.equals(similarFile)) {
                 continue;
@@ -77,15 +114,7 @@ public class SameFilenameTitleProvider
                 prefixes.add(pathElements.get(0));
             }
         }
-
-        if(prefixes.size() > 0) {
-            try {
-                return formatter.format(prefixes, file.getPresentableName());
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        return null;
+        return prefixes;
     }
 
     private boolean needProcessFile(VirtualFile file) {
