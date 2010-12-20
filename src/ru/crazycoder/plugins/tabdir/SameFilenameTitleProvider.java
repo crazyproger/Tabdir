@@ -59,6 +59,7 @@ public class SameFilenameTitleProvider implements EditorTabTitleProvider {
         SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(new Comparator<VirtualFile>() {
             @Override
             public int compare(VirtualFile file1, VirtualFile file2) {
+                // todo NPE here
                 return file1.getPath().length() - file2.getPath().length();
             }
         });
