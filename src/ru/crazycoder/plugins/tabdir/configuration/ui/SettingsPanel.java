@@ -117,7 +117,7 @@ public class SettingsPanel {
 
     private void createUIComponents() {
         MappingPanel panel = new MappingPanel();
-        mappingPanel = panel.createMainComponent();
+        mappingPanel = panel;
     }
 
     class ExampleUpdaterDocumentListener

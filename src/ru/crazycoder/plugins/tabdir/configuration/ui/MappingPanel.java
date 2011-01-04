@@ -80,6 +80,9 @@ public class MappingPanel
     };
     private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY,PREVIEW};
 
+    public MappingPanel() {
+        initPanel();
+    }
 
     @Override
     protected String getLabelText() {
