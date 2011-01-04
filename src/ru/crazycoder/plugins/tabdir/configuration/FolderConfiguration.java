@@ -22,10 +22,10 @@ import org.jetbrains.annotations.NotNull;
  * User: crazycoder
  * Date: 19.12.10
  */
-public class FolderTitleMapping {
+public class FolderConfiguration {
 
     @NotNull
-    private String directory;
+    private String folderPath;
     private String relativeTo;
     @NotNull
     private String dirsSeparator;
@@ -34,26 +34,31 @@ public class FolderTitleMapping {
     private boolean hideVowels;
     private int nCharsInDirName;
     private int nDirsToShow;
+    private String filesExtensions;
 
-    public FolderTitleMapping(@NotNull final String directory, final String relativeTo, @NotNull final String dirsSeparator,
-                              @NotNull final String titleFormat, final boolean hideVowels, final int nCharsInDirName,
-                              final int nDirsToShow) {
-        this.directory = directory;
+    public FolderConfiguration() {
+    }
+
+    public FolderConfiguration(@NotNull final String folderPath, final String relativeTo, @NotNull final String dirsSeparator,
+                               @NotNull final String titleFormat, final boolean hideVowels, final int nCharsInDirName,
+                               final int nDirsToShow, final String filesExtensions) {
+        this.folderPath = folderPath;
         this.relativeTo = relativeTo;
         this.dirsSeparator = dirsSeparator;
         this.titleFormat = titleFormat;
         this.hideVowels = hideVowels;
         this.nCharsInDirName = nCharsInDirName;
         this.nDirsToShow = nDirsToShow;
+        this.filesExtensions = filesExtensions;
     }
 
     @NotNull
-    public String getDirectory() {
-        return directory;
+    public String getFolderPath() {
+        return folderPath;
     }
 
-    public void setDirectory(@NotNull final String directory) {
-        this.directory = directory;
+    public void setFolderPath(@NotNull final String folderPath) {
+        this.folderPath = folderPath;
     }
 
     public String getRelativeTo() {
@@ -104,5 +109,18 @@ public class FolderTitleMapping {
 
     public void setnDirsToShow(final int nDirsToShow) {
         this.nDirsToShow = nDirsToShow;
+    }
+
+    public String getFilesExtensions() {
+        return filesExtensions;
+    }
+
+    public void setFilesExtensions(final String filesExtensions) {
+        this.filesExtensions = filesExtensions;
+    }
+
+    public FolderConfiguration cloneMe() {
+        return new FolderConfiguration(folderPath, relativeTo, dirsSeparator, titleFormat, hideVowels, nCharsInDirName, nDirsToShow,
+                filesExtensions);
     }
 }

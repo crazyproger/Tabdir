@@ -19,6 +19,8 @@ package ru.crazycoder.plugins.tabdir.configuration;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+import ru.crazycoder.plugins.tabdir.configuration.ui.SettingsPanel;
 
 import javax.swing.*;
 
@@ -81,6 +83,7 @@ public class Settings
         return null;
     }
 
+    @NotNull
     @Override
     public String getId() {
         return "Tabdir.Configuration";

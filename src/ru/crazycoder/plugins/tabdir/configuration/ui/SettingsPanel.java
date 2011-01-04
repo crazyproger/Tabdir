@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package ru.crazycoder.plugins.tabdir.configuration;
+package ru.crazycoder.plugins.tabdir.configuration.ui;
 
 import ru.crazycoder.plugins.tabdir.TitleFormatter;
+import ru.crazycoder.plugins.tabdir.configuration.Configuration;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -44,6 +45,7 @@ public class SettingsPanel {
     private JTextField dirSeparatorTF;
     private JLabel formattedExample;
     private JLabel formatInfo;
+    private JComponent mappingPanel;
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
@@ -111,6 +113,11 @@ public class SettingsPanel {
         if(!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
         if(useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
         return false;
+    }
+
+    private void createUIComponents() {
+        MappingPanel panel = new MappingPanel();
+        mappingPanel = panel.createMainComponent();
     }
 
     class ExampleUpdaterDocumentListener
