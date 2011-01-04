@@ -18,16 +18,19 @@ package ru.crazycoder.plugins.tabdir.configuration.ui;
 
 import com.intellij.ui.PanelWithButtons;
 import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.treeStructure.treetable.ListTreeTableModel;
-import com.intellij.ui.treeStructure.treetable.TreeTable;
+import com.intellij.ui.dualView.TreeTableView;
+import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
 import com.intellij.ui.treeStructure.treetable.TreeTableModel;
 import com.intellij.util.ui.ColumnInfo;
+import com.intellij.util.ui.UIUtil;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeCellRenderer;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -43,7 +46,7 @@ public class MappingPanel
     private JButton addButton;
     private JButton deleteButton;
     private JButton editButton;
-    private TreeTable folderMappingTable;
+    private TreeTableView folderMappingTable;
     private ColumnInfo<MyTreeNode, String> DIRECTORY = new ColumnInfo<MyTreeNode, String>("Directory") {
 
         @Override
@@ -52,14 +55,14 @@ public class MappingPanel
         }
 
         @Override
-        public Icon getIcon() {
-            //todo разобраться
-            return super.getIcon();    //To change body of overridden methods use File | Settings | File Templates.
-        }
-
-        @Override
         public Class getColumnClass() {
             return TreeTableModel.class;
+        }
+    };
+    private ColumnInfo<MyTreeNode, String> PREVIEW = new ColumnInfo<MyTreeNode, String>("Tab preview") {
+        @Override
+        public String valueOf(final MyTreeNode myTreeNode) {
+            return myTreeNode.tabPreview;
         }
 
         @Override
@@ -70,12 +73,6 @@ public class MappingPanel
         @Override
         public TableCellEditor getEditor(final MyTreeNode o) {
             return super.getEditor(o);    //To change body of overridden methods use File | Settings | File Templates.
-        }
-    };
-    private ColumnInfo<MyTreeNode, String> PREVIEW = new ColumnInfo<MyTreeNode, String>("Tab preview") {
-        @Override
-        public String valueOf(final MyTreeNode myTreeNode) {
-            return myTreeNode.tabPreview;
         }
     };
     private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY,PREVIEW};
@@ -117,8 +114,15 @@ public class MappingPanel
 
     @Override
     protected JComponent createMainComponent() {
-        TreeTableModel model = new ListTreeTableModel(new MyTreeNode("."),COLUMNS);
-        folderMappingTable = new TreeTable(model);
+        MyTreeNode root = new MyTreeNode("project");
+        root.add(new MyTreeNode("src"));
+        root.add(new MyTreeNode("res"));
+        ListTreeTableModelOnColumns model = new ListTreeTableModelOnColumns(root, COLUMNS);
+        folderMappingTable = new TreeTableView(model);
+        folderMappingTable.setRootVisible(true);
+        folderMappingTable.getTree().setShowsRootHandles(true);
+
+        folderMappingTable.setTreeCellRenderer(myTitleRenderer);
         return ScrollPaneFactory.createScrollPane(folderMappingTable);
     }
 
@@ -160,4 +164,26 @@ public class MappingPanel
         }
 
     }
+
+    private final TreeCellRenderer myTitleRenderer = new TreeCellRenderer() {
+        private final JLabel myLabel = new JLabel();
+
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row,
+                                                      boolean hasFocus) {
+            if(value instanceof MyTreeNode) {
+                MyTreeNode node = (MyTreeNode)value;
+                myLabel.setText(node.folderText);
+                myLabel.setFont(myLabel.getFont().deriveFont(Font.PLAIN));
+            } else {
+                myLabel.setText(value.toString());
+                myLabel.setFont(myLabel.getFont().deriveFont(Font.BOLD));
+            }
+            myLabel.setEnabled(true);
+
+            Color foreground = selected ? UIUtil.getTableSelectionForeground() : UIUtil.getTableForeground();
+            myLabel.setForeground(foreground);
+
+            return myLabel;
+        }
+    };
 }
