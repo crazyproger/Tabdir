@@ -16,11 +16,14 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StorageScheme;
-import com.intellij.util.xmlb.XmlSerializerUtil;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.util.xmlb.XmlSerializer;
+import org.jdom.Element;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: crazycoder
@@ -29,12 +32,13 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
  */
 @State(
         name = "TabdirConfiguration",
-        storages = {@Storage(id = "dir", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
+        storages = {@Storage(id = "dir", file = "$PROJECT_CONFIG_DIR$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
 public class Configuration
-        implements PersistentStateComponent<Configuration> {
+        implements PersistentStateComponent<Element> {
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
+    private static final String FOLDER_CONFIGURATIONS_NAME = "folderConfigurations";
 
     private boolean reduceDirNames;
     private int charsInName;
@@ -44,7 +48,11 @@ public class Configuration
     private String dirSeparator;
     private String titleFormat;
 
-    public Configuration() {
+    private Map<String, FolderConfiguration> folderConfigurations;
+
+    private final PathMacroManager macroManager;
+
+    public Configuration(Project project) {
         // set default values to configuration
         reduceDirNames = true;
         charsInName = 5;
@@ -53,16 +61,38 @@ public class Configuration
         filesExtensions = "java\ngroovy";
         dirSeparator = DEFAULT_DIR_SEPARATOR;
         titleFormat = DEFAULT_TITLE_FORMAT;
+
+        folderConfigurations = new HashMap<String, FolderConfiguration>();
+
+        macroManager = PathMacroManager.getInstance(project);
     }
 
     @Override
-    public Configuration getState() {
-        return this;
+    public Element getState() {
+        Element configurationsElement = new Element(FOLDER_CONFIGURATIONS_NAME);
+        for (Map.Entry<String, FolderConfiguration> entry : folderConfigurations.entrySet()) {
+            Element element = new Element("Entry");
+            element.setAttribute("folder", macroManager.collapsePath(entry.getKey()));
+            Element folderConfig = XmlSerializer.serialize(entry.getValue());
+            element.addContent(folderConfig);
+            configurationsElement.addContent(element);
+        }
+        Element element = new Element("TabdirConfiguration");
+        element.addContent(configurationsElement);
+        return element;
     }
 
     @Override
-    public void loadState(Configuration state) {
-        XmlSerializerUtil.copyBean(state, this);
+    public void loadState(Element state) {
+        Map<String, FolderConfiguration> folderConfigurations = new HashMap<String, FolderConfiguration>();
+        Element configurationsElement = state.getChild(FOLDER_CONFIGURATIONS_NAME);
+        List<Element> entrys = configurationsElement.getChildren("Entry");
+        for (Element entry : entrys) {
+            String key = macroManager.expandPath(entry.getAttributeValue("folder"));
+            FolderConfiguration value = XmlSerializer.deserialize(entry.getChild("FolderConfiguration"), FolderConfiguration.class);
+            folderConfigurations.put(key, value);
+        }
+        this.folderConfigurations = folderConfigurations;
     }
 
     public enum UseExtensionsEnum {
