@@ -38,12 +38,12 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.Configuration"
+                        serviceInterface="ru.crazycoder.plugins.tabdir.configuration.Configuration"/>
+        <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"
+                        serviceInterface="ru.crazycoder.plugins.tabdir.TitleFormatter"/>
+        <projectConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.Settings"/>
         <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
-        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.Configuration"
-                            serviceInterface="ru.crazycoder.plugins.tabdir.configuration.Configuration"/>
-        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"
-                            serviceInterface="ru.crazycoder.plugins.tabdir.TitleFormatter"/>
-        <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.Settings"/>
         <!-- Add your extensions here -->
     </extensions>
 </idea-plugin>
