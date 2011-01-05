@@ -24,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class FolderConfiguration {
 
-    @NotNull
-    private String folderPath;
     private String relativeTo;
     @NotNull
     private String dirsSeparator;
@@ -39,10 +37,8 @@ public class FolderConfiguration {
     public FolderConfiguration() {
     }
 
-    public FolderConfiguration(@NotNull final String folderPath, final String relativeTo, @NotNull final String dirsSeparator,
-                               @NotNull final String titleFormat, final boolean hideVowels, final int nCharsInDirName,
-                               final int nDirsToShow, final String filesExtensions) {
-        this.folderPath = folderPath;
+    public FolderConfiguration(final String relativeTo, @NotNull final String dirsSeparator, @NotNull final String titleFormat,
+                               final boolean hideVowels, final int nCharsInDirName, final int nDirsToShow, final String filesExtensions) {
         this.relativeTo = relativeTo;
         this.dirsSeparator = dirsSeparator;
         this.titleFormat = titleFormat;
@@ -50,15 +46,6 @@ public class FolderConfiguration {
         this.nCharsInDirName = nCharsInDirName;
         this.nDirsToShow = nDirsToShow;
         this.filesExtensions = filesExtensions;
-    }
-
-    @NotNull
-    public String getFolderPath() {
-        return folderPath;
-    }
-
-    public void setFolderPath(@NotNull final String folderPath) {
-        this.folderPath = folderPath;
     }
 
     public String getRelativeTo() {
@@ -120,7 +107,6 @@ public class FolderConfiguration {
     }
 
     public FolderConfiguration cloneMe() {
-        return new FolderConfiguration(folderPath, relativeTo, dirsSeparator, titleFormat, hideVowels, nCharsInDirName, nDirsToShow,
-                filesExtensions);
+        return new FolderConfiguration(relativeTo, dirsSeparator, titleFormat, hideVowels, nCharsInDirName, nDirsToShow, filesExtensions);
     }
 }
