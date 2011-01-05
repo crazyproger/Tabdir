@@ -43,8 +43,8 @@ import java.util.*;
 public class SameFilenameTitleProvider
         implements EditorTabTitleProvider {
 
-    private final Configuration configuration;
-    private final TitleFormatter formatter;
+    private Configuration configuration;
+    private TitleFormatter formatter;
     private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
         @Override
         public int compare(VirtualFile file1, VirtualFile file2) {
@@ -52,13 +52,12 @@ public class SameFilenameTitleProvider
         }
     };
 
-    public SameFilenameTitleProvider(Configuration configuration, TitleFormatter formatter) {
-        this.configuration = configuration;
-        this.formatter = formatter;
-    }
 
     @Override
     public String getEditorTabTitle(final Project project, final VirtualFile file) {
+        configuration = project.getComponent(Configuration.class);
+        formatter = project.getComponent(TitleFormatter.class);
+        
         if(!needProcessFile(file)) {
             return null;
         }
