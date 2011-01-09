@@ -33,12 +33,14 @@ public class FolderConfiguration {
     private int nCharsInDirName;
     private int nDirsToShow;
     private String filesExtensions;
+    private UseExtensionsEnum useEnum;
 
     public FolderConfiguration() {
     }
 
     public FolderConfiguration(final String relativeTo, @NotNull final String dirsSeparator, @NotNull final String titleFormat,
-                               final boolean hideVowels, final int nCharsInDirName, final int nDirsToShow, final String filesExtensions) {
+                               final boolean hideVowels, final int nCharsInDirName, final int nDirsToShow, final String filesExtensions,
+                               final UseExtensionsEnum useEnum) {
         this.relativeTo = relativeTo;
         this.dirsSeparator = dirsSeparator;
         this.titleFormat = titleFormat;
@@ -46,6 +48,7 @@ public class FolderConfiguration {
         this.nCharsInDirName = nCharsInDirName;
         this.nDirsToShow = nDirsToShow;
         this.filesExtensions = filesExtensions;
+        this.useEnum = useEnum;
     }
 
     public String getRelativeTo() {
@@ -106,7 +109,38 @@ public class FolderConfiguration {
         this.filesExtensions = filesExtensions;
     }
 
+    public UseExtensionsEnum getUseEnum() {
+        return useEnum;
+    }
+
+    public void setUseEnum(final UseExtensionsEnum useEnum) {
+        this.useEnum = useEnum;
+    }
+
     public FolderConfiguration cloneMe() {
-        return new FolderConfiguration(relativeTo, dirsSeparator, titleFormat, hideVowels, nCharsInDirName, nDirsToShow, filesExtensions);
+        return new FolderConfiguration(relativeTo, dirsSeparator, titleFormat, hideVowels, nCharsInDirName, nDirsToShow, filesExtensions,
+                useEnum);
+    }
+
+    public enum UseExtensionsEnum {
+        DO_NOT_USE("Do not use", false),
+        USE("Use", true);
+
+        private String shownText;
+        private boolean value;
+
+        UseExtensionsEnum(String text, boolean value) {
+            this.shownText = text;
+            this.value = value;
+        }
+
+        public boolean getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return shownText;
+        }
     }
 }

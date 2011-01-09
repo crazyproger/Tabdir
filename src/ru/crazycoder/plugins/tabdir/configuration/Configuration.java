@@ -17,6 +17,7 @@
 package ru.crazycoder.plugins.tabdir.configuration;
 
 import com.intellij.openapi.components.*;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializer;
 import org.jdom.Element;
@@ -36,6 +37,8 @@ import java.util.Map;
 public class Configuration
         implements PersistentStateComponent<Element> {
 
+    private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
+
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
     private static final String FOLDER_CONFIGURATIONS_NAME = "folderConfigurations";
@@ -43,7 +46,7 @@ public class Configuration
     private boolean reduceDirNames;
     private int charsInName;
     private int maxDirsToShow;
-    private UseExtensionsEnum useExtensions;
+    private FolderConfiguration.UseExtensionsEnum useExtensions;
     private String filesExtensions;
     private String dirSeparator;
     private String titleFormat;
@@ -53,16 +56,20 @@ public class Configuration
     private final PathMacroManager macroManager;
 
     public Configuration(Project project) {
+        // todo move to configuration.xml
         // set default values to configuration
         reduceDirNames = true;
         charsInName = 5;
         maxDirsToShow = 3;
-        useExtensions = UseExtensionsEnum.DO_NOT_USE;
+        useExtensions = FolderConfiguration.UseExtensionsEnum.DO_NOT_USE;
         filesExtensions = "java\ngroovy";
         dirSeparator = DEFAULT_DIR_SEPARATOR;
         titleFormat = DEFAULT_TITLE_FORMAT;
 
         folderConfigurations = new HashMap<String, FolderConfiguration>();
+        // todo for test
+        folderConfigurations.put("/home/ice/projects/untitled/src",
+                new FolderConfiguration("", "", "", true, 10, 1, "", FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
 
         macroManager = PathMacroManager.getInstance(project);
     }
@@ -83,9 +90,14 @@ public class Configuration
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void loadState(Element state) {
-        Map<String, FolderConfiguration> folderConfigurations = new HashMap<String, FolderConfiguration>();
         Element configurationsElement = state.getChild(FOLDER_CONFIGURATIONS_NAME);
+        if(configurationsElement == null) {
+            log.debug("no config element");
+            return;
+        }
+        Map<String, FolderConfiguration> folderConfigurations = new HashMap<String, FolderConfiguration>();
         List<Element> entrys = configurationsElement.getChildren("Entry");
         for (Element entry : entrys) {
             String key = macroManager.expandPath(entry.getAttributeValue("folder"));
@@ -93,28 +105,6 @@ public class Configuration
             folderConfigurations.put(key, value);
         }
         this.folderConfigurations = folderConfigurations;
-    }
-
-    public enum UseExtensionsEnum {
-        DO_NOT_USE("Do not use", false),
-        USE("Use", true);
-
-        private String shownText;
-        private boolean value;
-
-        UseExtensionsEnum(String text, boolean value) {
-            this.shownText = text;
-            this.value = value;
-        }
-
-        public boolean getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return shownText;
-        }
     }
 
     public boolean isReduceDirNames() {
@@ -149,11 +139,11 @@ public class Configuration
         this.maxDirsToShow = maxDirsToShow;
     }
 
-    public UseExtensionsEnum getUseExtensions() {
+    public FolderConfiguration.UseExtensionsEnum getUseExtensions() {
         return useExtensions;
     }
 
-    public void setUseExtensions(final UseExtensionsEnum useExtensions) {
+    public void setUseExtensions(final FolderConfiguration.UseExtensionsEnum useExtensions) {
         this.useExtensions = useExtensions;
     }
 
