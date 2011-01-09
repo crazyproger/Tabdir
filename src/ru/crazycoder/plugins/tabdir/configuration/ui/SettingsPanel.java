@@ -71,7 +71,7 @@ public class SettingsPanel {
     }
 
     private void updateExample() {
-        Configuration configuration = new Configuration(project);
+        FolderConfiguration configuration = new FolderConfiguration();
         getData(configuration);
         List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
         String exampleFileName = "FileName";
@@ -86,25 +86,25 @@ public class SettingsPanel {
         this.formattedExample.setText(formattedExample);
     }
 
-    public void setData(Configuration data) {
+    public void setData(FolderConfiguration data) {
         reduceDirNamesCB.setSelected(data.isReduceDirNames());
         extensionsTA.setText(data.getFilesExtensions());
-        dirsToShowModel.setValue(data.getMaxDirsToShow());
-        charsInNameModel.setValue(data.getCharsInName());
-        useSwitchCB.getModel().setSelectedItem(data.getUseExtensions());
-        dirSeparatorTF.setText(data.getDirSeparator());
+        dirsToShowModel.setValue(data.getnDirsToShow());
+        charsInNameModel.setValue(data.getnCharsInDirName());
+        useSwitchCB.getModel().setSelectedItem(data.getUseEnum());
+        dirSeparatorTF.setText(data.getDirsSeparator());
         titleFormatTF.setText(data.getTitleFormat());
         updateExample();
     }
 
-    public void getData(Configuration data) {
+    public void getData(FolderConfiguration data) {
         data.setReduceDirNames(reduceDirNamesCB.isSelected());
         data.setFilesExtensions(extensionsTA.getText().trim());
-        data.setMaxDirsToShow((Integer)dirsToShowModel.getValue());
-        data.setCharsInName((Integer)charsInNameModel.getValue());
-        data.setUseExtensions((FolderConfiguration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
+        data.setnDirsToShow((Integer)dirsToShowModel.getValue());
+        data.setnCharsInDirName((Integer)charsInNameModel.getValue());
+        data.setUseEnum((FolderConfiguration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
         data.setTitleFormat(titleFormatTF.getText().trim());
-        data.setDirSeparator(dirSeparatorTF.getText().trim());
+        data.setDirsSeparator(dirSeparatorTF.getText().trim());
     }
 
     public boolean isModified(Configuration data) {

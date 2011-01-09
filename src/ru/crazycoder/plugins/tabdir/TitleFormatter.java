@@ -18,6 +18,7 @@ package ru.crazycoder.plugins.tabdir;
 
 import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.Configuration;
+import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -35,7 +36,7 @@ public class TitleFormatter {
         this.configuration = configuration;
     }
 
-    public static String format(List<String> prefixes, String tabName, Configuration configuration) {
+    public static String format(List<String> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixes(prefixes, configuration);
         return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
     }
@@ -44,23 +45,23 @@ public class TitleFormatter {
         return format(prefixes, tabName, configuration);
     }
 
-    private static String joinPrefixes(List<String> prefixes, Configuration configuration) {
+    private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
         StringBuilder buffer = new StringBuilder();
         int i = 0;
         for (String prefix : prefixes) {
             if(configuration.isReduceDirNames()) {
-                String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
+                String reducedDir = StringUtils.substring(prefix, 0, configuration.getnCharsInDirName());
                 buffer.append(reducedDir);
             } else {
                 buffer.append(prefix);
             }
-            buffer.append(configuration.getDirSeparator());
+            buffer.append(configuration.getDirsSeparator());
             i++;
-            if(i == configuration.getMaxDirsToShow()) {
+            if(i == configuration.getnDirsToShow()) {
                 break;
             }
         }
-        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
+        return StringUtils.removeEnd(buffer.toString(), configuration.getDirsSeparator());
     }
 }
 
