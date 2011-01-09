@@ -16,8 +16,10 @@
 
 package ru.crazycoder.plugins.tabdir.configuration.ui;
 
+import com.intellij.openapi.project.Project;
 import ru.crazycoder.plugins.tabdir.TitleFormatter;
 import ru.crazycoder.plugins.tabdir.configuration.Configuration;
+import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -48,8 +50,10 @@ public class SettingsPanel {
     private JComponent mappingPanel;
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
+    private Project project;
 
-    public SettingsPanel() {
+    public SettingsPanel(Project project) {
+        this.project = project;
         reduceDirNamesCB.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -59,7 +63,7 @@ public class SettingsPanel {
         });
         dirsToShowSpinner.setModel(dirsToShowModel);
         charsInNameSpinner.setModel(charsInNameModel);
-        useSwitchCB.setModel(new DefaultComboBoxModel(Configuration.UseExtensionsEnum.values()));
+        useSwitchCB.setModel(new DefaultComboBoxModel(FolderConfiguration.UseExtensionsEnum.values()));
         dirSeparatorTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
         titleFormatTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
         dirsToShowSpinner.addChangeListener(new ExampleUpdaterChangeListener());
@@ -67,7 +71,7 @@ public class SettingsPanel {
     }
 
     private void updateExample() {
-        Configuration configuration = new Configuration();
+        Configuration configuration = new Configuration(project);
         getData(configuration);
         List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
         String exampleFileName = "FileName";
@@ -98,7 +102,7 @@ public class SettingsPanel {
         data.setFilesExtensions(extensionsTA.getText().trim());
         data.setMaxDirsToShow((Integer)dirsToShowModel.getValue());
         data.setCharsInName((Integer)charsInNameModel.getValue());
-        data.setUseExtensions((Configuration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
+        data.setUseExtensions((FolderConfiguration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
         data.setTitleFormat(titleFormatTF.getText().trim());
         data.setDirSeparator(dirSeparatorTF.getText().trim());
     }

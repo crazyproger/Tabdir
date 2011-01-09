@@ -18,6 +18,7 @@ package ru.crazycoder.plugins.tabdir.configuration;
 
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import ru.crazycoder.plugins.tabdir.configuration.ui.SettingsPanel;
@@ -33,16 +34,18 @@ public class Settings
         implements SearchableConfigurable {
 
     private final Configuration configuration;
+    private final Project project;
 
     private SettingsPanel settingsPanel;
 
-    public Settings(Configuration configuration) {
+    public Settings(Project project, Configuration configuration) {
         this.configuration = configuration;
+        this.project = project;
     }
 
     @Override
     public JComponent createComponent() {
-        settingsPanel = new SettingsPanel();
+        settingsPanel = new SettingsPanel(project);
         settingsPanel.setData(configuration);
         return settingsPanel.getRootPanel();
     }
