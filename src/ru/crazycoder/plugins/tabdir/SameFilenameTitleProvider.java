@@ -16,6 +16,8 @@
 
 package ru.crazycoder.plugins.tabdir;
 
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.impl.EditorTabTitleProvider;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
@@ -43,6 +45,8 @@ import java.util.*;
 public class SameFilenameTitleProvider
         implements EditorTabTitleProvider {
 
+    private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
+
     private Configuration configuration;
     private TitleFormatter formatter;
     private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
@@ -52,18 +56,22 @@ public class SameFilenameTitleProvider
         }
     };
 
-
     @Override
     public String getEditorTabTitle(final Project project, final VirtualFile file) {
-        configuration = project.getComponent(Configuration.class);
-        formatter = project.getComponent(TitleFormatter.class);
-        
-        if(!needProcessFile(file)) {
-            return null;
-        }
-        return relativeToSourceTitle(project, file);
+        try {
+            configuration = ServiceManager.getService(project, Configuration.class);
+            formatter = ServiceManager.getService(project, TitleFormatter.class);
+
+            if(!needProcessFile(file)) {
+                return null;
+            }
+            return relativeToSourceTitle(project, file);
 //        return relativeToProjectTitle(project, file);
 //        return titleWithDiffs(project, file);
+        } catch (Exception e) {
+            log.error("", e);
+        }
+        return null;
     }
 
     private String relativeToSourceTitle(final Project project, final VirtualFile file) {
