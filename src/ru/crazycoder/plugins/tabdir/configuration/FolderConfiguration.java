@@ -29,7 +29,6 @@ public class FolderConfiguration {
     private String dirsSeparator;
     @NotNull
     private String titleFormat;
-    private boolean hideVowels;
     private int nCharsInDirName;
     private int nDirsToShow;
     private String filesExtensions;
@@ -39,12 +38,11 @@ public class FolderConfiguration {
     }
 
     public FolderConfiguration(final String relativeTo, @NotNull final String dirsSeparator, @NotNull final String titleFormat,
-                               final boolean hideVowels, final int nCharsInDirName, final int nDirsToShow, final String filesExtensions,
+                               final int nCharsInDirName, final int nDirsToShow, final String filesExtensions,
                                final UseExtensionsEnum useEnum) {
         this.relativeTo = relativeTo;
         this.dirsSeparator = dirsSeparator;
         this.titleFormat = titleFormat;
-        this.hideVowels = hideVowels;
         this.nCharsInDirName = nCharsInDirName;
         this.nDirsToShow = nDirsToShow;
         this.filesExtensions = filesExtensions;
@@ -75,14 +73,6 @@ public class FolderConfiguration {
 
     public void setTitleFormat(@NotNull final String titleFormat) {
         this.titleFormat = titleFormat;
-    }
-
-    public boolean isHideVowels() {
-        return hideVowels;
-    }
-
-    public void setHideVowels(final boolean hideVowels) {
-        this.hideVowels = hideVowels;
     }
 
     public int getnCharsInDirName() {
@@ -118,8 +108,7 @@ public class FolderConfiguration {
     }
 
     public FolderConfiguration cloneMe() {
-        return new FolderConfiguration(relativeTo, dirsSeparator, titleFormat, hideVowels, nCharsInDirName, nDirsToShow, filesExtensions,
-                useEnum);
+        return new FolderConfiguration(relativeTo, dirsSeparator, titleFormat, nCharsInDirName, nDirsToShow, filesExtensions, useEnum);
     }
 
     public enum UseExtensionsEnum {

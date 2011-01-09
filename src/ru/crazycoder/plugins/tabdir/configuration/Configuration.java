@@ -69,7 +69,7 @@ public class Configuration
         folderConfigurations = new HashMap<String, FolderConfiguration>();
         // todo for test
         folderConfigurations.put("/home/ice/projects/untitled/src",
-                new FolderConfiguration("", "", "", true, 10, 1, "", FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
+                new FolderConfiguration("", "", "", 10, 1, "", FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
 
         macroManager = PathMacroManager.getInstance(project);
     }
