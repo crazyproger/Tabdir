@@ -27,26 +27,26 @@ public class FolderConfiguration {
     private String relativeTo;
     @NotNull
     private boolean reduceDirNames;
-    private String dirsSeparator;
+    private String dirSeparator;
     @NotNull
     private String titleFormat;
-    private int nCharsInDirName;
-    private int nDirsToShow;
+    private int charsInName;
+    private int maxDirsToShow;
     private String filesExtensions;
     private UseExtensionsEnum useEnum;
 
     public FolderConfiguration() {
     }
 
-    public FolderConfiguration(final String relativeTo, boolean reduceDirNames, @NotNull final String dirsSeparator,
-                               @NotNull final String titleFormat, final int nCharsInDirName, final int nDirsToShow,
+    public FolderConfiguration(final String relativeTo, boolean reduceDirNames, @NotNull final String dirSeparator,
+                               @NotNull final String titleFormat, final int charsInName, final int maxDirsToShow,
                                final String filesExtensions, final UseExtensionsEnum useEnum) {
         this.relativeTo = relativeTo;
         this.reduceDirNames = reduceDirNames;
-        this.dirsSeparator = dirsSeparator;
+        this.dirSeparator = dirSeparator;
         this.titleFormat = titleFormat;
-        this.nCharsInDirName = nCharsInDirName;
-        this.nDirsToShow = nDirsToShow;
+        this.charsInName = charsInName;
+        this.maxDirsToShow = maxDirsToShow;
         this.filesExtensions = filesExtensions;
         this.useEnum = useEnum;
     }
@@ -69,12 +69,12 @@ public class FolderConfiguration {
     }
 
     @NotNull
-    public String getDirsSeparator() {
-        return dirsSeparator;
+    public String getDirSeparator() {
+        return dirSeparator;
     }
 
-    public void setDirsSeparator(@NotNull final String dirsSeparator) {
-        this.dirsSeparator = dirsSeparator;
+    public void setDirSeparator(@NotNull final String dirSeparator) {
+        this.dirSeparator = dirSeparator;
     }
 
     @NotNull
@@ -86,20 +86,20 @@ public class FolderConfiguration {
         this.titleFormat = titleFormat;
     }
 
-    public int getnCharsInDirName() {
-        return nCharsInDirName;
+    public int getCharsInName() {
+        return charsInName;
     }
 
-    public void setnCharsInDirName(final int nCharsInDirName) {
-        this.nCharsInDirName = nCharsInDirName;
+    public void setCharsInName(final int charsInName) {
+        this.charsInName = charsInName;
     }
 
-    public int getnDirsToShow() {
-        return nDirsToShow;
+    public int getMaxDirsToShow() {
+        return maxDirsToShow;
     }
 
-    public void setnDirsToShow(final int nDirsToShow) {
-        this.nDirsToShow = nDirsToShow;
+    public void setMaxDirsToShow(final int maxDirsToShow) {
+        this.maxDirsToShow = maxDirsToShow;
     }
 
     public String getFilesExtensions() {
@@ -119,8 +119,8 @@ public class FolderConfiguration {
     }
 
     public FolderConfiguration cloneMe() {
-        return new FolderConfiguration(relativeTo, reduceDirNames, dirsSeparator, titleFormat, nCharsInDirName, nDirsToShow,
-                filesExtensions, useEnum);
+        return new FolderConfiguration(relativeTo, reduceDirNames, dirSeparator, titleFormat, charsInName, maxDirsToShow, filesExtensions,
+                useEnum);
     }
 
     public enum UseExtensionsEnum {

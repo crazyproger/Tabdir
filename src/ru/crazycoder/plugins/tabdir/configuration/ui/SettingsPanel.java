@@ -89,10 +89,10 @@ public class SettingsPanel {
     public void setData(FolderConfiguration data) {
         reduceDirNamesCB.setSelected(data.isReduceDirNames());
         extensionsTA.setText(data.getFilesExtensions());
-        dirsToShowModel.setValue(data.getnDirsToShow());
-        charsInNameModel.setValue(data.getnCharsInDirName());
+        dirsToShowModel.setValue(data.getMaxDirsToShow());
+        charsInNameModel.setValue(data.getCharsInName());
         useSwitchCB.getModel().setSelectedItem(data.getUseEnum());
-        dirSeparatorTF.setText(data.getDirsSeparator());
+        dirSeparatorTF.setText(data.getDirSeparator());
         titleFormatTF.setText(data.getTitleFormat());
         updateExample();
     }
@@ -100,11 +100,11 @@ public class SettingsPanel {
     public void getData(FolderConfiguration data) {
         data.setReduceDirNames(reduceDirNamesCB.isSelected());
         data.setFilesExtensions(extensionsTA.getText().trim());
-        data.setnDirsToShow((Integer)dirsToShowModel.getValue());
-        data.setnCharsInDirName((Integer)charsInNameModel.getValue());
+        data.setMaxDirsToShow((Integer)dirsToShowModel.getValue());
+        data.setCharsInName((Integer)charsInNameModel.getValue());
         data.setUseEnum((FolderConfiguration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
         data.setTitleFormat(titleFormatTF.getText().trim());
-        data.setDirsSeparator(dirSeparatorTF.getText().trim());
+        data.setDirSeparator(dirSeparatorTF.getText().trim());
     }
 
     public boolean isModified(Configuration data) {
