@@ -16,9 +16,7 @@
 
 package ru.crazycoder.plugins.tabdir.configuration.ui;
 
-import com.intellij.openapi.project.Project;
 import ru.crazycoder.plugins.tabdir.TitleFormatter;
-import ru.crazycoder.plugins.tabdir.configuration.Configuration;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import javax.swing.*;
@@ -47,13 +45,11 @@ public class SettingsPanel {
     private JTextField dirSeparatorTF;
     private JLabel formattedExample;
     private JLabel formatInfo;
-    private JComponent mappingPanel;
+    //    private JComponent mappingPanel;
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
-    private Project project;
 
-    public SettingsPanel(Project project) {
-        this.project = project;
+    public SettingsPanel() {
         reduceDirNamesCB.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -107,7 +103,7 @@ public class SettingsPanel {
         data.setDirSeparator(dirSeparatorTF.getText().trim());
     }
 
-    public boolean isModified(Configuration data) {
+    public boolean isModified(FolderConfiguration data) {
         if(reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
         if(extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)
             return true;
@@ -120,8 +116,8 @@ public class SettingsPanel {
     }
 
     private void createUIComponents() {
-        MappingPanel panel = new MappingPanel();
-        mappingPanel = panel;
+//        MappingPanel panel = new MappingPanel();
+//        mappingPanel = panel;
     }
 
     class ExampleUpdaterDocumentListener

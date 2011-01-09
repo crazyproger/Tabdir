@@ -32,7 +32,8 @@ import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiShortNamesCache;
-import ru.crazycoder.plugins.tabdir.configuration.Configuration;
+import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
+import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
 
 import java.io.File;
 import java.util.*;
@@ -47,8 +48,7 @@ public class SameFilenameTitleProvider
 
     private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
 
-    private Configuration configuration;
-    private TitleFormatter formatter;
+    private FolderConfiguration configuration;
     private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
         @Override
         public int compare(VirtualFile file1, VirtualFile file2) {
@@ -59,8 +59,7 @@ public class SameFilenameTitleProvider
     @Override
     public String getEditorTabTitle(final Project project, final VirtualFile file) {
         try {
-            configuration = ServiceManager.getService(project, Configuration.class);
-            formatter = ServiceManager.getService(project, TitleFormatter.class);
+            configuration = ServiceManager.getService(GlobalConfig.class);
 
             if(!needProcessFile(file)) {
                 return null;
@@ -119,7 +118,7 @@ public class SameFilenameTitleProvider
 
         if(prefixes.size() > 0) {
             try {
-                return formatter.format(prefixes, file.getPresentableName());
+                return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
             } catch (Exception e) {
                 return null;
             }

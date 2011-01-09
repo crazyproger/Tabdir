@@ -39,37 +39,18 @@ public class Configuration
 
     private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
 
-    private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
-    private static final String DEFAULT_DIR_SEPARATOR = "|";
     private static final String FOLDER_CONFIGURATIONS_NAME = "folderConfigurations";
-
-    private boolean reduceDirNames;
-    private int charsInName;
-    private int maxDirsToShow;
-    private FolderConfiguration.UseExtensionsEnum useExtensions;
-    private String filesExtensions;
-    private String dirSeparator;
-    private String titleFormat;
 
     private Map<String, FolderConfiguration> folderConfigurations;
 
     private final PathMacroManager macroManager;
 
     public Configuration(Project project) {
-        // todo move to configuration.xml
-        // set default values to configuration
-        reduceDirNames = true;
-        charsInName = 5;
-        maxDirsToShow = 3;
-        useExtensions = FolderConfiguration.UseExtensionsEnum.DO_NOT_USE;
-        filesExtensions = "java\ngroovy";
-        dirSeparator = DEFAULT_DIR_SEPARATOR;
-        titleFormat = DEFAULT_TITLE_FORMAT;
 
         folderConfigurations = new HashMap<String, FolderConfiguration>();
         // todo for test
         folderConfigurations.put("/home/ice/projects/untitled/src",
-                new FolderConfiguration("", "", "", 10, 1, "", FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
+                new FolderConfiguration("", true, "", "", 10, 1, "", FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
 
         macroManager = PathMacroManager.getInstance(project);
     }
@@ -107,59 +88,4 @@ public class Configuration
         this.folderConfigurations = folderConfigurations;
     }
 
-    public boolean isReduceDirNames() {
-        return reduceDirNames;
-    }
-
-    public void setReduceDirNames(final boolean reduceDirNames) {
-        this.reduceDirNames = reduceDirNames;
-    }
-
-    public String getFilesExtensions() {
-        return filesExtensions;
-    }
-
-    public void setFilesExtensions(final String filesExtensions) {
-        this.filesExtensions = filesExtensions;
-    }
-
-    public int getCharsInName() {
-        return charsInName;
-    }
-
-    public void setCharsInName(final int charsInName) {
-        this.charsInName = charsInName;
-    }
-
-    public int getMaxDirsToShow() {
-        return maxDirsToShow;
-    }
-
-    public void setMaxDirsToShow(final int maxDirsToShow) {
-        this.maxDirsToShow = maxDirsToShow;
-    }
-
-    public FolderConfiguration.UseExtensionsEnum getUseExtensions() {
-        return useExtensions;
-    }
-
-    public void setUseExtensions(final FolderConfiguration.UseExtensionsEnum useExtensions) {
-        this.useExtensions = useExtensions;
-    }
-
-    public String getDirSeparator() {
-        return dirSeparator;
-    }
-
-    public void setDirSeparator(String dirSeparator) {
-        this.dirSeparator = dirSeparator;
-    }
-
-    public String getTitleFormat() {
-        return titleFormat;
-    }
-
-    public void setTitleFormat(String titleFormat) {
-        this.titleFormat = titleFormat;
-    }
 }
