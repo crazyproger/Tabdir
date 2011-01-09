@@ -17,7 +17,6 @@
 package ru.crazycoder.plugins.tabdir;
 
 import org.apache.commons.lang.StringUtils;
-import ru.crazycoder.plugins.tabdir.configuration.Configuration;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
@@ -30,19 +29,9 @@ import java.util.List;
  */
 public class TitleFormatter {
 
-    private Configuration configuration;
-
-    public TitleFormatter(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
     public static String format(List<String> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixes(prefixes, configuration);
         return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
-    }
-
-    public String format(List<String> prefixes, String tabName) {
-        return format(prefixes, tabName, configuration);
     }
 
     private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
@@ -50,18 +39,18 @@ public class TitleFormatter {
         int i = 0;
         for (String prefix : prefixes) {
             if(configuration.isReduceDirNames()) {
-                String reducedDir = StringUtils.substring(prefix, 0, configuration.getnCharsInDirName());
+                String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
                 buffer.append(reducedDir);
             } else {
                 buffer.append(prefix);
             }
-            buffer.append(configuration.getDirsSeparator());
+            buffer.append(configuration.getDirSeparator());
             i++;
-            if(i == configuration.getnDirsToShow()) {
+            if(i == configuration.getMaxDirsToShow()) {
                 break;
             }
         }
-        return StringUtils.removeEnd(buffer.toString(), configuration.getDirsSeparator());
+        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
     }
 }
 

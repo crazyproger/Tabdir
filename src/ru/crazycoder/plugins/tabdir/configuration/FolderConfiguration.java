@@ -33,14 +33,14 @@ public class FolderConfiguration {
     private int charsInName;
     private int maxDirsToShow;
     private String filesExtensions;
-    private UseExtensionsEnum useEnum;
+    private UseExtensionsEnum useExtensions;
 
     public FolderConfiguration() {
     }
 
     public FolderConfiguration(final String relativeTo, boolean reduceDirNames, @NotNull final String dirSeparator,
                                @NotNull final String titleFormat, final int charsInName, final int maxDirsToShow,
-                               final String filesExtensions, final UseExtensionsEnum useEnum) {
+                               final String filesExtensions, final UseExtensionsEnum useExtensions) {
         this.relativeTo = relativeTo;
         this.reduceDirNames = reduceDirNames;
         this.dirSeparator = dirSeparator;
@@ -48,7 +48,7 @@ public class FolderConfiguration {
         this.charsInName = charsInName;
         this.maxDirsToShow = maxDirsToShow;
         this.filesExtensions = filesExtensions;
-        this.useEnum = useEnum;
+        this.useExtensions = useExtensions;
     }
 
     public String getRelativeTo() {
@@ -110,17 +110,17 @@ public class FolderConfiguration {
         this.filesExtensions = filesExtensions;
     }
 
-    public UseExtensionsEnum getUseEnum() {
-        return useEnum;
+    public UseExtensionsEnum getUseExtensions() {
+        return useExtensions;
     }
 
-    public void setUseEnum(final UseExtensionsEnum useEnum) {
-        this.useEnum = useEnum;
+    public void setUseExtensions(final UseExtensionsEnum useExtensions) {
+        this.useExtensions = useExtensions;
     }
 
     public FolderConfiguration cloneMe() {
         return new FolderConfiguration(relativeTo, reduceDirNames, dirSeparator, titleFormat, charsInName, maxDirsToShow, filesExtensions,
-                useEnum);
+                useExtensions);
     }
 
     public enum UseExtensionsEnum {

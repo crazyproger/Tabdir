@@ -38,6 +38,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.AppConfiguration"/>
         <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.Configuration"
                         serviceInterface="ru.crazycoder.plugins.tabdir.configuration.Configuration"/>
         <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"

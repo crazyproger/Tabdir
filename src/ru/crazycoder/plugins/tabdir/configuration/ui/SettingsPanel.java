@@ -91,7 +91,7 @@ public class SettingsPanel {
         extensionsTA.setText(data.getFilesExtensions());
         dirsToShowModel.setValue(data.getMaxDirsToShow());
         charsInNameModel.setValue(data.getCharsInName());
-        useSwitchCB.getModel().setSelectedItem(data.getUseEnum());
+        useSwitchCB.getModel().setSelectedItem(data.getUseExtensions());
         dirSeparatorTF.setText(data.getDirSeparator());
         titleFormatTF.setText(data.getTitleFormat());
         updateExample();
@@ -102,7 +102,7 @@ public class SettingsPanel {
         data.setFilesExtensions(extensionsTA.getText().trim());
         data.setMaxDirsToShow((Integer)dirsToShowModel.getValue());
         data.setCharsInName((Integer)charsInNameModel.getValue());
-        data.setUseEnum((FolderConfiguration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
+        data.setUseExtensions((FolderConfiguration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
         data.setTitleFormat(titleFormatTF.getText().trim());
         data.setDirSeparator(dirSeparatorTF.getText().trim());
     }
