@@ -45,7 +45,8 @@ public class SettingsPanel {
     private JTextField dirSeparatorTF;
     private JLabel formattedExample;
     private JLabel formatInfo;
-    //    private JComponent mappingPanel;
+    private JLabel dirSeparatorL;
+    private JLabel dirsToShowL;
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
@@ -69,6 +70,10 @@ public class SettingsPanel {
     private void updateExample() {
         FolderConfiguration configuration = new FolderConfiguration();
         getData(configuration);
+        updateExample(configuration);
+    }
+
+    public void updateExample(final FolderConfiguration configuration) {
         List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
         String exampleFileName = "FileName";
         String formattedExample;
@@ -115,9 +120,14 @@ public class SettingsPanel {
         return false;
     }
 
-    private void createUIComponents() {
-//        MappingPanel panel = new MappingPanel();
-//        mappingPanel = panel;
+    public void setEnabledDirSeparatorField(boolean enabled) {
+        dirSeparatorL.setEnabled(enabled);
+        dirSeparatorTF.setEnabled(enabled);
+    }
+
+    public void setEnabledDirsToShow(boolean enabled) {
+        dirsToShowSpinner.setEnabled(enabled);
+        dirsToShowL.setEnabled(enabled);
     }
 
     class ExampleUpdaterDocumentListener
