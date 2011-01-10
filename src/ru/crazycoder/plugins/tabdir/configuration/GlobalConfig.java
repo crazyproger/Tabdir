@@ -49,6 +49,8 @@ public class GlobalConfig
 
     @Override
     public FolderConfiguration getState() {
+        // clone need to return FolderConfiguration object
+        // because if return GlobalConfig object configuration will not be saved
         return this.cloneMe();
     }
 
