@@ -16,8 +16,6 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * User: crazycoder
  * Date: 19.12.10
@@ -25,10 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public class FolderConfiguration {
 
     private String relativeTo;
-    @NotNull
     private boolean reduceDirNames;
     private String dirSeparator;
-    @NotNull
     private String titleFormat;
     private int charsInName;
     private int maxDirsToShow;
@@ -38,9 +34,9 @@ public class FolderConfiguration {
     public FolderConfiguration() {
     }
 
-    public FolderConfiguration(final String relativeTo, boolean reduceDirNames, @NotNull final String dirSeparator,
-                               @NotNull final String titleFormat, final int charsInName, final int maxDirsToShow,
-                               final String filesExtensions, final UseExtensionsEnum useExtensions) {
+    public FolderConfiguration(final String relativeTo, boolean reduceDirNames, final String dirSeparator, final String titleFormat,
+                               final int charsInName, final int maxDirsToShow, final String filesExtensions,
+                               final UseExtensionsEnum useExtensions) {
         this.relativeTo = relativeTo;
         this.reduceDirNames = reduceDirNames;
         this.dirSeparator = dirSeparator;
@@ -59,30 +55,27 @@ public class FolderConfiguration {
         this.relativeTo = relativeTo;
     }
 
-    @NotNull
     public boolean isReduceDirNames() {
         return reduceDirNames;
     }
 
-    public void setReduceDirNames(@NotNull final boolean reduceDirNames) {
+    public void setReduceDirNames(final boolean reduceDirNames) {
         this.reduceDirNames = reduceDirNames;
     }
 
-    @NotNull
     public String getDirSeparator() {
         return dirSeparator;
     }
 
-    public void setDirSeparator(@NotNull final String dirSeparator) {
+    public void setDirSeparator(final String dirSeparator) {
         this.dirSeparator = dirSeparator;
     }
 
-    @NotNull
     public String getTitleFormat() {
         return titleFormat;
     }
 
-    public void setTitleFormat(@NotNull final String titleFormat) {
+    public void setTitleFormat(final String titleFormat) {
         this.titleFormat = titleFormat;
     }
 

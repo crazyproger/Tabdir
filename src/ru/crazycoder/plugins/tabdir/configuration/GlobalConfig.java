@@ -20,14 +20,7 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StorageScheme;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import ru.crazycoder.plugins.tabdir.configuration.ui.SettingsPanel;
-
-import javax.swing.*;
 
 /**
  * User: crazycoder
@@ -36,15 +29,13 @@ import javax.swing.*;
  */
 @State(
         name = "TabdirConfiguration",
-        storages = {@Storage(id = "dir", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
+        storages = {@Storage(id = "other", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
 public class GlobalConfig
         extends FolderConfiguration
-        implements SearchableConfigurable, PersistentStateComponent<FolderConfiguration> {
+        implements PersistentStateComponent<FolderConfiguration> {
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
-
-    private SettingsPanel settingsPanel;
 
     public GlobalConfig() {
         this.setCharsInName(5);
@@ -57,66 +48,13 @@ public class GlobalConfig
     }
 
     @Override
-    public JComponent createComponent() {
-        settingsPanel = new SettingsPanel();
-        settingsPanel.setData(this);
-        return settingsPanel.getRootPanel();
-    }
-
-    @Override
-    public boolean isModified() {
-        return settingsPanel != null && settingsPanel.isModified(this);
-    }
-
-    @Override
-    public void apply() throws ConfigurationException {
-        settingsPanel.getData(this);
-    }
-
-    @Override
-    public void reset() {
-        settingsPanel.setData(this);
-    }
-
-    @Override
-    public void disposeUIResources() {
-        settingsPanel = null;
-    }
-
-    @Nls
-    @Override
-    public String getDisplayName() {
-        return "Tabdir";
-    }
-
-    @Override
-    public Icon getIcon() {
-        return null;
-    }
-
-    @Override
-    public String getHelpTopic() {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public String getId() {
-        return "Tabdir.Configuration";
-    }
-
-    @Override
-    public Runnable enableSearch(String option) {
-        return null;
-    }
-
-    @Override
     public FolderConfiguration getState() {
-        return this;
+        return this.cloneMe();
     }
 
     @Override
     public void loadState(final FolderConfiguration state) {
         XmlSerializerUtil.copyBean(state, this);
     }
+
 }
