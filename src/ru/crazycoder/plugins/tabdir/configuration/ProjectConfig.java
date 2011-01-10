@@ -32,9 +32,10 @@ import java.util.Map;
  * Time: 6:48:00 PM
  */
 @State(
-        name = "TabdirConfiguration",
-        storages = {@Storage(id = "dir", file = "$PROJECT_CONFIG_DIR$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
-public class Configuration
+        name = "TabdirProjectConfiguration",
+        storages = {@Storage(id = "default", file = "$PROJECT_FILE$"),@Storage(id = "dir", file = "$PROJECT_CONFIG_DIR$/other.xml",
+                scheme = StorageScheme.DIRECTORY_BASED)})
+public class ProjectConfig
         implements PersistentStateComponent<Element> {
 
     private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
@@ -45,7 +46,7 @@ public class Configuration
 
     private final PathMacroManager macroManager;
 
-    public Configuration(Project project) {
+    public ProjectConfig(Project project) {
 
         folderConfigurations = new HashMap<String, FolderConfiguration>();
         // todo for test
