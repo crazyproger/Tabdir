@@ -16,7 +16,6 @@
 
 package ru.crazycoder.plugins.tabdir;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.impl.EditorTabTitleProvider;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -37,8 +36,6 @@ import java.util.*;
  */
 public class SameFilenameTitleProvider
         implements EditorTabTitleProvider {
-
-    private Logger logger = Logger.getInstance("#ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider");
 
     private final Configuration configuration;
     private final TitleFormatter formatter;
