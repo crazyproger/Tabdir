@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 Vladimir Rudev
+ * Copyright 2011 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,11 +29,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
  */
 @State(
         name = "TabdirConfiguration",
-        storages = {
-                @Storage(id = "dir", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)
-        }
-)
-public class Configuration implements PersistentStateComponent<Configuration> {
+        storages = {@Storage(id = "dir", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
+public class Configuration
+        implements PersistentStateComponent<Configuration> {
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";

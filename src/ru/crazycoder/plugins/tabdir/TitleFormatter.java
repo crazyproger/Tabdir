@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 Vladimir Rudev
+ * Copyright 2011 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,6 +28,7 @@ import java.util.List;
  * Time: 9:28:09 AM
  */
 public class TitleFormatter {
+
     private Configuration configuration;
 
     public TitleFormatter(Configuration configuration) {
@@ -47,7 +48,7 @@ public class TitleFormatter {
         StringBuilder buffer = new StringBuilder();
         int i = 0;
         for (String prefix : prefixes) {
-            if (configuration.isReduceDirNames()) {
+            if(configuration.isReduceDirNames()) {
                 String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
                 buffer.append(reducedDir);
             } else {
@@ -55,7 +56,7 @@ public class TitleFormatter {
             }
             buffer.append(configuration.getDirSeparator());
             i++;
-            if (i == configuration.getMaxDirsToShow()) {
+            if(i == configuration.getMaxDirsToShow()) {
                 break;
             }
         }
