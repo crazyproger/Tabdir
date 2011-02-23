@@ -26,6 +26,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
  * User: crazycoder
  * Date: Aug 15, 2010
  * Time: 6:42:34 PM
+ * todo add projectConfigDisabled saving
  */
 @State(
         name = "TabdirConfiguration",
@@ -36,6 +37,8 @@ public class GlobalConfig
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
+
+    private boolean projectConfigDisabled = true;
 
     public GlobalConfig() {
         this.setCharsInName(5);
@@ -59,4 +62,12 @@ public class GlobalConfig
         XmlSerializerUtil.copyBean(state, this);
     }
 
+    public boolean isProjectConfigDisabled() {
+        return projectConfigDisabled;
+    }
+
+    public void setProjectConfigDisabled(final boolean projectConfigDisabled) {
+        // todo registering/unregistering ProjectConfigConfigurable
+        this.projectConfigDisabled = projectConfigDisabled;
+    }
 }

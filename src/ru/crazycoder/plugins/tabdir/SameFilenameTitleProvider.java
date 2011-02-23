@@ -45,7 +45,7 @@ public class SameFilenameTitleProvider
 
     private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
 
-    private FolderConfiguration configuration = ServiceManager.getService(GlobalConfig.class);
+    private GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
     private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
         @Override
         public int compare(VirtualFile file1, VirtualFile file2) {
@@ -56,22 +56,7 @@ public class SameFilenameTitleProvider
     @Override
     public String getEditorTabTitle(final Project project, final VirtualFile file) {
         try {
-            ProjectConfig projectConfig = ServiceManager.getService(project, ProjectConfig.class);
-            Map<String, FolderConfiguration> folderConfigs = projectConfig.getFolderConfigurations();
-            FolderConfiguration matchedConfiguration = null;
-            int biggestKeyLength = 0;
-            // search configuration where path(key in map) is biggest prefix for file
-            for (Map.Entry<String, FolderConfiguration> entry : folderConfigs.entrySet()) {
-                String key = entry.getKey();
-                if(file.getPath().startsWith(key) && biggestKeyLength < key.length()) {
-                    biggestKeyLength = key.length();
-                    matchedConfiguration = entry.getValue();
-                }
-            }
-            if(matchedConfiguration == null) {
-                // no project config for current file - use global config
-                matchedConfiguration = configuration;
-            }
+            FolderConfiguration matchedConfiguration = findConfiguration(project, file);
             if(!needProcessFile(file, matchedConfiguration)) {
                 return null;
             }
@@ -84,6 +69,29 @@ public class SameFilenameTitleProvider
             log.error("", e);
         }
         return null;
+    }
+
+    private FolderConfiguration findConfiguration(final Project project, final VirtualFile file) {
+        if(configuration.isProjectConfigDisabled()) {
+            return configuration;
+        }
+        ProjectConfig projectConfig = ServiceManager.getService(project, ProjectConfig.class);
+        Map<String, FolderConfiguration> folderConfigs = projectConfig.getFolderConfigurations();
+        FolderConfiguration matchedConfiguration = null;
+        int biggestKeyLength = 0;
+        // search configuration where path(key in map) is biggest prefix for file
+        for (Map.Entry<String, FolderConfiguration> entry : folderConfigs.entrySet()) {
+            String key = entry.getKey();
+            if(file.getPath().startsWith(key) && biggestKeyLength < key.length()) {
+                biggestKeyLength = key.length();
+                matchedConfiguration = entry.getValue();
+            }
+        }
+        if(matchedConfiguration == null) {
+            // no project config for current file - use global config
+            matchedConfiguration = configuration;
+        }
+        return matchedConfiguration;
     }
 
     private String titleRelativeTo(final VirtualFile file, final FolderConfiguration configuration) {
