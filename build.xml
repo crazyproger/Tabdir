@@ -80,10 +80,10 @@
     </target>
 
     <target name="runIDE" depends="deploy">
-        <exec osfamily="Unix" executable="${idea.dir}/bin/idea.sh" spawn="true">
+        <exec osfamily="Unix" executable="${idea.dir}/bin/idea.sh">
             <env key="IDEA_PROPERTIES" value="${basedir}/build.properties"/>
         </exec>
-        <exec osfamily="Windows" executable="${idea.dir}/bin/idea.bat" dir="${idea.dir}/bin" spawn="true">
+        <exec osfamily="Windows" executable="${idea.dir}/bin/idea.bat" dir="${idea.dir}/bin">
             <env key="IDEA_PROPERTIES" value="${basedir}/build.properties"/>
             <env key="JDK_HOME" value="${jdk.dir}"/>
         </exec>
