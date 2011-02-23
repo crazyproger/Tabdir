@@ -19,21 +19,18 @@ package ru.crazycoder.plugins.tabdir;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.impl.EditorTabTitleProvider;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.PsiShortNamesCache;
+import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
+import ru.crazycoder.plugins.tabdir.configuration.ProjectConfig;
 
 import java.io.File;
 import java.util.*;
@@ -48,7 +45,7 @@ public class SameFilenameTitleProvider
 
     private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
 
-    private FolderConfiguration configuration;
+    private FolderConfiguration configuration = ServiceManager.getService(GlobalConfig.class);
     private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
         @Override
         public int compare(VirtualFile file1, VirtualFile file2) {
@@ -59,56 +56,44 @@ public class SameFilenameTitleProvider
     @Override
     public String getEditorTabTitle(final Project project, final VirtualFile file) {
         try {
-            configuration = ServiceManager.getService(GlobalConfig.class);
-
-            if(!needProcessFile(file)) {
+            ProjectConfig projectConfig = ServiceManager.getService(project, ProjectConfig.class);
+            Map<String, FolderConfiguration> folderConfigs = projectConfig.getFolderConfigurations();
+            FolderConfiguration matchedConfiguration = null;
+            int biggestKeyLength = 0;
+            // search configuration where path(key in map) is biggest prefix for file
+            for (Map.Entry<String, FolderConfiguration> entry : folderConfigs.entrySet()) {
+                String key = entry.getKey();
+                if(file.getPath().startsWith(key) && biggestKeyLength < key.length()) {
+                    biggestKeyLength = key.length();
+                    matchedConfiguration = entry.getValue();
+                }
+            }
+            if(matchedConfiguration == null) {
+                // no project config for current file - use global config
+                matchedConfiguration = configuration;
+            }
+            if(!needProcessFile(file, matchedConfiguration)) {
                 return null;
             }
-            return relativeToSourceTitle(project, file);
-//        return relativeToProjectTitle(project, file);
-//        return titleWithDiffs(project, file);
+            if(StringUtils.isNotEmpty(matchedConfiguration.getRelativeTo())) {
+                return titleRelativeTo(file, matchedConfiguration);
+            } else {
+                return titleWithDiffs(project, file, matchedConfiguration);
+            }
         } catch (Exception e) {
             log.error("", e);
         }
         return null;
     }
 
-    private String relativeToSourceTitle(final Project project, final VirtualFile file) {
-        Module module = ModuleUtil.findModuleForFile(file, project);
-        if(module == null) {
-            return null;
-        }
-        String filePath = file.getPath();
-        VirtualFile[] sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots();
-        VirtualFile currentSourceRoot = null;
-        for (VirtualFile sourceRoot : sourceRoots) {
-            if(filePath.startsWith(sourceRoot.getPath())) {
-                currentSourceRoot = sourceRoot;
-                break;
-            }
-        }
-        if(currentSourceRoot == null) {
-            return null;
-        }
-        return FileUtil.getRelativePath(currentSourceRoot.getPath(), filePath, File.separatorChar);
+    private String titleRelativeTo(final VirtualFile file, final FolderConfiguration configuration) {
+        String relativePath = FileUtil.getRelativePath(configuration.getRelativeTo(), file.getPath(), File.separatorChar);
+        String[] parts = StringUtils.split(relativePath, File.separatorChar);
+        List<String> prefixes = Arrays.asList(parts);
+        return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
     }
 
-    private String relativeToProjectTitle(final Project project, final VirtualFile file) {
-        VirtualFileSystem virtualFileSystem = file.getFileSystem();
-        if(!(virtualFileSystem instanceof LocalFileSystem)) {
-            // unknown filesystem
-            return null;
-        }
-        String filePath = file.getPath();
-
-        VirtualFile projectBaseDir = project.getBaseDir();
-        if(projectBaseDir == null) {
-            return null;
-        }
-        return FileUtil.getRelativePath(projectBaseDir.getPath(), filePath, File.separatorChar);
-    }
-
-    private String titleWithDiffs(final Project project, final VirtualFile file) {
+    private String titleWithDiffs(final Project project, final VirtualFile file, final FolderConfiguration configuration) {
         PsiShortNamesCache namesCache = JavaPsiFacade.getInstance(project).getShortNamesCache();
         PsiFile[] similarPsiFiles = namesCache.getFilesByName(file.getName());
         if(similarPsiFiles.length < 2) {
@@ -117,11 +102,7 @@ public class SameFilenameTitleProvider
         List<String> prefixes = calculatePrefixes(file, similarPsiFiles);
 
         if(prefixes.size() > 0) {
-            try {
-                return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
-            } catch (Exception e) {
-                return null;
-            }
+            return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
         }
         return null;
     }
@@ -147,7 +128,7 @@ public class SameFilenameTitleProvider
         return prefixes;
     }
 
-    private boolean needProcessFile(VirtualFile file) {
+    private boolean needProcessFile(VirtualFile file, FolderConfiguration configuration) {
         if(file.getExtension() != null) {
             String[] extensions = StringUtil.splitByLines(configuration.getFilesExtensions());
             boolean isInExtensionsConfig = Arrays.asList(extensions).contains(file.getExtension());

@@ -51,9 +51,17 @@ public class ProjectConfig
         folderConfigurations = new HashMap<String, FolderConfiguration>();
         // todo for test
         folderConfigurations.put("/home/ice/projects/untitled/src",
-                new FolderConfiguration("", true, "", "", 10, 1, "", FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
+                new FolderConfiguration("/home/ice/projects/untitled", true, "|", "[{0}]{1}", 4, 1, "",
+                        FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
+        folderConfigurations.put("/home/ice/projects/untitled/src/test",
+                new FolderConfiguration("/home/ice/projects/untitled/src", true, "|", "[{0}]{1}", 4, 1, "",
+                        FolderConfiguration.UseExtensionsEnum.DO_NOT_USE));
 
         macroManager = PathMacroManager.getInstance(project);
+    }
+
+    public Map<String, FolderConfiguration> getFolderConfigurations() {
+        return folderConfigurations;
     }
 
     @Override
@@ -88,5 +96,4 @@ public class ProjectConfig
         }
         this.folderConfigurations = folderConfigurations;
     }
-
 }
