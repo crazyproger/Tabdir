@@ -30,7 +30,9 @@
     </application-components>
 
     <project-components>
-
+        <component>
+            <implementation-class>ru.crazycoder.plugins.tabdir.ProjectConfigRegistrator</implementation-class>
+        </component>
     </project-components>
 
     <actions>
@@ -42,7 +44,6 @@
         <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.GlobalConfigConfigurable"/>
 
         <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.ProjectConfig"/>
-        <projectConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.ProjectConfigConfigurable"/>
 
         <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"
                         serviceInterface="ru.crazycoder.plugins.tabdir.TitleFormatter"/>

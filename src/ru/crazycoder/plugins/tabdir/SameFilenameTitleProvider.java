@@ -72,7 +72,7 @@ public class SameFilenameTitleProvider
     }
 
     private FolderConfiguration findConfiguration(final Project project, final VirtualFile file) {
-        if(configuration.isProjectConfigDisabled()) {
+        if(!configuration.isProjectConfigEnabled()) {
             return configuration;
         }
         ProjectConfig projectConfig = ServiceManager.getService(project, ProjectConfig.class);

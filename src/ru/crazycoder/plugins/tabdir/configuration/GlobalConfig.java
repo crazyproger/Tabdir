@@ -21,12 +21,17 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StorageScheme;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import ru.crazycoder.plugins.tabdir.ProjectConfigRegistrator;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * User: crazycoder
  * Date: Aug 15, 2010
  * Time: 6:42:34 PM
- * todo add projectConfigDisabled saving
+ * todo add projectConfigEnabled saving
  */
 @State(
         name = "TabdirConfiguration",
@@ -37,8 +42,10 @@ public class GlobalConfig
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
+    private final List<ProjectConfigRegistrator> projectConfgiListeners = Collections
+            .synchronizedList(new LinkedList<ProjectConfigRegistrator>());
 
-    private boolean projectConfigDisabled = true;
+    private boolean projectConfigEnabled = false;
 
     public GlobalConfig() {
         this.setCharsInName(5);
@@ -62,12 +69,24 @@ public class GlobalConfig
         XmlSerializerUtil.copyBean(state, this);
     }
 
-    public boolean isProjectConfigDisabled() {
-        return projectConfigDisabled;
+    public boolean isProjectConfigEnabled() {
+        return projectConfigEnabled;
     }
 
-    public void setProjectConfigDisabled(final boolean projectConfigDisabled) {
-        // todo registering/unregistering ProjectConfigConfigurable
-        this.projectConfigDisabled = projectConfigDisabled;
+    public void setProjectConfigEnabled(final boolean projectConfigEnabled) {
+        this.projectConfigEnabled = projectConfigEnabled;
+        synchronized (projectConfgiListeners) {
+            for (ProjectConfigRegistrator projectConfgiListener : projectConfgiListeners) {
+                projectConfgiListener.checkAndRegister(projectConfigEnabled);
+            }
+        }
+    }
+
+    public void addProjectConfigListener(ProjectConfigRegistrator listener) {
+        projectConfgiListeners.add(listener);
+    }
+
+    public void removeProjectConfigListener(ProjectConfigRegistrator listener) {
+        projectConfgiListeners.remove(listener);
     }
 }
