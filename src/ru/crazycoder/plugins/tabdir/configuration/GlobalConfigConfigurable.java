@@ -21,7 +21,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import ru.crazycoder.plugins.tabdir.configuration.ui.SettingsPanel;
+import ru.crazycoder.plugins.tabdir.configuration.ui.GlobalSettingsPanel;
 
 import javax.swing.*;
 
@@ -31,35 +31,35 @@ import javax.swing.*;
 public class GlobalConfigConfigurable
         implements SearchableConfigurable {
 
-    private SettingsPanel settingsPanel;
+    private GlobalSettingsPanel globalSettingsPanel;
 
     private GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
 
     @Override
     public JComponent createComponent() {
-        settingsPanel = new SettingsPanel();
-        settingsPanel.setData(configuration);
-        return settingsPanel.getRootPanel();
+        globalSettingsPanel = new GlobalSettingsPanel();
+        globalSettingsPanel.setData(configuration);
+        return globalSettingsPanel.getRootPanel();
     }
 
     @Override
     public boolean isModified() {
-        return settingsPanel != null && settingsPanel.isModified(configuration);
+        return globalSettingsPanel != null && globalSettingsPanel.isModified(configuration);
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        settingsPanel.getData(configuration);
+        globalSettingsPanel.getData(configuration);
     }
 
     @Override
     public void reset() {
-        settingsPanel.setData(configuration);
+        globalSettingsPanel.setData(configuration);
     }
 
     @Override
     public void disposeUIResources() {
-        settingsPanel = null;
+        globalSettingsPanel = null;
     }
 
     @Nls

@@ -32,7 +32,7 @@ import java.util.List;
  * Date: Aug 15, 2010
  * Time: 8:09:17 PM
  */
-public class SettingsPanel {
+public class SharedSettingsPanel {
 
     private JPanel rootPanel;
     private JComboBox useSwitchCB;
@@ -50,7 +50,7 @@ public class SettingsPanel {
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
-    public SettingsPanel() {
+    public SharedSettingsPanel() {
         reduceDirNamesCB.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
