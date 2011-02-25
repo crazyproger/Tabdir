@@ -20,7 +20,8 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StorageScheme;
-import com.intellij.util.xmlb.XmlSerializerUtil;
+import com.intellij.util.xmlb.XmlSerializer;
+import org.jdom.Element;
 import ru.crazycoder.plugins.tabdir.ProjectConfigRegistrator;
 
 import java.util.Collections;
@@ -31,21 +32,20 @@ import java.util.List;
  * User: crazycoder
  * Date: Aug 15, 2010
  * Time: 6:42:34 PM
- * todo add projectConfigEnabled saving
  */
 @State(
         name = "TabdirConfiguration",
         storages = {@Storage(id = "other", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
 public class GlobalConfig
         extends FolderConfiguration
-        implements PersistentStateComponent<FolderConfiguration> {
+        implements PersistentStateComponent<Element> {
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
     private final List<ProjectConfigRegistrator> projectConfgiListeners = Collections
             .synchronizedList(new LinkedList<ProjectConfigRegistrator>());
 
-    private boolean projectConfigEnabled = false;
+    private boolean projectConfigEnabled;
 
     public GlobalConfig() {
         this.setCharsInName(5);
@@ -55,18 +55,17 @@ public class GlobalConfig
         this.setFilesExtensions("java\ngroovy");
         this.setTitleFormat(DEFAULT_TITLE_FORMAT);
         this.setReduceDirNames(true);
+        projectConfigEnabled = false;
     }
 
     @Override
-    public FolderConfiguration getState() {
-        // clone need to return FolderConfiguration object
-        // because if return GlobalConfig object configuration will not be saved
-        return this.cloneMe();
+    public Element getState() {
+        return XmlSerializer.serialize(this);
     }
 
     @Override
-    public void loadState(final FolderConfiguration state) {
-        XmlSerializerUtil.copyBean(state, this);
+    public void loadState(final Element state) {
+        XmlSerializer.deserializeInto(this, state);
     }
 
     public boolean isProjectConfigEnabled() {
