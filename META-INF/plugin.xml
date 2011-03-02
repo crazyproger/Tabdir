@@ -21,11 +21,11 @@
     <version>1.3</version>
     <vendor>Vladimir Rudev</vendor>
     <idea-version since-build="95.429"/>
-    <change-notes>
-        1.1 Add possibility to configure tab title format.
-        1.2 Fixed NPE for files with no path(in memory).
-        1.3 Add possibility to configure per project format for directories.
-    </change-notes>
+    <change-notes><![CDATA[
+        1.1 Add possibility to configure tab title format.<br/>
+        1.2 Fixed NPE for files with no path(in memory).<br/>
+        1.3 Add possibility to configure per project format for directories.<br/>
+    ]]></change-notes>
 
     <application-components>
         <!-- Add your application components here -->
