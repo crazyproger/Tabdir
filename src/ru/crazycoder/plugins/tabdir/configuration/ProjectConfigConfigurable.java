@@ -85,15 +85,15 @@ public class ProjectConfigConfigurable
         Map<String, FolderConfiguration> currentMap = projectConfig.getFolderConfigurations();
         Map<String, FolderConfiguration> newMap = mappingPanel.getConfigurationsMap();
         if(currentMap.size() != newMap.size()) {
-            return false;
+            return true;
         }
         for (Map.Entry<String, FolderConfiguration> entry : newMap.entrySet()) {
             FolderConfiguration conf = currentMap.get(entry.getKey());
             if(conf == null || !conf.equals(entry.getValue())) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override
