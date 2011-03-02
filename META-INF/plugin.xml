@@ -18,12 +18,13 @@
     <id>ru.crazycoder.plugins.tabdir</id>
     <name>Tabdir</name>
     <description>Add differences in pathes of files with same name into editor tab.</description>
-    <version>1.2</version>
+    <version>1.3</version>
     <vendor>Vladimir Rudev</vendor>
     <idea-version since-build="95.429"/>
     <change-notes>
         1.1 Add possibility to configure tab title format.
         1.2 Fixed NPE for files with no path(in memory).
+        1.3 Add possibility to configure per project format for directories.
     </change-notes>
 
     <application-components>
