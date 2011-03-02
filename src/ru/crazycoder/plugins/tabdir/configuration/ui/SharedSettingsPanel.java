@@ -48,6 +48,8 @@ public class SharedSettingsPanel {
     private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
+    private boolean isValid = false;
+
     public SharedSettingsPanel() {
         reduceDirNamesCB.addChangeListener(new ChangeListener() {
             @Override
@@ -76,7 +78,9 @@ public class SharedSettingsPanel {
         try {
             formattedExample = TitleFormatter.example(configuration);
             formatInfo.setText("<html><font color=green> Ok</font></html>");
+            isValid = true;
         } catch (Exception e) {
+            isValid = false;
             formattedExample = "FileName";
             formatInfo.setText("<html><font color=red> Bad</font></html>");
         }
@@ -156,5 +160,9 @@ public class SharedSettingsPanel {
 
     public JPanel getRootPanel() {
         return rootPanel;
+    }
+
+    public boolean isValid() {
+        return isValid;
     }
 }

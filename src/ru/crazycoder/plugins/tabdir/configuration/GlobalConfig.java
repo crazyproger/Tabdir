@@ -42,7 +42,7 @@ public class GlobalConfig
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
-    private final List<ProjectConfigRegistrator> projectConfgiListeners = Collections
+    private final List<ProjectConfigRegistrator> projectConfigListeners = Collections
             .synchronizedList(new LinkedList<ProjectConfigRegistrator>());
 
     private boolean projectConfigEnabled;
@@ -74,18 +74,18 @@ public class GlobalConfig
 
     public void setProjectConfigEnabled(final boolean projectConfigEnabled) {
         this.projectConfigEnabled = projectConfigEnabled;
-        synchronized (projectConfgiListeners) {
-            for (ProjectConfigRegistrator projectConfgiListener : projectConfgiListeners) {
+        synchronized (projectConfigListeners) {
+            for (ProjectConfigRegistrator projectConfgiListener : projectConfigListeners) {
                 projectConfgiListener.checkAndRegister(projectConfigEnabled);
             }
         }
     }
 
     public void addProjectConfigListener(ProjectConfigRegistrator listener) {
-        projectConfgiListeners.add(listener);
+        projectConfigListeners.add(listener);
     }
 
     public void removeProjectConfigListener(ProjectConfigRegistrator listener) {
-        projectConfgiListeners.remove(listener);
+        projectConfigListeners.remove(listener);
     }
 }

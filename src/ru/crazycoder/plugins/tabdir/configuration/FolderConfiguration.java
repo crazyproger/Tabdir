@@ -130,19 +130,6 @@ public class FolderConfiguration {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        int result = relativeTo != null ? relativeTo.hashCode() : 0;
-        result = 31 * result + (reduceDirNames ? 1 : 0);
-        result = 31 * result + (dirSeparator != null ? dirSeparator.hashCode() : 0);
-        result = 31 * result + (titleFormat != null ? titleFormat.hashCode() : 0);
-        result = 31 * result + charsInName;
-        result = 31 * result + maxDirsToShow;
-        result = 31 * result + (filesExtensions != null ? filesExtensions.hashCode() : 0);
-        result = 31 * result + (useExtensions != null ? useExtensions.hashCode() : 0);
-        return result;
-    }
-
     public FolderConfiguration cloneMe() {
         return new FolderConfiguration(relativeTo, reduceDirNames, dirSeparator, titleFormat, charsInName, maxDirsToShow, filesExtensions,
                 useExtensions);

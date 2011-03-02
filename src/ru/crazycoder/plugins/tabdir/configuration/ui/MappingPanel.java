@@ -16,6 +16,7 @@
 
 package ru.crazycoder.plugins.tabdir.configuration.ui;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.PanelWithButtons;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.table.TableView;
@@ -34,10 +35,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: crazycoder
@@ -121,8 +120,11 @@ public class MappingPanel
     };
     private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY,PREVIEW};
     private boolean isDisabled;
+    private Project project;
+    private ListTableModel<FolderMapping> model;
 
-    public MappingPanel(boolean disabled) {
+    public MappingPanel(Project project) {
+        this.project = project;
         JLabel label = new JLabel();
         Dimension preferredSize = new JComboBox().getPreferredSize();
         label.setPreferredSize(preferredSize);
@@ -145,7 +147,7 @@ public class MappingPanel
 
         initPanel();
         updateButtons();
-        isDisabled = disabled;
+        isDisabled = project.isDefault();
         if(isDisabled) {
             folderMappingTable.setEnabled(false);
             addButton.setEnabled(false);
@@ -160,7 +162,7 @@ public class MappingPanel
             configurationsMap.put(entry.getKey(), configuration);
             modelList.add(new FolderMapping(entry.getKey(), configuration));
         }
-        ListTableModel<FolderMapping> model = new ListTableModel<FolderMapping>(COLUMNS, modelList, 0, SortOrder.DESCENDING);
+        model = new ListTableModel<FolderMapping>(COLUMNS, modelList, 0, SortOrder.DESCENDING);
         folderMappingTable.setModel(model);
     }
 
@@ -201,15 +203,71 @@ public class MappingPanel
     }
 
     private void editMapping() {
-        //To change body of created methods use File | Settings | File Templates.
+        FolderMapping mapping = folderMappingTable.getSelectedObject();
+        if(mapping == null) {
+            return;
+        }
+        MappingEditor mappingEditor = new MappingEditor(project, mapping.folder, configurationsMap);
+        mappingEditor.show();
+        if(mappingEditor.isOK()) {
+            mapping.myConfig = mappingEditor.getFolderConfiguration();
+            if(!mapping.folder.equals(mappingEditor.getKey())) {
+                configurationsMap.remove(mapping.folder);
+                if(configurationsMap.containsKey(mappingEditor.getKey())) {
+                    model.removeRow(folderMappingTable.getSelectedRow());
+                    for (FolderMapping folderMapping : model.getItems()) {
+                        if(folderMapping.folder.equals(mappingEditor.getKey())) {
+                            folderMapping.myConfig = mappingEditor.getFolderConfiguration();
+                            break;
+                        }
+                    }
+                } else {
+                    mapping.folder = mappingEditor.getKey();
+                    mapping.myConfig = mappingEditor.getFolderConfiguration();
+                }
+            } else {
+                mapping.myConfig = mappingEditor.getFolderConfiguration();
+            }
+            configurationsMap.put(mappingEditor.getKey(), mappingEditor.getFolderConfiguration());
+            folderMappingTable.repaint();
+        }
     }
 
     private void deleteMapping() {
-        //To change body of created methods use File | Settings | File Templates.
+        List<FolderMapping> mappings = new ArrayList<FolderMapping>(model.getItems());
+        int index = folderMappingTable.getSelectionModel().getMinSelectionIndex();
+        Collection<FolderMapping> selection = folderMappingTable.getSelection();
+        mappings.removeAll(selection);
+        for (FolderMapping mapping : selection) {
+            configurationsMap.remove(mapping.folder);
+        }
+        model.setItems(mappings);
+        if(mappings.size() > 0) {
+            if(index >= mappings.size()) {
+                index = mappings.size() - 1;
+            }
+            folderMappingTable.getSelectionModel().setSelectionInterval(index, index);
+        }
     }
 
     private void addMapping() {
-        //To change body of created methods use File | Settings | File Templates.
+        MappingEditor mappingEditor = new MappingEditor(project, null, configurationsMap);
+        mappingEditor.show();
+        if(mappingEditor.isOK()) {
+            if(configurationsMap.containsKey(mappingEditor.getKey())) {
+                for (FolderMapping folderMapping : model.getItems()) {
+                    if(folderMapping.folder.equals(mappingEditor.getKey())) {
+                        folderMapping.myConfig = mappingEditor.getFolderConfiguration();
+                        break;
+                    }
+                }
+            } else {
+                // new element
+                model.addRow(new FolderMapping(mappingEditor.getKey(), mappingEditor.getFolderConfiguration()));
+            }
+            configurationsMap.put(mappingEditor.getKey(), mappingEditor.getFolderConfiguration());
+            folderMappingTable.repaint();
+        }
     }
 
     private void updateButtons() {

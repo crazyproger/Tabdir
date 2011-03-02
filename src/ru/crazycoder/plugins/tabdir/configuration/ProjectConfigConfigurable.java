@@ -73,8 +73,7 @@ public class ProjectConfigConfigurable
     @Override
     public JComponent createComponent() {
         if(mappingPanel == null) {
-            boolean isDefault = project.isDefault();
-            mappingPanel = new MappingPanel(isDefault);
+            mappingPanel = new MappingPanel(project);
         }
         mappingPanel.initializeModel(projectConfig.getFolderConfigurations());
         return mappingPanel;
