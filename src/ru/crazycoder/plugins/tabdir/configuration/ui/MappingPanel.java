@@ -16,10 +16,10 @@
 
 package ru.crazycoder.plugins.tabdir.configuration.ui;
 
-import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.PanelWithButtons;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.table.TableView;
+import com.intellij.util.ui.AbstractTableCellEditor;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
 import ru.crazycoder.plugins.tabdir.TitleFormatter;
@@ -27,6 +27,7 @@ import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -76,7 +77,24 @@ public class MappingPanel
 
         @Override
         public boolean isCellEditable(final FolderMapping folderMapping) {
-            return false;
+            return true;
+        }
+
+        @Override
+        public TableCellEditor getEditor(final FolderMapping o) {
+            return new AbstractTableCellEditor() {
+                @Override
+                public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+                                                             final int row, final int column) {
+                    labelWithButton.getLabel().setText((String)value);
+                    return labelWithButton;
+                }
+
+                @Override
+                public Object getCellEditorValue() {
+                    return labelWithButton.getLabel().getText();
+                }
+            };
         }
 
         @Override
@@ -85,7 +103,7 @@ public class MappingPanel
                 @Override
                 public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                                final boolean hasFocus, final int row, final int column) {
-                    if(hasFocus) {
+                    if(hasFocus || isSelected) {
                         labelWithButton.getLabel().setText((String)value);
                         return labelWithButton;
                     } else {
@@ -93,6 +111,10 @@ public class MappingPanel
                     }
                 }
             };
+        }
+
+        @Override
+        public void setValue(final FolderMapping folderMapping, final String value) {
         }
     };
     private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY,PREVIEW};
@@ -105,7 +127,7 @@ public class MappingPanel
         labelWithButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                Messages.showInfoMessage("AP", "AP");
+                editMapping();
             }
         });
 
