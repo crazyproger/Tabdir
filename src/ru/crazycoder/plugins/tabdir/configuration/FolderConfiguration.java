@@ -111,6 +111,38 @@ public class FolderConfiguration {
         this.useExtensions = useExtensions;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+
+        final FolderConfiguration that = (FolderConfiguration)o;
+
+        if(charsInName != that.charsInName) return false;
+        if(maxDirsToShow != that.maxDirsToShow) return false;
+        if(reduceDirNames != that.reduceDirNames) return false;
+        if(dirSeparator != null ? !dirSeparator.equals(that.dirSeparator) : that.dirSeparator != null) return false;
+        if(filesExtensions != null ? !filesExtensions.equals(that.filesExtensions) : that.filesExtensions != null) return false;
+        if(relativeTo != null ? !relativeTo.equals(that.relativeTo) : that.relativeTo != null) return false;
+        if(titleFormat != null ? !titleFormat.equals(that.titleFormat) : that.titleFormat != null) return false;
+        if(useExtensions != that.useExtensions) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = relativeTo != null ? relativeTo.hashCode() : 0;
+        result = 31 * result + (reduceDirNames ? 1 : 0);
+        result = 31 * result + (dirSeparator != null ? dirSeparator.hashCode() : 0);
+        result = 31 * result + (titleFormat != null ? titleFormat.hashCode() : 0);
+        result = 31 * result + charsInName;
+        result = 31 * result + maxDirsToShow;
+        result = 31 * result + (filesExtensions != null ? filesExtensions.hashCode() : 0);
+        result = 31 * result + (useExtensions != null ? useExtensions.hashCode() : 0);
+        return result;
+    }
+
     public FolderConfiguration cloneMe() {
         return new FolderConfiguration(relativeTo, reduceDirNames, dirSeparator, titleFormat, charsInName, maxDirsToShow, filesExtensions,
                 useExtensions);

@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,6 +33,12 @@ public class TitleFormatter {
     public static String format(List<String> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixes(prefixes, configuration);
         return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
+    }
+
+    public static String example(FolderConfiguration configuration) {
+        List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
+        String exampleFileName = "FileName";
+        return format(examplePrefixes, exampleFileName, configuration);
     }
 
     private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {

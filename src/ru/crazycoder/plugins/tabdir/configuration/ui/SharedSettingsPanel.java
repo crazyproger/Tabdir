@@ -24,8 +24,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User: crazycoder
@@ -74,14 +72,12 @@ public class SharedSettingsPanel {
     }
 
     public void updateExample(final FolderConfiguration configuration) {
-        List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
-        String exampleFileName = "FileName";
         String formattedExample;
         try {
-            formattedExample = TitleFormatter.format(examplePrefixes, exampleFileName, configuration);
+            formattedExample = TitleFormatter.example(configuration);
             formatInfo.setText("<html><font color=green> Ok</font></html>");
         } catch (Exception e) {
-            formattedExample = exampleFileName;
+            formattedExample = "FileName";
             formatInfo.setText("<html><font color=red> Bad</font></html>");
         }
         this.formattedExample.setText(formattedExample);

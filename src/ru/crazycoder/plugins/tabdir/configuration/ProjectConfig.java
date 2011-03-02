@@ -64,6 +64,10 @@ public class ProjectConfig
         return folderConfigurations;
     }
 
+    public void setFolderConfigurations(final Map<String, FolderConfiguration> folderConfigurations) {
+        this.folderConfigurations = folderConfigurations;
+    }
+
     @Override
     public Element getState() {
         Element configurationsElement = new Element(FOLDER_CONFIGURATIONS_NAME);

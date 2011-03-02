@@ -16,24 +16,24 @@
 
 package ru.crazycoder.plugins.tabdir.configuration.ui;
 
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.PanelWithButtons;
 import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.dualView.TreeTableView;
-import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
-import com.intellij.ui.treeStructure.treetable.TreeTableModel;
+import com.intellij.ui.table.TableView;
 import com.intellij.util.ui.ColumnInfo;
-import com.intellij.util.ui.UIUtil;
+import com.intellij.util.ui.ListTableModel;
+import ru.crazycoder.plugins.tabdir.TitleFormatter;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import javax.swing.*;
-import javax.swing.table.TableCellEditor;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,39 +46,86 @@ public class MappingPanel
     private JButton addButton;
     private JButton deleteButton;
     private JButton editButton;
-    private TreeTableView folderMappingTable;
-    private ColumnInfo<MyTreeNode, String> DIRECTORY = new ColumnInfo<MyTreeNode, String>("Directory") {
+    private TableView<FolderMapping> folderMappingTable;
+
+    private LabelWithBrowseButton labelWithButton;
+
+    // this map need just for fast finding duplicates when
+    // creating new mappings.
+    private Map<String, FolderConfiguration> configurationsMap;
+
+    private ColumnInfo<FolderMapping, String> DIRECTORY = new ColumnInfo<FolderMapping, String>("Directory") {
 
         @Override
-        public String valueOf(final MyTreeNode myTreeNode) {
-            return myTreeNode.folderText;
-        }
-
-        @Override
-        public Class getColumnClass() {
-            return TreeTableModel.class;
+        public String valueOf(final FolderMapping folderMapping) {
+            return folderMapping.folder;
         }
     };
-    private ColumnInfo<MyTreeNode, String> PREVIEW = new ColumnInfo<MyTreeNode, String>("Tab preview") {
+    private ColumnInfo<FolderMapping, String> PREVIEW = new ColumnInfo<FolderMapping, String>("Tab preview") {
+
         @Override
-        public String valueOf(final MyTreeNode myTreeNode) {
-            return myTreeNode.tabPreview;
+        public String valueOf(final FolderMapping folderMapping) {
+            String example;
+            try {
+                example = TitleFormatter.example(folderMapping.myConfig);
+            } catch (Exception e) {
+                example = "FileName";
+            }
+            return example;
         }
 
         @Override
-        public TableCellRenderer getRenderer(final MyTreeNode myTreeNode) {
-            return super.getRenderer(myTreeNode);    //To change body of overridden methods use File | Settings | File Templates.
+        public boolean isCellEditable(final FolderMapping folderMapping) {
+            return false;
         }
 
         @Override
-        public TableCellEditor getEditor(final MyTreeNode o) {
-            return super.getEditor(o);    //To change body of overridden methods use File | Settings | File Templates.
+        public TableCellRenderer getRenderer(final FolderMapping folderMapping) {
+            return new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+                                                               final boolean hasFocus, final int row, final int column) {
+                    if(hasFocus) {
+                        labelWithButton.getLabel().setText((String)value);
+                        return labelWithButton;
+                    } else {
+                        return new JLabel((String)value);
+                    }
+                }
+            };
         }
     };
     private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY,PREVIEW};
 
     public MappingPanel() {
+        JLabel label = new JLabel();
+        Dimension preferredSize = new JComboBox().getPreferredSize();
+        label.setPreferredSize(preferredSize);
+        labelWithButton = new LabelWithBrowseButton(label, null);
+        labelWithButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Messages.showInfoMessage("AP", "AP");
+            }
+        });
+
+        folderMappingTable = new TableView<FolderMapping>();
+        folderMappingTable.setRowHeight(preferredSize.height);
+        folderMappingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         initPanel();
+    }
+
+    public void initializeModel(Map<String, FolderConfiguration> configurations) {
+        List<FolderMapping> modelList = new ArrayList<FolderMapping>(configurations.size());
+        configurationsMap = new HashMap<String, FolderConfiguration>(configurations.size());
+        for (Map.Entry<String, FolderConfiguration> entry : configurations.entrySet()) {
+            FolderConfiguration configuration = entry.getValue().cloneMe();
+            configurationsMap.put(entry.getKey(), configuration);
+            modelList.add(new FolderMapping(entry.getKey(), configuration));
+        }
+        ListTableModel<FolderMapping> model = new ListTableModel<FolderMapping>(COLUMNS, modelList, 0, SortOrder.DESCENDING);
+        folderMappingTable.setModel(model);
     }
 
     @Override
@@ -114,15 +161,6 @@ public class MappingPanel
 
     @Override
     protected JComponent createMainComponent() {
-        MyTreeNode root = new MyTreeNode("project");
-        root.add(new MyTreeNode("src"));
-        root.add(new MyTreeNode("res"));
-        ListTreeTableModelOnColumns model = new ListTreeTableModelOnColumns(root, COLUMNS);
-        folderMappingTable = new TreeTableView(model);
-        folderMappingTable.setRootVisible(true);
-        folderMappingTable.getTree().setShowsRootHandles(true);
-
-        folderMappingTable.setTreeCellRenderer(myTitleRenderer);
         return ScrollPaneFactory.createScrollPane(folderMappingTable);
     }
 
@@ -138,52 +176,18 @@ public class MappingPanel
         //To change body of created methods use File | Settings | File Templates.
     }
 
-    private class MyTreeNode
-            extends DefaultMutableTreeNode {
+    private class FolderMapping {
 
-        private String folderText;
-        private String tabPreview;
-        private File folder;
-        private FolderConfiguration myConfig;
+        String folder;
+        FolderConfiguration myConfig;
 
-        private MyTreeNode(final String folderText) {
-            this.folderText = folderText;
+        public FolderMapping(final String folder, final FolderConfiguration configuration) {
+            this.folder = folder;
+            myConfig = configuration;
         }
-
-        public boolean isModified(Map<String, FolderConfiguration> configurations) {
-            return !(configurations != null && myConfig.equals(configurations.get(myConfig.getFolderPath())));
-        }
-
-        public void reset(Map<String, FolderConfiguration> configurations) {
-            myConfig = configurations.get(myConfig.getFolderPath()).cloneMe();
-            // todo reset preview
-        }
-
-        public void apply(Map<String, FolderConfiguration> configurations) {
-            configurations.put(myConfig.getFolderPath(), myConfig.cloneMe());
-        }
-
     }
 
-    private final TreeCellRenderer myTitleRenderer = new TreeCellRenderer() {
-        private final JLabel myLabel = new JLabel();
-
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row,
-                                                      boolean hasFocus) {
-            if(value instanceof MyTreeNode) {
-                MyTreeNode node = (MyTreeNode)value;
-                myLabel.setText(node.folderText);
-                myLabel.setFont(myLabel.getFont().deriveFont(Font.PLAIN));
-            } else {
-                myLabel.setText(value.toString());
-                myLabel.setFont(myLabel.getFont().deriveFont(Font.BOLD));
-            }
-            myLabel.setEnabled(true);
-
-            Color foreground = selected ? UIUtil.getTableSelectionForeground() : UIUtil.getTableForeground();
-            myLabel.setForeground(foreground);
-
-            return myLabel;
-        }
-    };
+    public Map<String, FolderConfiguration> getConfigurationsMap() {
+        return configurationsMap;
+    }
 }

@@ -16,12 +16,16 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import ru.crazycoder.plugins.tabdir.configuration.ui.MappingPanel;
 
 import javax.swing.*;
+import java.util.Map;
 
 /**
  * User: crazycoder
@@ -29,6 +33,13 @@ import javax.swing.*;
  */
 public class ProjectConfigConfigurable
         implements SearchableConfigurable {
+
+    private MappingPanel mappingPanel;
+    private ProjectConfig projectConfig;
+
+    public ProjectConfigConfigurable(final Project project) {
+        projectConfig = ServiceManager.getService(project, ProjectConfig.class);
+    }
 
     @NotNull
     @Override
@@ -59,26 +70,41 @@ public class ProjectConfigConfigurable
 
     @Override
     public JComponent createComponent() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if(mappingPanel == null) {
+            mappingPanel = new MappingPanel();
+        }
+        mappingPanel.initializeModel(projectConfig.getFolderConfigurations());
+        return mappingPanel;
     }
 
     @Override
     public boolean isModified() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        Map<String, FolderConfiguration> currentMap = projectConfig.getFolderConfigurations();
+        Map<String, FolderConfiguration> newMap = mappingPanel.getConfigurationsMap();
+        if(currentMap.size() != newMap.size()) {
+            return false;
+        }
+        for (Map.Entry<String, FolderConfiguration> entry : newMap.entrySet()) {
+            FolderConfiguration conf = currentMap.get(entry.getKey());
+            if(conf == null || !conf.equals(entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        projectConfig.setFolderConfigurations(mappingPanel.getConfigurationsMap());
     }
 
     @Override
     public void reset() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        mappingPanel.initializeModel(projectConfig.getFolderConfigurations());
     }
 
     @Override
     public void disposeUIResources() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        mappingPanel = null;
     }
 }
