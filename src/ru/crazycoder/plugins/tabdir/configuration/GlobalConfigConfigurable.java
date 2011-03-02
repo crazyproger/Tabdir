@@ -16,53 +16,50 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+import ru.crazycoder.plugins.tabdir.configuration.ui.GlobalSettingsPanel;
 
 import javax.swing.*;
 
 /**
- * User: crazycoder
- * Date: Aug 15, 2010
- * Time: 6:42:34 PM
+ * SearchableConfigurable for GlobalConfig service
  */
-public class Settings
+public class GlobalConfigConfigurable
         implements SearchableConfigurable {
 
-    private final Configuration configuration;
+    private GlobalSettingsPanel globalSettingsPanel;
 
-    private SettingsPanel settingsPanel;
-
-    public Settings(Configuration configuration) {
-        this.configuration = configuration;
-    }
+    private GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
 
     @Override
     public JComponent createComponent() {
-        settingsPanel = new SettingsPanel();
-        settingsPanel.setData(configuration);
-        return settingsPanel.getRootPanel();
+        globalSettingsPanel = new GlobalSettingsPanel();
+        globalSettingsPanel.setData(configuration);
+        return globalSettingsPanel.getRootPanel();
     }
 
     @Override
     public boolean isModified() {
-        return settingsPanel != null && settingsPanel.isModified(configuration);
+        return globalSettingsPanel != null && globalSettingsPanel.isModified(configuration);
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        settingsPanel.getData(configuration);
+        globalSettingsPanel.getData(configuration);
     }
 
     @Override
     public void reset() {
-        settingsPanel.setData(configuration);
+        globalSettingsPanel.setData(configuration);
     }
 
     @Override
     public void disposeUIResources() {
-        settingsPanel = null;
+        globalSettingsPanel = null;
     }
 
     @Nls
@@ -81,6 +78,7 @@ public class Settings
         return null;
     }
 
+    @NotNull
     @Override
     public String getId() {
         return "Tabdir.Configuration";

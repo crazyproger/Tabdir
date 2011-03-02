@@ -17,9 +17,10 @@
 package ru.crazycoder.plugins.tabdir;
 
 import org.apache.commons.lang.StringUtils;
-import ru.crazycoder.plugins.tabdir.configuration.Configuration;
+import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,22 +30,18 @@ import java.util.List;
  */
 public class TitleFormatter {
 
-    private Configuration configuration;
-
-    public TitleFormatter(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public static String format(List<String> prefixes, String tabName, Configuration configuration) {
+    public static String format(List<String> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixes(prefixes, configuration);
         return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
     }
 
-    public String format(List<String> prefixes, String tabName) {
-        return format(prefixes, tabName, configuration);
+    public static String example(FolderConfiguration configuration) {
+        List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
+        String exampleFileName = "FileName";
+        return format(examplePrefixes, exampleFileName, configuration);
     }
 
-    private static String joinPrefixes(List<String> prefixes, Configuration configuration) {
+    private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
         StringBuilder buffer = new StringBuilder();
         int i = 0;
         for (String prefix : prefixes) {

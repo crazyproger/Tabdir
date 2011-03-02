@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2011 Vladimir Rudev
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project name="tabdir" basedir="." default="run">
+
+    <dirname property="basedir" file="${ant.file}"/>
+
+    <property file="build.properties"/>
+    <!-- Если Idea и JDK в вашей системе располагаются не по путям, указанным ниже,
+    то ваши пути можно указать в build.properties (пример в build.properties.example).
+    Если и так всё в порядке, файл build.properties может отсутствовать,
+    в этом случае следующие значения свойств определят пути к Idea и JDK
+    (ant не меняет значение свойства, если встречает его повторно) -->
+    <property name="idea.dir" value="/opt/idea/"/>
+    <property name="jdk.dir" value="/usr/lib/jvm/java-6-sun/"/>
+
+    <property name="jdk.bin.dir" value="${jdk.dir}/bin"/>
+    <property name="javac2.home" value="${idea.dir}/lib"/>
+
+    <property name="deploy.path" value="${idea.plugins.path}"/>
+
+    <property name="lib.dir" value="lib"/>
+    <property name="build.dir" value="build"/>
+    <property name="tabdir.jar.file" value="${build.dir}/tabdir.jar"/>
+
+    <path id="javac2.classpath">
+        <pathelement location="${javac2.home}/javac2.jar"/>
+        <pathelement location="${javac2.home}/jdom.jar"/>
+        <pathelement location="${javac2.home}/asm.jar"/>
+        <pathelement location="${javac2.home}/asm-commons.jar"/>
+        <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+    </path>
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+
+    <path id="tabdir.classpath">
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+    </path>
+
+    <target name="clean" description="cleanup module">
+        <delete dir="build"/>
+        <delete dir="dist"/>
+    </target>
+
+    <target name="compile" depends="clean" description="Compile module tabdir">
+        <mkdir dir="${build.dir}/classes"/>
+        <javac2 srcdir="src/" destdir="${build.dir}/classes" debug="true" fork="true"
+                executable="${jdk.bin.dir}/javac" encoding="UTF-8">
+            <exclude name="**/.svn/**"/>
+        </javac2>
+        <jar destfile="${tabdir.jar.file}">
+            <zipfileset dir="${build.dir}/classes"/>
+            <zipfileset file="META-INF/plugin.xml" prefix="META-INF"/>
+            <manifest>
+                <attribute name="Created-By" value="IntelliJ IDEA"/>
+                <attribute name="Manifest-Version" value="1.0"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="undeploy">
+        <delete dir="${deploy.path}/tabdir"/>
+    </target>
+
+    <target name="deploy" depends="undeploy,compile" description="Записать плагин в папку плагинов запускаемой IDE">
+        <copy todir="${deploy.path}" file="${tabdir.jar.file}"/>
+    </target>
+
+    <target name="runIDE" depends="deploy">
+        <exec osfamily="Unix" executable="${idea.dir}/bin/idea.sh">
+            <env key="IDEA_PROPERTIES" value="${basedir}/build.properties"/>
+        </exec>
+        <exec osfamily="Windows" executable="${idea.dir}/bin/idea.bat" dir="${idea.dir}/bin">
+            <env key="IDEA_PROPERTIES" value="${basedir}/build.properties"/>
+            <env key="JDK_HOME" value="${jdk.dir}"/>
+        </exec>
+    </target>
+
+    <target name="run" depends="deploy,runIDE" description="Собрать плагин в zip-архив, запустить IDE с плагином"/>
+
+</project>

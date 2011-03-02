@@ -31,7 +31,9 @@
     </application-components>
 
     <project-components>
-
+        <component>
+            <implementation-class>ru.crazycoder.plugins.tabdir.ProjectConfigRegistrator</implementation-class>
+        </component>
     </project-components>
 
     <actions>
@@ -39,12 +41,14 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.GlobalConfig"/>
+        <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.GlobalConfigConfigurable"/>
+
+        <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.ProjectConfig"/>
+
+        <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"
+                        serviceInterface="ru.crazycoder.plugins.tabdir.TitleFormatter"/>
         <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
-        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.Configuration"
-                            serviceInterface="ru.crazycoder.plugins.tabdir.configuration.Configuration"/>
-        <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"
-                            serviceInterface="ru.crazycoder.plugins.tabdir.TitleFormatter"/>
-        <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.Settings"/>
         <!-- Add your extensions here -->
     </extensions>
 </idea-plugin>
