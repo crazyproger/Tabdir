@@ -26,6 +26,8 @@ import ru.crazycoder.plugins.tabdir.TitleFormatter;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -118,8 +120,9 @@ public class MappingPanel
         }
     };
     private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY,PREVIEW};
+    private boolean isDisabled;
 
-    public MappingPanel() {
+    public MappingPanel(boolean disabled) {
         JLabel label = new JLabel();
         Dimension preferredSize = new JComboBox().getPreferredSize();
         label.setPreferredSize(preferredSize);
@@ -134,8 +137,19 @@ public class MappingPanel
         folderMappingTable = new TableView<FolderMapping>();
         folderMappingTable.setRowHeight(preferredSize.height);
         folderMappingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        folderMappingTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(final ListSelectionEvent e) {
+                updateButtons();
+            }
+        });
 
         initPanel();
+        updateButtons();
+        isDisabled = disabled;
+        if(isDisabled) {
+            folderMappingTable.setEnabled(false);
+            addButton.setEnabled(false);
+        }
     }
 
     public void initializeModel(Map<String, FolderConfiguration> configurations) {
@@ -196,6 +210,12 @@ public class MappingPanel
 
     private void addMapping() {
         //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private void updateButtons() {
+        final boolean hasSelection = folderMappingTable.getSelectedObject() != null;
+        editButton.setEnabled((!isDisabled) && hasSelection);
+        deleteButton.setEnabled((!isDisabled) && hasSelection);
     }
 
     private class FolderMapping {

@@ -36,8 +36,10 @@ public class ProjectConfigConfigurable
 
     private MappingPanel mappingPanel;
     private ProjectConfig projectConfig;
+    private Project project;
 
     public ProjectConfigConfigurable(final Project project) {
+        this.project = project;
         projectConfig = ServiceManager.getService(project, ProjectConfig.class);
     }
 
@@ -71,7 +73,8 @@ public class ProjectConfigConfigurable
     @Override
     public JComponent createComponent() {
         if(mappingPanel == null) {
-            mappingPanel = new MappingPanel();
+            boolean isDefault = project.isDefault();
+            mappingPanel = new MappingPanel(isDefault);
         }
         mappingPanel.initializeModel(projectConfig.getFolderConfigurations());
         return mappingPanel;
