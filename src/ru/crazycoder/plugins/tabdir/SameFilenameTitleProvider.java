@@ -24,9 +24,9 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.PsiShortNamesCache;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.ProjectScope;
+import com.intellij.util.indexing.FileBasedIndex;
 import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
@@ -110,12 +110,11 @@ public class SameFilenameTitleProvider
     }
 
     private String titleWithDiffs(final Project project, final VirtualFile file, final FolderConfiguration configuration) {
-        PsiShortNamesCache namesCache = JavaPsiFacade.getInstance(project).getShortNamesCache();
-        PsiFile[] similarPsiFiles = namesCache.getFilesByName(file.getName());
-        if(similarPsiFiles.length < 2) {
+        Collection<VirtualFile> similarFiles = FileBasedIndex.getInstance().getContainingFiles(FilenameIndex.NAME, file.getName(), ProjectScope.getProjectScope(project));
+        if(similarFiles.size() < 2) {
             return file.getPresentableName();
         }
-        List<String> prefixes = calculatePrefixes(file, similarPsiFiles);
+        List<String> prefixes = calculatePrefixes(file, similarFiles);
 
         if(prefixes.size() > 0) {
             return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
@@ -123,9 +122,8 @@ public class SameFilenameTitleProvider
         return null;
     }
 
-    private List<String> calculatePrefixes(final VirtualFile file, final PsiFile[] similarPsiFiles) {
+    private List<String> calculatePrefixes(final VirtualFile file, final Collection<VirtualFile> similarFiles) {
         List<String> prefixes = new ArrayList<String>();
-        VirtualFile[] similarFiles = toVirtualFiles(similarPsiFiles);
         SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(comparator);
         for (VirtualFile similarFile : similarFiles) {
             if(file.equals(similarFile)) {
@@ -136,7 +134,7 @@ public class SameFilenameTitleProvider
 
         for (VirtualFile ancestor : ancestors) {
             String relativePath = VfsUtil.getRelativePath(file, ancestor, File.separatorChar);
-            if(relativePath.indexOf(File.separatorChar) != -1) {
+            if(relativePath!=null && relativePath.indexOf(File.separatorChar) != -1) {
                 List<String> pathElements = StringUtil.split(relativePath, File.separator);
                 prefixes.add(pathElements.get(0));
             }
@@ -151,13 +149,5 @@ public class SameFilenameTitleProvider
             return isInExtensionsConfig == configuration.getUseExtensions().getValue();
         }
         return true;
-    }
-
-    private VirtualFile[] toVirtualFiles(PsiFile[] array) {
-        List<VirtualFile> virtualFileList = new ArrayList<VirtualFile>(array.length);
-        for (PsiFile file : array) {
-            virtualFileList.add(file.getVirtualFile());
-        }
-        return VfsUtil.toVirtualFileArray(virtualFileList);
     }
 }
