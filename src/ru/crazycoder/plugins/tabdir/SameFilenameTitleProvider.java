@@ -65,10 +65,10 @@ public class SameFilenameTitleProvider
     public String getEditorTabTitleInternal(final Project project, final VirtualFile file) {
         try {
             FolderConfiguration matchedConfiguration = findConfiguration(project, file);
-            if(!needProcessFile(file, matchedConfiguration)) {
+            if (!needProcessFile(file, matchedConfiguration)) {
                 return null;
             }
-            if(StringUtils.isNotEmpty(matchedConfiguration.getRelativeTo())) {
+            if (StringUtils.isNotEmpty(matchedConfiguration.getRelativeTo())) {
                 return titleRelativeTo(file, matchedConfiguration);
             } else {
                 return titleWithDiffs(project, file, matchedConfiguration);
@@ -80,7 +80,7 @@ public class SameFilenameTitleProvider
     }
 
     private FolderConfiguration findConfiguration(final Project project, final VirtualFile file) {
-        if(!configuration.isProjectConfigEnabled()) {
+        if (!configuration.isProjectConfigEnabled()) {
             return configuration;
         }
         ProjectConfig projectConfig = ServiceManager.getService(project, ProjectConfig.class);
@@ -90,12 +90,12 @@ public class SameFilenameTitleProvider
         // search configuration where path(key in map) is biggest prefix for file
         for (Map.Entry<String, FolderConfiguration> entry : folderConfigs.entrySet()) {
             String key = entry.getKey();
-            if(file.getPath().startsWith(key) && biggestKeyLength < key.length()) {
+            if (file.getPath().startsWith(key) && biggestKeyLength < key.length()) {
                 biggestKeyLength = key.length();
                 matchedConfiguration = entry.getValue();
             }
         }
-        if(matchedConfiguration == null) {
+        if (matchedConfiguration == null) {
             // no project config for current file - use global config
             matchedConfiguration = configuration;
         }
@@ -111,12 +111,12 @@ public class SameFilenameTitleProvider
 
     private String titleWithDiffs(final Project project, final VirtualFile file, final FolderConfiguration configuration) {
         Collection<VirtualFile> similarFiles = FileBasedIndex.getInstance().getContainingFiles(FilenameIndex.NAME, file.getName(), ProjectScope.getProjectScope(project));
-        if(similarFiles.size() < 2) {
+        if (similarFiles.size() < 2) {
             return file.getPresentableName();
         }
         List<String> prefixes = calculatePrefixes(file, similarFiles);
 
-        if(prefixes.size() > 0) {
+        if (prefixes.size() > 0) {
             return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
         }
         return null;
@@ -126,15 +126,17 @@ public class SameFilenameTitleProvider
         List<String> prefixes = new ArrayList<String>();
         SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(comparator);
         for (VirtualFile similarFile : similarFiles) {
-            if(file.equals(similarFile)) {
+            if (file.equals(similarFile)) {
                 continue;
             }
-            ancestors.add(VfsUtil.getCommonAncestor(similarFile, file));
+            if (file.getPath() != null) {
+                ancestors.add(VfsUtil.getCommonAncestor(similarFile, file));
+            }
         }
 
         for (VirtualFile ancestor : ancestors) {
             String relativePath = VfsUtil.getRelativePath(file, ancestor, File.separatorChar);
-            if(relativePath!=null && relativePath.indexOf(File.separatorChar) != -1) {
+            if (relativePath != null && relativePath.indexOf(File.separatorChar) != -1) {
                 List<String> pathElements = StringUtil.split(relativePath, File.separator);
                 prefixes.add(pathElements.get(0));
             }
@@ -143,7 +145,7 @@ public class SameFilenameTitleProvider
     }
 
     private boolean needProcessFile(VirtualFile file, FolderConfiguration configuration) {
-        if(file.getExtension() != null) {
+        if (file.getExtension() != null) {
             String[] extensions = StringUtil.splitByLines(configuration.getFilesExtensions());
             boolean isInExtensionsConfig = Arrays.asList(extensions).contains(file.getExtension());
             return isInExtensionsConfig == configuration.getUseExtensions().getValue();
