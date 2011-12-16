@@ -52,7 +52,7 @@ public class GlobalConfig
         this.setDirSeparator(DEFAULT_DIR_SEPARATOR);
         this.setMaxDirsToShow(3);
         this.setUseExtensions(FolderConfiguration.UseExtensionsEnum.DO_NOT_USE);
-        this.setFilesExtensions("java\ngroovy");
+        this.setFilesExtensions("");
         this.setTitleFormat(DEFAULT_TITLE_FORMAT);
         this.setReduceDirNames(true);
         projectConfigEnabled = false;
