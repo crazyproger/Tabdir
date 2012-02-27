@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 Vladimir Rudev
+ * Copyright 2012 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @State(
         name = "TabdirProjectConfiguration",
-        storages = {@Storage(id = "default", file = "$PROJECT_FILE$"),@Storage(id = "dir", file = "$PROJECT_CONFIG_DIR$/other.xml",
+        storages = {@Storage(id = "default", file = "$PROJECT_FILE$"), @Storage(id = "dir", file = "$PROJECT_CONFIG_DIR$/other.xml",
                 scheme = StorageScheme.DIRECTORY_BASED)})
 public class ProjectConfig
         implements PersistentStateComponent<Element> {
@@ -87,7 +87,7 @@ public class ProjectConfig
     @SuppressWarnings("unchecked")
     public void loadState(Element state) {
         Element configurationsElement = state.getChild(FOLDER_CONFIGURATIONS_NAME);
-        if(configurationsElement == null) {
+        if (configurationsElement == null) {
             log.debug("no config element");
             return;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Vladimir Rudev
+ * Copyright 2012 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class TitleFormatter {
         StringBuilder buffer = new StringBuilder();
         int i = 0;
         for (String prefix : prefixes) {
-            if(configuration.isReduceDirNames()) {
+            if (configuration.isReduceDirNames()) {
                 String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
                 buffer.append(reducedDir);
             } else {
@@ -53,7 +53,7 @@ public class TitleFormatter {
             }
             buffer.append(configuration.getDirSeparator());
             i++;
-            if(i == configuration.getMaxDirsToShow()) {
+            if (i == configuration.getMaxDirsToShow()) {
                 break;
             }
         }

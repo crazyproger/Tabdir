@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Vladimir Rudev
+ * Copyright 2012 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,21 +74,21 @@ public class ProjectConfigRegistrator
             Object[] extensions = project.getExtensions(Configurable.PROJECT_CONFIGURABLES);
             ConfigurableEP ourExtension = null;
             for (Object extension : extensions) {
-                if(extension instanceof ConfigurableEP) {
-                    String implementationClass = ((ConfigurableEP)extension).implementationClass;
-                    if(StringUtils.equals(implementationClass, ProjectConfigConfigurable.class.getName())) {
-                        ourExtension = (ConfigurableEP)extension;
+                if (extension instanceof ConfigurableEP) {
+                    String implementationClass = ((ConfigurableEP) extension).implementationClass;
+                    if (StringUtils.equals(implementationClass, ProjectConfigConfigurable.class.getName())) {
+                        ourExtension = (ConfigurableEP) extension;
                         break;
                     }
                 }
             }
             ExtensionPoint<Object> projectConfigurableEP = Extensions.getArea(project)
                     .getExtensionPoint("com.intellij.projectConfigurable");
-            if(ourExtension != null && !isNeedRegister) {
+            if (ourExtension != null && !isNeedRegister) {
                 // alredy registered
                 projectConfigurableEP.unregisterExtension(ourExtension);
-            } else if(ourExtension == null && isNeedRegister) {
-                if(configurableEP == null) {
+            } else if (ourExtension == null && isNeedRegister) {
+                if (configurableEP == null) {
                     configurableEP = new ConfigurableEP(project);
                     configurableEP.setPluginDescriptor(PluginManager.getPlugin(PluginId.getId("ru.crazycoder.plugins.tabdir")));
                     configurableEP.implementationClass = ProjectConfigConfigurable.class.getName();

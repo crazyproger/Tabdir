@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2011 Vladimir Rudev
+  ~ Copyright 2012 Vladimir Rudev
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<idea-plugin version="2" url="https://github.com/iceGithub/Tabdir">
+<idea-plugin version="2" url="https://github.com/crazyproger/Tabdir">
     <id>ru.crazycoder.plugins.tabdir</id>
     <name>Tabdir</name>
     <description><![CDATA[

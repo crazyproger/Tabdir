@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Vladimir Rudev
+ * Copyright 2012 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class MappingPanel
                 @Override
                 public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
                                                              final int row, final int column) {
-                    labelWithButton.getLabel().setText((String)value);
+                    labelWithButton.getLabel().setText((String) value);
                     return labelWithButton;
                 }
 
@@ -104,11 +104,11 @@ public class MappingPanel
                 @Override
                 public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                                final boolean hasFocus, final int row, final int column) {
-                    if(hasFocus || isSelected) {
-                        labelWithButton.getLabel().setText((String)value);
+                    if (hasFocus || isSelected) {
+                        labelWithButton.getLabel().setText((String) value);
                         return labelWithButton;
                     } else {
-                        return new JLabel((String)value);
+                        return new JLabel((String) value);
                     }
                 }
             };
@@ -118,7 +118,7 @@ public class MappingPanel
         public void setValue(final FolderMapping folderMapping, final String value) {
         }
     };
-    private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY,PREVIEW};
+    private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY, PREVIEW};
     private boolean isDisabled;
     private Project project;
     private ListTableModel<FolderMapping> model;
@@ -148,7 +148,7 @@ public class MappingPanel
         initPanel();
         updateButtons();
         isDisabled = project.isDefault();
-        if(isDisabled) {
+        if (isDisabled) {
             folderMappingTable.setEnabled(false);
             addButton.setEnabled(false);
         }
@@ -194,7 +194,7 @@ public class MappingPanel
                 editMapping();
             }
         });
-        return new JButton[]{addButton,deleteButton,editButton};
+        return new JButton[]{addButton, deleteButton, editButton};
     }
 
     @Override
@@ -204,19 +204,19 @@ public class MappingPanel
 
     private void editMapping() {
         FolderMapping mapping = folderMappingTable.getSelectedObject();
-        if(mapping == null) {
+        if (mapping == null) {
             return;
         }
         MappingEditor mappingEditor = new MappingEditor(project, mapping.folder, configurationsMap);
         mappingEditor.show();
-        if(mappingEditor.isOK()) {
+        if (mappingEditor.isOK()) {
             mapping.myConfig = mappingEditor.getFolderConfiguration();
-            if(!mapping.folder.equals(mappingEditor.getKey())) {
+            if (!mapping.folder.equals(mappingEditor.getKey())) {
                 configurationsMap.remove(mapping.folder);
-                if(configurationsMap.containsKey(mappingEditor.getKey())) {
+                if (configurationsMap.containsKey(mappingEditor.getKey())) {
                     model.removeRow(folderMappingTable.getSelectedRow());
                     for (FolderMapping folderMapping : model.getItems()) {
-                        if(folderMapping.folder.equals(mappingEditor.getKey())) {
+                        if (folderMapping.folder.equals(mappingEditor.getKey())) {
                             folderMapping.myConfig = mappingEditor.getFolderConfiguration();
                             break;
                         }
@@ -242,8 +242,8 @@ public class MappingPanel
             configurationsMap.remove(mapping.folder);
         }
         model.setItems(mappings);
-        if(mappings.size() > 0) {
-            if(index >= mappings.size()) {
+        if (mappings.size() > 0) {
+            if (index >= mappings.size()) {
                 index = mappings.size() - 1;
             }
             folderMappingTable.getSelectionModel().setSelectionInterval(index, index);
@@ -253,10 +253,10 @@ public class MappingPanel
     private void addMapping() {
         MappingEditor mappingEditor = new MappingEditor(project, null, configurationsMap);
         mappingEditor.show();
-        if(mappingEditor.isOK()) {
-            if(configurationsMap.containsKey(mappingEditor.getKey())) {
+        if (mappingEditor.isOK()) {
+            if (configurationsMap.containsKey(mappingEditor.getKey())) {
                 for (FolderMapping folderMapping : model.getItems()) {
-                    if(folderMapping.folder.equals(mappingEditor.getKey())) {
+                    if (folderMapping.folder.equals(mappingEditor.getKey())) {
                         folderMapping.myConfig = mappingEditor.getFolderConfiguration();
                         break;
                     }

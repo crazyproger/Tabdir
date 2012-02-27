@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Vladimir Rudev
+ * Copyright 2012 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,11 +48,11 @@ public class MappingEditor
     public MappingEditor(final Project project, final String directory, final Map<String, FolderConfiguration> configurationMap) {
         super(project, false);
         this.configurationMap = configurationMap;
-        if(directory != null) {
+        if (directory != null) {
             configurationDirectoryTF.getChildComponent().setText(directory);
             folderConfiguration = configurationMap.get(directory).cloneMe();
         }
-        if(folderConfiguration == null) {
+        if (folderConfiguration == null) {
             folderConfiguration = new GlobalConfig().cloneMe();
         }
         relativeToTF.getChildComponent().setText(folderConfiguration.getRelativeTo());
@@ -73,10 +73,10 @@ public class MappingEditor
     @Override
     protected ValidationInfo doValidate() {
         boolean isBlank = StringUtils.isBlank(configurationDirectoryTF.getChildComponent().getText());
-        if(isBlank) {
+        if (isBlank) {
             return new ValidationInfo("Target folder must be specified", configurationDirectoryTF);
         }
-        if(!sharedSettingsComp.isValid()) {
+        if (!sharedSettingsComp.isValid()) {
             return new ValidationInfo("Invalid format options", sharedSettingsComp.getRootPanel());
         }
         return null;
@@ -97,9 +97,9 @@ public class MappingEditor
         protected VirtualFile getInitialFile() {
             // suggest project base dir only if nothing is typed in the component.
             String text = getComponentText();
-            if(text.length() == 0) {
+            if (text.length() == 0) {
                 VirtualFile file = project.getBaseDir();
-                if(file != null) {
+                if (file != null) {
                     return file;
                 }
             }
@@ -109,7 +109,7 @@ public class MappingEditor
         @Override
         protected void onFileChoosen(final VirtualFile chosenFile) {
             FolderConfiguration configuration = configurationMap.get(chosenFile.getPath());
-            if(configuration != null) {
+            if (configuration != null) {
                 sharedSettingsComp.setData(configuration);
                 relativeToTF.getChildComponent().setText(configuration.getRelativeTo());
             }

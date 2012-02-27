@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Vladimir Rudev
+ * Copyright 2012 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,22 +101,22 @@ public class SharedSettingsPanel {
     public void getData(FolderConfiguration data) {
         data.setReduceDirNames(reduceDirNamesCB.isSelected());
         data.setFilesExtensions(extensionsTA.getText().trim());
-        data.setMaxDirsToShow((Integer)dirsToShowModel.getValue());
-        data.setCharsInName((Integer)charsInNameModel.getValue());
-        data.setUseExtensions((FolderConfiguration.UseExtensionsEnum)useSwitchCB.getModel().getSelectedItem());
+        data.setMaxDirsToShow((Integer) dirsToShowModel.getValue());
+        data.setCharsInName((Integer) charsInNameModel.getValue());
+        data.setUseExtensions((FolderConfiguration.UseExtensionsEnum) useSwitchCB.getModel().getSelectedItem());
         data.setTitleFormat(titleFormatTF.getText().trim());
         data.setDirSeparator(dirSeparatorTF.getText().trim());
     }
 
     public boolean isModified(FolderConfiguration data) {
-        if(reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
-        if(extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)
+        if (reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
+        if (extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)
             return true;
-        if((Integer)dirsToShowModel.getValue() != data.getMaxDirsToShow()) return true;
-        if((Integer)charsInNameModel.getValue() != data.getCharsInName()) return true;
-        if(!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
-        if(!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
-        if(useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
+        if ((Integer) dirsToShowModel.getValue() != data.getMaxDirsToShow()) return true;
+        if ((Integer) charsInNameModel.getValue() != data.getCharsInName()) return true;
+        if (!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
+        if (!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
+        if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
         return false;
     }
 

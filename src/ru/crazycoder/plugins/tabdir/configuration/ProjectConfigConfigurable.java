@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Vladimir Rudev
+ * Copyright 2012 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class ProjectConfigConfigurable
 
     @Override
     public JComponent createComponent() {
-        if(mappingPanel == null) {
+        if (mappingPanel == null) {
             mappingPanel = new MappingPanel(project);
         }
         mappingPanel.initializeModel(projectConfig.getFolderConfigurations());
@@ -83,12 +83,12 @@ public class ProjectConfigConfigurable
     public boolean isModified() {
         Map<String, FolderConfiguration> currentMap = projectConfig.getFolderConfigurations();
         Map<String, FolderConfiguration> newMap = mappingPanel.getConfigurationsMap();
-        if(currentMap.size() != newMap.size()) {
+        if (currentMap.size() != newMap.size()) {
             return true;
         }
         for (Map.Entry<String, FolderConfiguration> entry : newMap.entrySet()) {
             FolderConfiguration conf = currentMap.get(entry.getKey());
-            if(conf == null || !conf.equals(entry.getValue())) {
+            if (conf == null || !conf.equals(entry.getValue())) {
                 return true;
             }
         }
