@@ -22,6 +22,7 @@
         If you have same named files in different directories this plugin will allow you to have directory names added to tab labels.
         It only shows path differences so if you have "blog/controllers/index" and "news/controllers/index" it will add either [blog] or [news].
         In setting tab Tabdir you can control how prefixes will be formatted.
+                <!--todo  add instructinos about per project configuration-->
 
         Note: that you should turn off IDE Settings → Editor tabs → Show directory in editor tabs for non-unique filenames.
         ]]>
