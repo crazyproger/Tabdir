@@ -59,7 +59,7 @@ public class MappingEditor
         sharedSettingsComp.setData(folderConfiguration);
         configurationDirectoryTF.addActionListener(new BrowseFolderListener(project));
         relativeToTF.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener<JTextField>("Select Directory",
-                "Select directory relative to which you want see path in tab", configurationDirectoryTF, project,
+                "Select directory relative to which you want see path in tab", relativeToTF, project,
                 new FileChooserDescriptor(false, true, false, false, false, false), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
         setTitle("Folder Tabdir configuration");
         init();
@@ -111,7 +111,7 @@ public class MappingEditor
             FolderConfiguration configuration = configurationMap.get(chosenFile.getPath());
             if (configuration != null) {
                 sharedSettingsComp.setData(configuration);
-                relativeToTF.getChildComponent().setText(configuration.getRelativeTo());
+                configurationDirectoryTF.getChildComponent().setText(configuration.getRelativeTo());
             }
             super.onFileChoosen(chosenFile);
         }
