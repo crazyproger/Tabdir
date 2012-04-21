@@ -45,8 +45,8 @@ public class SharedSettingsPanel {
     private JLabel formatInfo;
     private JLabel dirSeparatorL;
     private JLabel dirsToShowL;
-    private SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
-    private SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
+    private final SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
+    private final SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
     private boolean isValid = false;
 

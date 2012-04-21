@@ -43,9 +43,9 @@ import java.util.*;
 public class SameFilenameTitleProvider
         implements EditorTabTitleProvider {
 
-    private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
+    private final Logger log = Logger.getInstance(this.getClass().getCanonicalName());
 
-    private GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
+    private final GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
     private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
         @Override
         public int compare(VirtualFile file1, VirtualFile file2) {

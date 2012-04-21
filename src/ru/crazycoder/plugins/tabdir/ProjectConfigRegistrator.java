@@ -41,7 +41,7 @@ import ru.crazycoder.plugins.tabdir.configuration.ProjectConfigConfigurable;
 public class ProjectConfigRegistrator
         implements ProjectComponent {
 
-    private Project project;
+    private final Project project;
     private ConfigurableEP configurableEP;
 
     public ProjectConfigRegistrator(Project project) {

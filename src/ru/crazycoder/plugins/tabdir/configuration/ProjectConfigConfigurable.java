@@ -35,8 +35,8 @@ public class ProjectConfigConfigurable
         implements SearchableConfigurable {
 
     private MappingPanel mappingPanel;
-    private ProjectConfig projectConfig;
-    private Project project;
+    private final ProjectConfig projectConfig;
+    private final Project project;
 
     public ProjectConfigConfigurable(final Project project) {
         this.project = project;
@@ -87,8 +87,8 @@ public class ProjectConfigConfigurable
             return true;
         }
         for (Map.Entry<String, FolderConfiguration> entry : newMap.entrySet()) {
-            FolderConfiguration conf = currentMap.get(entry.getKey());
-            if (conf == null || !conf.equals(entry.getValue())) {
+            FolderConfiguration configuration = currentMap.get(entry.getKey());
+            if (configuration == null || !configuration.equals(entry.getValue())) {
                 return true;
             }
         }

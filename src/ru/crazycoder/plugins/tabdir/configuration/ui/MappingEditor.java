@@ -40,7 +40,7 @@ public class MappingEditor
     private SharedSettingsPanel sharedSettingsComp;
 
     private FolderConfiguration folderConfiguration = null;
-    private Map<String, FolderConfiguration> configurationMap;
+    private final Map<String, FolderConfiguration> configurationMap;
 
     public MappingEditor(final Project project, final String directory, final Map<String, FolderConfiguration> configurationMap) {
         super(project, false);
@@ -82,7 +82,7 @@ public class MappingEditor
     private class BrowseFolderListener
             extends ComponentWithBrowseButton.BrowseFolderActionListener<JTextField> {
 
-        private Project project;
+        private final Project project;
 
         public BrowseFolderListener(Project project) {
             super("Select Directory", "Select directory to which you want set configuration", configurationDirectoryTF, project,

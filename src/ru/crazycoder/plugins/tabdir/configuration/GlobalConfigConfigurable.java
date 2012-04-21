@@ -33,7 +33,7 @@ public class GlobalConfigConfigurable
 
     private GlobalSettingsPanel globalSettingsPanel;
 
-    private GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
+    private final GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
 
     @Override
     public JComponent createComponent() {

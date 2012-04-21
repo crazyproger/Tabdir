@@ -141,8 +141,8 @@ public class FolderConfiguration {
         DO_NOT_USE("Do not use", false),
         USE("Use", true);
 
-        private String shownText;
-        private boolean value;
+        private final String shownText;
+        private final boolean value;
 
         UseExtensionsEnum(String text, boolean value) {
             this.shownText = text;

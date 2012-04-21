@@ -75,8 +75,8 @@ public class GlobalConfig
     public void setProjectConfigEnabled(final boolean projectConfigEnabled) {
         this.projectConfigEnabled = projectConfigEnabled;
         synchronized (projectConfigListeners) {
-            for (ProjectConfigRegistrator projectConfgiListener : projectConfigListeners) {
-                projectConfgiListener.checkAndRegister(projectConfigEnabled);
+            for (ProjectConfigRegistrator projectConfigListener : projectConfigListeners) {
+                projectConfigListener.checkAndRegister(projectConfigEnabled);
             }
         }
     }

@@ -48,22 +48,22 @@ public class MappingPanel
     private JButton addButton;
     private JButton deleteButton;
     private JButton editButton;
-    private TableView<FolderMapping> folderMappingTable;
+    private final TableView<FolderMapping> folderMappingTable;
 
-    private LabelWithBrowseButton labelWithButton;
+    private final LabelWithBrowseButton labelWithButton;
 
     // this map need just for fast finding duplicates when
     // creating new mappings.
     private Map<String, FolderConfiguration> configurationsMap;
 
-    private ColumnInfo<FolderMapping, String> DIRECTORY = new ColumnInfo<FolderMapping, String>("Directory") {
+    private final ColumnInfo<FolderMapping, String> DIRECTORY = new ColumnInfo<FolderMapping, String>("Directory") {
 
         @Override
         public String valueOf(final FolderMapping folderMapping) {
             return folderMapping.folder;
         }
     };
-    private ColumnInfo<FolderMapping, String> PREVIEW = new ColumnInfo<FolderMapping, String>("Tab preview") {
+    private final ColumnInfo<FolderMapping, String> PREVIEW = new ColumnInfo<FolderMapping, String>("Tab preview") {
 
         @Override
         public String valueOf(final FolderMapping folderMapping) {
@@ -118,9 +118,9 @@ public class MappingPanel
         public void setValue(final FolderMapping folderMapping, final String value) {
         }
     };
-    private ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY, PREVIEW};
-    private boolean isDisabled;
-    private Project project;
+    private final ColumnInfo[] COLUMNS = new ColumnInfo[]{DIRECTORY, PREVIEW};
+    private final boolean isDisabled;
+    private final Project project;
     private ListTableModel<FolderMapping> model;
 
     public MappingPanel(Project project) {

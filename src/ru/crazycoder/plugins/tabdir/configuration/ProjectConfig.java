@@ -38,7 +38,7 @@ import java.util.Map;
 public class ProjectConfig
         implements PersistentStateComponent<Element> {
 
-    private Logger log = Logger.getInstance(this.getClass().getCanonicalName());
+    private final Logger log = Logger.getInstance(this.getClass().getCanonicalName());
 
     private static final String FOLDER_CONFIGURATIONS_NAME = "folderConfigurations";
 
@@ -84,8 +84,8 @@ public class ProjectConfig
             return;
         }
         Map<String, FolderConfiguration> folderConfigurations = new HashMap<String, FolderConfiguration>();
-        List<Element> entrys = configurationsElement.getChildren("Entry");
-        for (Element entry : entrys) {
+        List<Element> entries = configurationsElement.getChildren("Entry");
+        for (Element entry : entries) {
             String key = macroManager.expandPath(entry.getAttributeValue("folder"));
             FolderConfiguration value = XmlSerializer.deserialize(entry.getChild("FolderConfiguration"), FolderConfiguration.class);
             folderConfigurations.put(key, value);
