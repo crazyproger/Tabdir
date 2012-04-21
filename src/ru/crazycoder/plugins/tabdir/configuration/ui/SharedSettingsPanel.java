@@ -108,6 +108,7 @@ public class SharedSettingsPanel {
         data.setDirSeparator(dirSeparatorTF.getText().trim());
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     public boolean isModified(FolderConfiguration data) {
         if (reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
         if (extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)

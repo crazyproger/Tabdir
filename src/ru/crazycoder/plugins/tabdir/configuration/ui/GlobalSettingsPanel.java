@@ -33,6 +33,7 @@ public class GlobalSettingsPanel {
     private SharedSettingsPanel sharedSettings;
 
     public boolean isModified(GlobalConfig config) {
+        //noinspection SimplifiableIfStatement
         if (sharedSettings.isModified(config)) {
             return true;
         } else {

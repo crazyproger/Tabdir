@@ -19,13 +19,17 @@
     <name>Tabdir</name>
     <description><![CDATA[
         <p>Awesome replacement for IDEA's 'Show directory in editor tabs for non-unique filenames'.
-        If you have same named files in different directories this plugin will allow you to have directory names added to tab labels.
-        It only shows path differences so if you have "blog/controllers/index" and "news/controllers/index" it will add either [blog] or [news].
-        In setting tab 'Tabdir' you can control how prefixes will be formatted.</p>
+            If you have same named files in different directories this plugin will allow you to have directory names
+            added to tab labels.
+            It only shows path differences so if you have "blog/controllers/index" and "news/controllers/index" it will
+            add either [blog] or [news].
+            In setting tab 'Tabdir' you can control how prefixes will be formatted.</p>
         <p>Per-project configuration allow specify different formatting rules for each directory in project.
-        To enable per-project configuration enable "<b>Use per project configuration</b>" checkbox(see screenshot №3)
-        and reopen settings window(need close with Ok or Apply buttons). After this you will find 'Tabdir' configuration
-        in project section(screenshot №4) in which different configurations can be specified. </p>
+            To enable per-project configuration enable "<b>Use per project configuration</b>" checkbox(see screenshot
+            №3)
+            and reopen settings window(need close with Ok or Apply buttons). After this you will find 'Tabdir'
+            configuration
+            in project section(screenshot №4) in which different configurations can be specified. </p>
 
         Note: that you should turn off IDE Settings → Editor tabs → Show directory in editor tabs for non-unique filenames.
         ]]>
@@ -33,7 +37,7 @@
 
     <version>1.5</version>
     <vendor>Vladimir Rudev</vendor>
-    <idea-version since-build="95.429"/>
+    <idea-version since-build="117.117"/>
     <change-notes><![CDATA[
         <ul>
             <li>1.1 Add possibility to configure tab title format.</li>
@@ -41,7 +45,7 @@
             <li>1.3 Add possibility to configure per project format for directories.</li>
             <li>1.3.1 Share plugin to all IntelliJ Platform products.</li>
             <li>1.4 Fixed NPE(was in phpstorm), update description.</li>
-            <li>1.5 Tabdir-4 issue fixed, copyright updated </li>
+            <li>1.5 Tabdir-4 issue fixed, copyright updated</li>
         </ul>
         ]]>
     </change-notes>

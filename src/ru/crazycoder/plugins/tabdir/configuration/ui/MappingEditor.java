@@ -18,10 +18,7 @@ package ru.crazycoder.plugins.tabdir.configuration.ui;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.ComponentWithBrowseButton;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.TextComponentAccessor;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.ui.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
@@ -61,7 +58,7 @@ public class MappingEditor
         relativeToTF.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener<JTextField>("Select Directory",
                 "Select directory relative to which you want see path in tab", relativeToTF, project,
                 new FileChooserDescriptor(false, true, false, false, false, false), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
-        setTitle("Folder Tabdir configuration");
+        setTitle("Folder Tabdir Configuration");
         init();
     }
 
