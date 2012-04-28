@@ -130,7 +130,10 @@ public class SameFilenameTitleProvider
                 continue;
             }
             if (file.getPath() != null) {
-                ancestors.add(VfsUtil.getCommonAncestor(similarFile, file));
+                VirtualFile ancestor = VfsUtil.getCommonAncestor(similarFile, file);
+                if (ancestor != null && ancestor.getPath() != null) {
+                    ancestors.add(ancestor);
+                }
             }
         }
 
