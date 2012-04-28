@@ -37,7 +37,7 @@
 
     <version>1.5</version>
     <vendor>Vladimir Rudev</vendor>
-    <idea-version since-build="117.117"/>
+    <idea-version since-build="111.69"/>
     <change-notes><![CDATA[
         <ul>
             <li>1.1 Add possibility to configure tab title format.</li>
