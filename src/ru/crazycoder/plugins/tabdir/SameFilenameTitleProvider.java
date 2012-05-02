@@ -105,8 +105,13 @@ public class SameFilenameTitleProvider
     private String titleRelativeTo(final VirtualFile file, final FolderConfiguration configuration) {
         String relativePath = FileUtil.getRelativePath(configuration.getRelativeTo(), file.getPath(), File.separatorChar);
         String[] parts = StringUtils.split(relativePath, File.separatorChar);
-        List<String> prefixes = Arrays.asList(parts);
-        return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
+        List<String> prefixes = new ArrayList<String>(Arrays.asList(parts));
+        if (prefixes.size() > 1) {
+            prefixes.remove(prefixes.size() - 1);
+            return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
+        } else {
+            return file.getPresentableName();
+        }
     }
 
     private String titleWithDiffs(final Project project, final VirtualFile file, final FolderConfiguration configuration) {
