@@ -55,6 +55,7 @@ public class GlobalConfig
         this.setFilesExtensions("");
         this.setTitleFormat(DEFAULT_TITLE_FORMAT);
         this.setReduceDirNames(true);
+        this.setCountMaxDirsFromStart(true);
         projectConfigEnabled = false;
     }
 

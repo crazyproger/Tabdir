@@ -27,12 +27,36 @@ import java.util.Arrays;
  * Date: 02.05.12
  */
 public class TitleFormatterTest {
+
     @Test
     public void testFormat() throws Exception {
-        FolderConfiguration configuration = new FolderConfiguration();
-        configuration.setDirSeparator("/");
-        configuration.setTitleFormat("{0}/{1}");
+        FolderConfiguration configuration = getDefaultConfiguration();
         String formatted = TitleFormatter.format(Arrays.asList("admin", "front"), "tab", configuration);
-        Assert.assertEquals(formatted, "admin/front/tab");
+        Assert.assertEquals("[admin|front] tab", formatted);
+    }
+
+    @Test
+    public void testFromStart() throws Exception {
+        FolderConfiguration configuration = getDefaultConfiguration();
+        configuration.setMaxDirsToShow(3);
+        configuration.setCountMaxDirsFromStart(true);
+        String formatted = TitleFormatter.format(Arrays.asList("admin", "front", "test", "another", "duplicate"), "tab", configuration);
+        Assert.assertEquals("[admin|front|test] tab", formatted);
+    }
+
+    @Test
+    public void testFromEnd() throws Exception {
+        FolderConfiguration configuration = getDefaultConfiguration();
+        configuration.setMaxDirsToShow(3);
+        configuration.setCountMaxDirsFromStart(false);
+        String formatted = TitleFormatter.format(Arrays.asList("admin", "front", "test", "another", "duplicate"), "tab", configuration);
+        Assert.assertEquals("[test|another|duplicate] tab", formatted);
+    }
+
+    private FolderConfiguration getDefaultConfiguration() {
+        FolderConfiguration configuration = new FolderConfiguration();
+        configuration.setDirSeparator("|");
+        configuration.setTitleFormat("[{0}] {1}");
+        return configuration;
     }
 }

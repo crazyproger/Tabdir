@@ -30,13 +30,14 @@ public class FolderConfiguration {
     private int maxDirsToShow;
     private String filesExtensions;
     private UseExtensionsEnum useExtensions;
+    private boolean countMaxDirsFromStart = true;
 
     public FolderConfiguration() {
     }
 
     public FolderConfiguration(final String relativeTo, boolean reduceDirNames, final String dirSeparator, final String titleFormat,
                                final int charsInName, final int maxDirsToShow, final String filesExtensions,
-                               final UseExtensionsEnum useExtensions) {
+                               final UseExtensionsEnum useExtensions, final boolean countMaxDirsFromStart) {
         this.relativeTo = relativeTo;
         this.reduceDirNames = reduceDirNames;
         this.dirSeparator = dirSeparator;
@@ -45,6 +46,7 @@ public class FolderConfiguration {
         this.maxDirsToShow = maxDirsToShow;
         this.filesExtensions = filesExtensions;
         this.useExtensions = useExtensions;
+        this.countMaxDirsFromStart = countMaxDirsFromStart;
     }
 
     public String getRelativeTo() {
@@ -111,6 +113,14 @@ public class FolderConfiguration {
         this.useExtensions = useExtensions;
     }
 
+    public boolean isCountMaxDirsFromStart() {
+        return countMaxDirsFromStart;
+    }
+
+    public void setCountMaxDirsFromStart(boolean countMaxDirsFromStart) {
+        this.countMaxDirsFromStart = countMaxDirsFromStart;
+    }
+
     @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(final Object o) {
@@ -128,13 +138,14 @@ public class FolderConfiguration {
         if (relativeTo != null ? !relativeTo.equals(that.relativeTo) : that.relativeTo != null) return false;
         if (titleFormat != null ? !titleFormat.equals(that.titleFormat) : that.titleFormat != null) return false;
         if (useExtensions != that.useExtensions) return false;
+        if (countMaxDirsFromStart != that.countMaxDirsFromStart) return false;
 
         return true;
     }
 
     public FolderConfiguration cloneMe() {
         return new FolderConfiguration(relativeTo, reduceDirNames, dirSeparator, titleFormat, charsInName, maxDirsToShow, filesExtensions,
-                useExtensions);
+                useExtensions, countMaxDirsFromStart);
     }
 
     public enum UseExtensionsEnum {

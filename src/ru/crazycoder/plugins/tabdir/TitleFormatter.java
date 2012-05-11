@@ -42,8 +42,22 @@ public class TitleFormatter {
     }
 
     private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
+        int maxDirsToShow = configuration.getMaxDirsToShow();
+        if (maxDirsToShow > 0 && maxDirsToShow < prefixes.size()) {
+            int beginIndex = prefixes.size() - maxDirsToShow;
+            int endIndex = prefixes.size();
+            if (configuration.isCountMaxDirsFromStart()) {
+                beginIndex = 0;
+                endIndex = maxDirsToShow;
+            }
+            prefixes = prefixes.subList(beginIndex, endIndex);
+        }
+        StringBuilder buffer = join(prefixes, configuration);
+        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
+    }
+
+    private static StringBuilder join(List<String> prefixes, FolderConfiguration configuration) {
         StringBuilder buffer = new StringBuilder();
-        int i = 0;
         for (String prefix : prefixes) {
             if (configuration.isReduceDirNames()) {
                 String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
@@ -52,12 +66,8 @@ public class TitleFormatter {
                 buffer.append(prefix);
             }
             buffer.append(configuration.getDirSeparator());
-            i++;
-            if (i == configuration.getMaxDirsToShow()) {
-                break;
-            }
         }
-        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
+        return buffer;
     }
 }
 
