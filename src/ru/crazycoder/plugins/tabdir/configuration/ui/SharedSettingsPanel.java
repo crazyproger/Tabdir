@@ -45,6 +45,7 @@ public class SharedSettingsPanel {
     private JLabel formatInfo;
     private JLabel dirSeparatorL;
     private JLabel dirsToShowL;
+    private JCheckBox countFromStartCB;
     private final SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private final SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
@@ -54,8 +55,9 @@ public class SharedSettingsPanel {
         reduceDirNamesCB.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                charsLabel.setEnabled(reduceDirNamesCB.isSelected());
-                charsInNameSpinner.setEnabled(reduceDirNamesCB.isSelected());
+                boolean selected = reduceDirNamesCB.isSelected();
+                charsLabel.setEnabled(selected);
+                charsInNameSpinner.setEnabled(selected);
             }
         });
         dirsToShowSpinner.setModel(dirsToShowModel);
@@ -65,6 +67,7 @@ public class SharedSettingsPanel {
         titleFormatTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
         dirsToShowSpinner.addChangeListener(new ExampleUpdaterChangeListener());
         charsInNameSpinner.addChangeListener(new ExampleUpdaterChangeListener());
+        countFromStartCB.addChangeListener(new ExampleUpdaterChangeListener());
     }
 
     private void updateExample() {
@@ -95,6 +98,7 @@ public class SharedSettingsPanel {
         useSwitchCB.getModel().setSelectedItem(data.getUseExtensions());
         dirSeparatorTF.setText(data.getDirSeparator());
         titleFormatTF.setText(data.getTitleFormat());
+        countFromStartCB.setEnabled(data.isCountMaxDirsFromStart());
         updateExample();
     }
 
@@ -106,6 +110,7 @@ public class SharedSettingsPanel {
         data.setUseExtensions((FolderConfiguration.UseExtensionsEnum) useSwitchCB.getModel().getSelectedItem());
         data.setTitleFormat(titleFormatTF.getText().trim());
         data.setDirSeparator(dirSeparatorTF.getText().trim());
+        data.setCountMaxDirsFromStart(countFromStartCB.isSelected());
     }
 
     @SuppressWarnings("RedundantIfStatement")
@@ -118,6 +123,8 @@ public class SharedSettingsPanel {
         if (!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
         if (!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
         if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
+        if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
+        if (countFromStartCB.isSelected() != data.isCountMaxDirsFromStart()) return true;
         return false;
     }
 
