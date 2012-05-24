@@ -22,6 +22,7 @@ package ru.crazycoder.plugins.tabdir.configuration;
  */
 public class FolderConfiguration {
 
+    public static final String DUPLICATES_DELIMITER = "`";
     private String relativeTo;
     private boolean reduceDirNames;
     private String dirSeparator;
@@ -31,13 +32,15 @@ public class FolderConfiguration {
     private String filesExtensions;
     private UseExtensionsEnum useExtensions;
     private boolean countMaxDirsFromStart = true;
+    private boolean removeDuplicates = false;
 
     public FolderConfiguration() {
     }
 
     public FolderConfiguration(final String relativeTo, boolean reduceDirNames, final String dirSeparator, final String titleFormat,
                                final int charsInName, final int maxDirsToShow, final String filesExtensions,
-                               final UseExtensionsEnum useExtensions, final boolean countMaxDirsFromStart) {
+                               final UseExtensionsEnum useExtensions, final boolean countMaxDirsFromStart,
+                               final boolean removeDuplicates) {
         this.relativeTo = relativeTo;
         this.reduceDirNames = reduceDirNames;
         this.dirSeparator = dirSeparator;
@@ -47,6 +50,7 @@ public class FolderConfiguration {
         this.filesExtensions = filesExtensions;
         this.useExtensions = useExtensions;
         this.countMaxDirsFromStart = countMaxDirsFromStart;
+        this.removeDuplicates = removeDuplicates;
     }
 
     public String getRelativeTo() {
@@ -121,6 +125,14 @@ public class FolderConfiguration {
         this.countMaxDirsFromStart = countMaxDirsFromStart;
     }
 
+    public boolean isRemoveDuplicates() {
+        return removeDuplicates;
+    }
+
+    public void setRemoveDuplicates(boolean removeDuplicates) {
+        this.removeDuplicates = removeDuplicates;
+    }
+
     @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(final Object o) {
@@ -139,13 +151,14 @@ public class FolderConfiguration {
         if (titleFormat != null ? !titleFormat.equals(that.titleFormat) : that.titleFormat != null) return false;
         if (useExtensions != that.useExtensions) return false;
         if (countMaxDirsFromStart != that.countMaxDirsFromStart) return false;
+        if (removeDuplicates != that.removeDuplicates) return false;
 
         return true;
     }
 
     public FolderConfiguration cloneMe() {
         return new FolderConfiguration(relativeTo, reduceDirNames, dirSeparator, titleFormat, charsInName, maxDirsToShow, filesExtensions,
-                useExtensions, countMaxDirsFromStart);
+                useExtensions, countMaxDirsFromStart, removeDuplicates);
     }
 
     public enum UseExtensionsEnum {
