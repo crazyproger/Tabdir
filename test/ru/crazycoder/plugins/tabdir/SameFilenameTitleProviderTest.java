@@ -25,10 +25,12 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.testFramework.IdeaTestCase;
 import com.intellij.testFramework.PsiTestUtil;
+import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
 
 import java.io.IOException;
+import java.util.*;
 
 /**
  * User: crazyproger
@@ -46,68 +48,137 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
     }
 
     public void testTruncating() throws Exception {
-        VirtualFile firstFolder = root.createChildDirectory(this, "aaaaFirstFolderbbbbb");
-        VirtualFile secondFolder = root.createChildDirectory(this, "aaaaSecondFolderbbbbb");
+        Map<String, VirtualFile> myFileSystem = createTree(Arrays.asList(
+                "aaaaFirstFolderbbbbb/",
+                "  `" + FILE_NAME,
+                "aaaaSecondFolderbbbbb/",
+                "  `" + FILE_NAME));
 
-        createFile(firstFolder, FILE_NAME, "");
-        VirtualFile second = createFile(secondFolder, FILE_NAME, "");
-        SameFilenameTitleProvider provider = new SameFilenameTitleProvider();
-        String title = provider.getEditorTabTitle(myProject, second);
-        assertEquals("[aaaaS] " + FILE_NAME, title);
+        assertTitleEquals(myFileSystem, "[aaaaS] " + FILE_NAME, "aaaaSecondFolderbbbbb/" + FILE_NAME);
     }
 
     public void testRemoveDuplicates() throws Exception {
-        VirtualFile firstFolder = root.createChildDirectory(this, "aaaaFirstFolderbbbbb");
-        VirtualFile secondFolder = root.createChildDirectory(this, "aaaaSecondFolderbbbbb");
-
-        VirtualFile rootFile = createFile(root, FILE_NAME, "");
-        createFile(firstFolder, FILE_NAME, "");
-        VirtualFile second = createFile(secondFolder, FILE_NAME, "");
-
-        VirtualFile first1Folder = firstFolder.createChildDirectory(this, "bbbbbbccFirst1");
-        VirtualFile second1Folder = secondFolder.createChildDirectory(this, "bbbbbbccSecond1");
-        VirtualFile first1 = createFile(first1Folder, FILE_NAME, "");
-        VirtualFile second1 = createFile(second1Folder, FILE_NAME, "");
-        VirtualFile third1Folder = firstFolder.createChildDirectory(this, "bbbbbbccThird1");
-        VirtualFile fouth1Folder = secondFolder.createChildDirectory(this, "bbbbbbccFirst1Fouth1");
-        createFile(third1Folder, FILE_NAME, "");
-        VirtualFile fouth1 = createFile(fouth1Folder, FILE_NAME, "");
-
-        VirtualFile first2Folder = first1Folder.createChildDirectory(this, "bcFirst1");
-        VirtualFile second2Folder = first1Folder.createChildDirectory(this, "bcSecond1");
-        createFile(first2Folder, FILE_NAME, "");
-        VirtualFile second2 = createFile(second2Folder, FILE_NAME, "");
-
-        SameFilenameTitleProvider provider = new SameFilenameTitleProvider();
+        Map<String, VirtualFile> myFileSystem = createTree(Arrays.asList(
+                "aaaaFirstFolderbbbbb/",
+                "  |-bbbbbbccFirst1/",
+                "  |   |-bcFirst1/",
+                "  |   |    `" + FILE_NAME,
+                "  |   |-bcSecond1/",
+                "  |   |    `" + FILE_NAME,
+                "  |    `" + FILE_NAME,
+                "  |-bbbbbbccThird1/",
+                "  |    `" + FILE_NAME,
+                "   `" + FILE_NAME,
+                "                     ",
+                "aaaaSecondFolderbbbbb/",
+                "  |-bbbbbbccSecond1/",
+                "  |    `" + FILE_NAME,
+                "  |-bbbbbbccFirst1Fouth1/",
+                "  |    `" + FILE_NAME,
+                "   `" + FILE_NAME,
+                FILE_NAME,
+                ""
+        ));
         GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
         configuration.setRemoveDuplicates(true);
-
-        String rootTitle = provider.getEditorTabTitle(myProject, rootFile);
-        assertNull(rootTitle);
-        String title = provider.getEditorTabTitle(myProject, second);
         final String D = FolderConfiguration.DUPLICATES_DELIMITER;
-        assertEquals("[a" + D + "Sec] " + FILE_NAME, title);
-        String title1 = provider.getEditorTabTitle(myProject, second1);
-        assertEquals("[a" + D + "Sec|b" + D + "Sec] " + FILE_NAME, title1);
-        String title2 = provider.getEditorTabTitle(myProject, second2);
-        assertEquals("[a" + D + "Sec|b" + D + "Sec|bcSec] " + FILE_NAME, title2);
-        String title3 = provider.getEditorTabTitle(myProject, fouth1);
+
+        assertTitleEquals(myFileSystem, "[a" + D + "Sec] " + FILE_NAME, "aaaaSecondFolderbbbbb/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "Sec] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "Sec|bcSec] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bcSecond1/" + FILE_NAME);
+
         // must remove prefix with max length
-        assertEquals("[a" + D + "Sec|b" + D + "Fou] " + FILE_NAME, title3);
-        String title4 = provider.getEditorTabTitle(myProject, first1);
-        assertEquals("[a" + D + "Sec|b" + D + "rst1] " + FILE_NAME, title4);
+        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "Fou] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bbbbbbccFirst1Fouth1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "rst1] " + FILE_NAME, "aaaaFirstFolderbbbbb/bbbbbbccFirst1/" + FILE_NAME);
     }
 
-    protected VirtualFile createFile(final VirtualFile vDir, final String fileName, final String text) throws IOException {
+    // utility methods
+
+    private void assertTitleEquals(Map<String, VirtualFile> myFileSystem, final String expectedTitle, final String filePath) {
+        VirtualFile target = myFileSystem.get(filePath);
+
+        SameFilenameTitleProvider provider = new SameFilenameTitleProvider();
+        String title = provider.getEditorTabTitle(myProject, target);
+        assertEquals(expectedTitle, title);
+    }
+
+    private Map<String, VirtualFile> createTree(List<String> tree) throws IOException {
+        List<VirtualFile> levels = new ArrayList<VirtualFile>();
+        Map<String, VirtualFile> fileSystem = new HashMap<String, VirtualFile>();
+        for (String row : tree) {
+            processRow(row, levels, fileSystem);
+        }
+        return fileSystem;
+    }
+
+    private void processRow(String row, List<VirtualFile> levels, Map<String, VirtualFile> fileSystem) throws IOException {
+        int levelPointer = 0;
+        if (StringUtils.isBlank(row)) {
+            return;
+        }
+        boolean entryCreated = false;
+        while (!entryCreated) {
+            row = row.replaceAll("\\s", "");
+            if (row.startsWith("|-")) {
+                createEntry(row.substring(2), levels, levelPointer, fileSystem);
+                entryCreated = true;
+            } else if (row.startsWith("|")) {
+                levelPointer += 1;
+                row = row.substring(1);
+            } else if (row.startsWith("`")) {
+                CreatedType type = createEntry(row.substring(1), levels, levelPointer, fileSystem);
+                if (type == CreatedType.FILE) {
+                    levels.remove(levels.size() - 1);
+                } else {
+                    levels.remove(levels.size() - 2);
+                }
+                levelPointer -= 1;
+                entryCreated = true;
+            } else {
+                createEntry(row, levels, levelPointer - 1, fileSystem);
+                entryCreated = true;
+            }
+        }
+    }
+
+    private CreatedType createEntry(String name, List<VirtualFile> levels, int level, Map<String, VirtualFile> fileSystem) throws IOException {
+        VirtualFile parent = getParent(levels, level);
+        CreatedType type = CreatedType.DIRECTORY;
+        VirtualFile created;
+        if (name.endsWith("/")) {
+            created = parent.createChildDirectory(this, StringUtils.chomp(name, "/"));
+            levels.add(created);
+        } else {
+            created = createFile(parent, name);
+            type = CreatedType.FILE;
+        }
+        String absolutePath = created.getPath();
+        fileSystem.put(StringUtils.removeStart(absolutePath, myProject.getBasePath() + "/"), created);
+        return type;
+    }
+
+    private VirtualFile getParent(List<VirtualFile> levels, int i) {
+        if (i == -1) {
+            return root;
+        }
+        return levels.get(i);
+    }
+
+    protected VirtualFile createFile(final VirtualFile vDir, final String fileName) throws IOException {
         if (!ModuleRootManager.getInstance(myModule).getFileIndex().isInSourceContent(vDir)) {
             PsiTestUtil.addSourceContentToRoots(myModule, vDir);
         }
 
         final VirtualFile vFile = vDir.createChildData(vDir, fileName);
-        VfsUtil.saveText(vFile, text);
+        VfsUtil.saveText(vFile, "");
         assertNotNull(vFile);
         final PsiFile file = myPsiManager.findFile(vFile);
         assertNotNull(file);
         return file.getVirtualFile();
+    }
+
+    private enum CreatedType {
+        FILE,
+        DIRECTORY
     }
 }
