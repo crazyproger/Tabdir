@@ -20,8 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: crazycoder
@@ -30,18 +29,65 @@ import java.util.List;
  */
 public class TitleFormatter {
 
+    public static String format(LinkedHashMap<String, Set<String>> prefixes, String tabName, FolderConfiguration configuration) {
+        String joinedPrefixes = joinPrefixesWithRemoveDuplication(prefixes, configuration);
+        return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
+    }
+
+    private static String joinPrefixesWithRemoveDuplication(LinkedHashMap<String, Set<String>> prefixes, FolderConfiguration configuration) {
+        List<String> keys = new LinkedList<String>(prefixes.keySet());
+        keys = getPrefixesSublist(keys, configuration);
+        List<String> resultPrefixes = new ArrayList<String>(keys.size());
+        for (String key : keys) {
+            resultPrefixes.add(removeDuplicates(key, prefixes.get(key)));
+        }
+        StringBuilder buffer = join(resultPrefixes, configuration);
+        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
+    }
+
+    private static String removeDuplicates(String key, Set<String> strings) {
+        String result = "";
+        strings.remove(null);
+        List<String> list = new ArrayList<String>(strings);
+        list.add(key);
+        String commonPrefix = StringUtils.getCommonPrefix(list.toArray(new String[list.size()]));
+        String suffix = key;
+        while (!StringUtils.isBlank(commonPrefix)) {
+            result += commonPrefix.substring(0, 1) + FolderConfiguration.DUPLICATES_DELIMITER;
+            int prefixLength = commonPrefix.length();
+
+            if (prefixLength == suffix.length()) {
+                return suffix;
+            }
+
+            suffix = suffix.substring(prefixLength);
+            List<String> newList = new ArrayList<String>();
+            for (String s : list) {
+                String substring = s.substring(prefixLength);
+                if (StringUtils.isNotBlank(substring)) {
+                    newList.add(substring);
+                }
+            }
+            list = newList;
+            commonPrefix = StringUtils.getCommonPrefix(list.toArray(new String[list.size()]));
+        }
+        return result + suffix;
+    }
+
+    //-----simple format
+
     public static String format(List<String> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixes(prefixes, configuration);
         return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
     }
 
-    public static String example(FolderConfiguration configuration) {
-        List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
-        String exampleFileName = "FileName";
-        return format(examplePrefixes, exampleFileName, configuration);
+    private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
+        prefixes = getPrefixesSublist(prefixes, configuration);
+        StringBuilder buffer = join(prefixes, configuration);
+        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
     }
 
-    private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
+    private static List<String> getPrefixesSublist(List<String> prefixes, FolderConfiguration configuration) {
         int maxDirsToShow = configuration.getMaxDirsToShow();
         if (maxDirsToShow > 0 && maxDirsToShow < prefixes.size()) {
             int beginIndex = prefixes.size() - maxDirsToShow;
@@ -50,17 +96,22 @@ public class TitleFormatter {
                 beginIndex = 0;
                 endIndex = maxDirsToShow;
             }
-            prefixes = prefixes.subList(beginIndex, endIndex);
+            return prefixes.subList(beginIndex, endIndex);
         }
-        StringBuilder buffer = join(prefixes, configuration);
-        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
+        return prefixes;
     }
 
     private static StringBuilder join(List<String> prefixes, FolderConfiguration configuration) {
         StringBuilder buffer = new StringBuilder();
         for (String prefix : prefixes) {
             if (configuration.isReduceDirNames()) {
-                String reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
+                String reducedDir;
+                if (configuration.isReduceDirNames() && prefix.contains(FolderConfiguration.DUPLICATES_DELIMITER)) {
+                    int start = prefix.lastIndexOf(FolderConfiguration.DUPLICATES_DELIMITER);
+                    reducedDir = StringUtils.substring(prefix, 0, start + configuration.getCharsInName() + 1);
+                } else {
+                    reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
+                }
                 buffer.append(reducedDir);
             } else {
                 buffer.append(prefix);
@@ -68,6 +119,12 @@ public class TitleFormatter {
             buffer.append(configuration.getDirSeparator());
         }
         return buffer;
+    }
+
+    public static String example(FolderConfiguration configuration) {
+        List<String> examplePrefixes = Arrays.asList("first", "second", "third", "fourth", "fifth", "sixs");
+        String exampleFileName = "FileName";
+        return format(examplePrefixes, exampleFileName, configuration);
     }
 }
 

@@ -83,13 +83,13 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
         configuration.setRemoveDuplicates(true);
         final String D = FolderConfiguration.DUPLICATES_DELIMITER;
 
-        assertTitleEquals(myFileSystem, "[a" + D + "Sec] " + FILE_NAME, "aaaaSecondFolderbbbbb/" + FILE_NAME);
-        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "Sec] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/" + FILE_NAME);
-        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "Sec|bcSec] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bcSecond1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Secon] " + FILE_NAME, "aaaaSecondFolderbbbbb/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "Secon] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "Secon|bcSec] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bcSecond1/" + FILE_NAME);
 
         // must remove prefix with max length
-        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "Fou] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bbbbbbccFirst1Fouth1/" + FILE_NAME);
-        assertTitleEquals(myFileSystem, "[a" + D + "Sec|b" + D + "rst1] " + FILE_NAME, "aaaaFirstFolderbbbbb/bbbbbbccFirst1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "Fouth] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bbbbbbccFirst1Fouth1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "irst1] " + FILE_NAME, "aaaaFirstFolderbbbbb/bbbbbbccFirst1/" + FILE_NAME);
     }
 
     // utility methods
