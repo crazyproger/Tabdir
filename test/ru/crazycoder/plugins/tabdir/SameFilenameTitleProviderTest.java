@@ -85,11 +85,10 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
 
         assertTitleEquals(myFileSystem, "[a" + D + "Secon] " + FILE_NAME, "aaaaSecondFolderbbbbb/" + FILE_NAME);
         assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "Secon] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/" + FILE_NAME);
-        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "Secon|bcSec] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bcSecond1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "First|b" + D + "First|b" + D + "Secon] " + FILE_NAME, "aaaaFirstFolderbbbbb/bbbbbbccFirst1/bcSecond1/" + FILE_NAME);
 
         // must remove prefix with max length
-        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "Fouth] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/bbbbbbccFirst1Fouth1/" + FILE_NAME);
-        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "irst1] " + FILE_NAME, "aaaaFirstFolderbbbbb/bbbbbbccFirst1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "First] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccFirst1Fouth1/" + FILE_NAME);
     }
 
     // utility methods
