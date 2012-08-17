@@ -135,7 +135,9 @@ public class SameFilenameTitleProvider
     }
 
     /**
-     * @return todo comments
+     * @return <b>key</b> - ancestor folder name,<br/>
+     *         <b>value</b> - neighbours of key folder that ancestors of similar files.<br/>
+     *         Keys in map stored in order as in {@link #titleWithDiffs(com.intellij.openapi.project.Project, com.intellij.openapi.vfs.VirtualFile, ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration)}
      */
     private LinkedHashMap<String, Set<String>> calculatePrefixesWithoutDuplicates(VirtualFile file, Collection<VirtualFile> similarFiles) {
         LinkedHashMap<String, Set<String>> prefixes = new LinkedHashMap<String, Set<String>>();

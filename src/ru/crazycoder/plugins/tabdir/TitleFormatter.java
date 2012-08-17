@@ -16,11 +16,12 @@
 
 package ru.crazycoder.plugins.tabdir;
 
-import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
 import java.util.*;
+
+import static org.apache.commons.lang.StringUtils.*;
 
 /**
  * User: crazycoder
@@ -42,34 +43,52 @@ public class TitleFormatter {
             resultPrefixes.add(removeDuplicates(key, prefixes.get(key)));
         }
         StringBuilder buffer = join(resultPrefixes, configuration);
-        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
+        return removeEnd(buffer.toString(), configuration.getDirSeparator());
     }
 
-    private static String removeDuplicates(String key, Set<String> strings) {
+    /**
+     * <ol>
+     * <li>
+     * Finds greatest common prefix of key and all neighbours,
+     * this prefix replaced by first char and {@link FolderConfiguration#DUPLICATES_DELIMITER}.
+     * </li>
+     * <li>
+     * Remove all neighbours that differs from key after removed common prefix.
+     * </li>
+     * <li>Doing 1, 2 until have neighbours and common prefixes.</li>
+     * </ol>
+     * See tests for examples.
+     *
+     * @param key        main folder name
+     * @param neighbours folders with similar files in same level as key
+     * @return key, with removed duplicates
+     * @see ru.crazycoder.plugins.tabdir.SameFilenameTitleProviderTest#testRemoveMultiDuplicates()
+     */
+    private static String removeDuplicates(String key, Set<String> neighbours) {
         String result = "";
-        strings.remove(null);
-        List<String> list = new ArrayList<String>(strings);
+        neighbours.remove(null);
+        List<String> list = new ArrayList<String>(neighbours);
         list.add(key);
-        String commonPrefix = StringUtils.getCommonPrefix(list.toArray(new String[list.size()]));
+        String commonPrefix = getCommonPrefix(list.toArray(new String[list.size()]));
         String suffix = key;
-        while (!StringUtils.isBlank(commonPrefix)) {
-            result += commonPrefix.substring(0, 1) + FolderConfiguration.DUPLICATES_DELIMITER;
+        while (!isBlank(commonPrefix)) {
             int prefixLength = commonPrefix.length();
-
             if (prefixLength == suffix.length()) {
-                return suffix;
+                return result + suffix;
             }
+            result += commonPrefix.substring(0, 1) + FolderConfiguration.DUPLICATES_DELIMITER;
 
             suffix = suffix.substring(prefixLength);
             List<String> newList = new ArrayList<String>();
             for (String s : list) {
                 String substring = s.substring(prefixLength);
-                if (StringUtils.isNotBlank(substring)) {
+                boolean notBlank = isNotBlank(substring) && getCommonPrefix(new String[]{substring, suffix}).length() > 2;
+                if (notBlank) {
                     newList.add(substring);
                 }
             }
             list = newList;
-            commonPrefix = StringUtils.getCommonPrefix(list.toArray(new String[list.size()]));
+            commonPrefix = getCommonPrefix(list.toArray(new String[list.size()]));
         }
         return result + suffix;
     }
@@ -84,7 +103,7 @@ public class TitleFormatter {
     private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
         prefixes = getPrefixesSublist(prefixes, configuration);
         StringBuilder buffer = join(prefixes, configuration);
-        return StringUtils.removeEnd(buffer.toString(), configuration.getDirSeparator());
+        return removeEnd(buffer.toString(), configuration.getDirSeparator());
     }
 
     private static List<String> getPrefixesSublist(List<String> prefixes, FolderConfiguration configuration) {
@@ -108,9 +127,9 @@ public class TitleFormatter {
                 String reducedDir;
                 if (configuration.isReduceDirNames() && prefix.contains(FolderConfiguration.DUPLICATES_DELIMITER)) {
                     int start = prefix.lastIndexOf(FolderConfiguration.DUPLICATES_DELIMITER);
-                    reducedDir = StringUtils.substring(prefix, 0, start + configuration.getCharsInName() + 1);
+                    reducedDir = substring(prefix, 0, start + configuration.getCharsInName() + 1);
                 } else {
-                    reducedDir = StringUtils.substring(prefix, 0, configuration.getCharsInName());
+                    reducedDir = substring(prefix, 0, configuration.getCharsInName());
                 }
                 buffer.append(reducedDir);
             } else {

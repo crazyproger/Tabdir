@@ -91,6 +91,48 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
         assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "First] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccFirst1Fouth1/" + FILE_NAME);
     }
 
+    public void testRemoveMultiDuplicates() throws Exception {
+        Map<String, VirtualFile> myFileSystem = createTree(Arrays.asList(
+                "first1-second1-third1/",
+                "   `" + FILE_NAME,
+                "first1-second1-third2/",
+                "   `" + FILE_NAME,
+                "first1-second2-third1/",
+                "   `" + FILE_NAME,
+                "first1-second1/",
+                "   `" + FILE_NAME,
+                "first1/",
+                "   `" + FILE_NAME,
+                "first2/",
+                "   `" + FILE_NAME
+        ));
+        GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
+        configuration.setRemoveDuplicates(true);
+        final String D = FolderConfiguration.DUPLICATES_DELIMITER;
+
+        assertTitleEquals(myFileSystem, "[f" + D + "1" + D + "1" + D + "1] " + FILE_NAME, "first1-second1-third1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[f" + D + "2] " + FILE_NAME, "first2/" + FILE_NAME);
+    }
+
+    public void testRemoveMultiDuplicates2() throws Exception {
+        Map<String, VirtualFile> myFileSystem = createTree(Arrays.asList(
+                "aaaaa-bbbbbb-cccccc/",
+                "   `" + FILE_NAME,
+                "aaaaa-dddddd-cccccc/",
+                "   `" + FILE_NAME,
+                "aaaaa-bbbbbb-eeeeee/",
+                "   `" + FILE_NAME,
+                "aaaaa-dddddd-eeeeee/",
+                "   `" + FILE_NAME
+        ));
+        GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
+        configuration.setRemoveDuplicates(true);
+        final String D = FolderConfiguration.DUPLICATES_DELIMITER;
+
+        assertTitleEquals(myFileSystem, "[a" + D + "b" + D + "ccccc] " + FILE_NAME, "aaaaa-bbbbbb-cccccc/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "b" + D + "eeeee] " + FILE_NAME, "aaaaa-bbbbbb-eeeeee/" + FILE_NAME);
+    }
+
     // utility methods
 
     private void assertTitleEquals(Map<String, VirtualFile> myFileSystem, final String expectedTitle, final String filePath) {
