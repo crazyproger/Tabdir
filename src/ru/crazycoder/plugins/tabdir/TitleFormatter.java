@@ -16,6 +16,8 @@
 
 package ru.crazycoder.plugins.tabdir;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
@@ -29,6 +31,8 @@ import static org.apache.commons.lang.StringUtils.*;
  * Time: 9:28:09 AM
  */
 public class TitleFormatter {
+
+    private static final int MIN_DUPLICATE_LENGTH = 2;
 
     public static String format(LinkedHashMap<String, Set<String>> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixesWithRemoveDuplication(prefixes, configuration);
@@ -64,10 +68,20 @@ public class TitleFormatter {
      * @return key, with removed duplicates
      * @see ru.crazycoder.plugins.tabdir.SameFilenameTitleProviderTest#testRemoveMultiDuplicates()
      */
-    private static String removeDuplicates(String key, Set<String> neighbours) {
+    private static String removeDuplicates(final String key, Set<String> neighbours) {
         String result = "";
         neighbours.remove(null);
         List<String> list = new ArrayList<String>(neighbours);
+
+        // this neighbours unnecessary
+        CollectionUtils.filter(list, new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                String string = (String) o;
+                return getCommonPrefix(new String[]{string, key}).length() > MIN_DUPLICATE_LENGTH;
+            }
+        });
+
         list.add(key);
         String commonPrefix = getCommonPrefix(list.toArray(new String[list.size()]));
         String suffix = key;
@@ -82,7 +96,7 @@ public class TitleFormatter {
             List<String> newList = new ArrayList<String>();
             for (String s : list) {
                 String substring = s.substring(prefixLength);
-                boolean notBlank = isNotBlank(substring) && getCommonPrefix(new String[]{substring, suffix}).length() > 2;
+                boolean notBlank = isNotBlank(substring) && getCommonPrefix(new String[]{substring, suffix}).length() > MIN_DUPLICATE_LENGTH;
                 if (notBlank) {
                     newList.add(substring);
                 }

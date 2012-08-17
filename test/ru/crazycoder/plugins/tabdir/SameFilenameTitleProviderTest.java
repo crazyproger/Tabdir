@@ -85,7 +85,7 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
 
         assertTitleEquals(myFileSystem, "[a" + D + "Secon] " + FILE_NAME, "aaaaSecondFolderbbbbb/" + FILE_NAME);
         assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "Secon] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccSecond1/" + FILE_NAME);
-        assertTitleEquals(myFileSystem, "[a" + D + "First|b" + D + "First|b" + D + "Secon] " + FILE_NAME, "aaaaFirstFolderbbbbb/bbbbbbccFirst1/bcSecond1/" + FILE_NAME);
+        assertTitleEquals(myFileSystem, "[a" + D + "First|b" + D + "First|bcSec] " + FILE_NAME, "aaaaFirstFolderbbbbb/bbbbbbccFirst1/bcSecond1/" + FILE_NAME);
 
         // must remove prefix with max length
         assertTitleEquals(myFileSystem, "[a" + D + "Secon|b" + D + "First] " + FILE_NAME, "aaaaSecondFolderbbbbb/bbbbbbccFirst1Fouth1/" + FILE_NAME);
@@ -131,6 +131,26 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
 
         assertTitleEquals(myFileSystem, "[a" + D + "b" + D + "ccccc] " + FILE_NAME, "aaaaa-bbbbbb-cccccc/" + FILE_NAME);
         assertTitleEquals(myFileSystem, "[a" + D + "b" + D + "eeeee] " + FILE_NAME, "aaaaa-bbbbbb-eeeeee/" + FILE_NAME);
+    }
+
+
+    public void testRemoveMultiDuplicates3() throws Exception {
+        Map<String, VirtualFile> myFileSystem = createTree(Arrays.asList(
+                "branch1/",
+                "   |-verydifferent/",
+                "   |   `" + FILE_NAME,
+                "   |-same/",
+                "   |   `" + FILE_NAME,
+                "    `same-and-same/",
+                "       `" + FILE_NAME,
+                "branch2/",
+                "   `" + FILE_NAME
+        ));
+        GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
+        configuration.setRemoveDuplicates(true);
+        final String D = FolderConfiguration.DUPLICATES_DELIMITER;
+
+        assertTitleEquals(myFileSystem, "[b" + D + "1|s" + D + "-and-] " + FILE_NAME, "branch1/same-and-same/" + FILE_NAME);
     }
 
     // utility methods
