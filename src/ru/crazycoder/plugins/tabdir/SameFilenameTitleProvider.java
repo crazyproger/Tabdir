@@ -119,12 +119,65 @@ public class SameFilenameTitleProvider
         if (similarFiles.size() < 2) {
             return file.getPresentableName();
         }
-        List<String> prefixes = calculatePrefixes(file, similarFiles);
-
-        if (prefixes.size() > 0) {
-            return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
+        if (configuration.isRemoveDuplicates()) {
+            LinkedHashMap<String, Set<String>> prefixesWithNeighbours = calculatePrefixesWithoutDuplicates(file, similarFiles);
+            if (prefixesWithNeighbours.size() > 0) {
+                return TitleFormatter.format(prefixesWithNeighbours, file.getPresentableName(), configuration);
+            }
+        } else {
+            List<String> prefixes = calculatePrefixes(file, similarFiles);
+            if (prefixes.size() > 0) {
+                return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
+            }
         }
+
         return null;
+    }
+
+    /**
+     * @return <b>key</b> - ancestor folder name,<br/>
+     *         <b>value</b> - neighbours of key folder that ancestors of similar files.<br/>
+     *         Keys in map stored in order as in {@link #titleWithDiffs(com.intellij.openapi.project.Project, com.intellij.openapi.vfs.VirtualFile, ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration)}
+     */
+    private LinkedHashMap<String, Set<String>> calculatePrefixesWithoutDuplicates(VirtualFile file, Collection<VirtualFile> similarFiles) {
+        LinkedHashMap<String, Set<String>> prefixes = new LinkedHashMap<String, Set<String>>();
+
+        SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(comparator);
+        Map<VirtualFile, Set<VirtualFile>> filesWithSameAncestor = new HashMap<VirtualFile, Set<VirtualFile>>();
+        for (VirtualFile similarFile : similarFiles) {
+            if (file.equals(similarFile)) {
+                continue;
+            }
+            if (file.getPath() != null) {
+                VirtualFile ancestor = VfsUtil.getCommonAncestor(similarFile, file);
+                if (ancestor != null && ancestor.getPath() != null && !(ancestor.equals(file.getParent()))) {
+                    ancestors.add(ancestor);
+                    if (!filesWithSameAncestor.containsKey(ancestor)) {
+                        filesWithSameAncestor.put(ancestor, new HashSet<VirtualFile>());
+                    }
+                    Set<VirtualFile> files = filesWithSameAncestor.get(ancestor);
+                    files.add(similarFile);
+                }
+            }
+        }
+
+        for (VirtualFile ancestor : ancestors) {
+            String prefix = getFolderAfterAncestor(ancestor, file);
+            if (prefix != null) {
+                prefixes.put(prefix, getNeighboursNames(ancestor, filesWithSameAncestor.get(ancestor)));
+            }
+        }
+
+        return prefixes;
+    }
+
+    private Set<String> getNeighboursNames(VirtualFile ancestor, Set<VirtualFile> files) {
+        Set<String> result = new HashSet<String>();
+        for (VirtualFile file : files) {
+            String folder = getFolderAfterAncestor(ancestor, file);
+            result.add(folder);
+        }
+        return result;
     }
 
     private List<String> calculatePrefixes(final VirtualFile file, final Collection<VirtualFile> similarFiles) {
@@ -143,13 +196,21 @@ public class SameFilenameTitleProvider
         }
 
         for (VirtualFile ancestor : ancestors) {
-            String relativePath = VfsUtil.getRelativePath(file, ancestor, File.separatorChar);
-            if (relativePath != null && relativePath.indexOf(File.separatorChar) != -1) {
-                List<String> pathElements = StringUtil.split(relativePath, File.separator);
-                prefixes.add(pathElements.get(0));
+            String folder = getFolderAfterAncestor(ancestor, file);
+            if (folder != null) {
+                prefixes.add(folder);
             }
         }
         return prefixes;
+    }
+
+    private String getFolderAfterAncestor(VirtualFile ancestor, VirtualFile file) {
+        String relativePath = VfsUtil.getRelativePath(file, ancestor, File.separatorChar);
+        if (relativePath != null && relativePath.indexOf(File.separatorChar) != -1) {
+            List<String> pathElements = StringUtil.split(relativePath, File.separator);
+            return pathElements.get(0);
+        }
+        return null;
     }
 
     private boolean needProcessFile(VirtualFile file, FolderConfiguration configuration) {

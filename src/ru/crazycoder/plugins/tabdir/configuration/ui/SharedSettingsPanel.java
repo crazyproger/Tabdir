@@ -46,6 +46,7 @@ public class SharedSettingsPanel {
     private JLabel dirSeparatorL;
     private JLabel dirsToShowL;
     private JCheckBox countFromStartCB;
+    private JCheckBox removeDuplicatesCB;
     private final SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private final SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
@@ -98,7 +99,8 @@ public class SharedSettingsPanel {
         useSwitchCB.getModel().setSelectedItem(data.getUseExtensions());
         dirSeparatorTF.setText(data.getDirSeparator());
         titleFormatTF.setText(data.getTitleFormat());
-        countFromStartCB.setEnabled(data.isCountMaxDirsFromStart());
+        countFromStartCB.setSelected(data.isCountMaxDirsFromStart());
+        removeDuplicatesCB.setSelected(data.isRemoveDuplicates());
         updateExample();
     }
 
@@ -111,20 +113,41 @@ public class SharedSettingsPanel {
         data.setTitleFormat(titleFormatTF.getText().trim());
         data.setDirSeparator(dirSeparatorTF.getText().trim());
         data.setCountMaxDirsFromStart(countFromStartCB.isSelected());
+        data.setRemoveDuplicates(removeDuplicatesCB.isSelected());
     }
 
     @SuppressWarnings("RedundantIfStatement")
     public boolean isModified(FolderConfiguration data) {
-        if (reduceDirNamesCB.isSelected() != data.isReduceDirNames()) return true;
-        if (extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null)
+        if (reduceDirNamesCB.isSelected() != data.isReduceDirNames()) {
             return true;
-        if ((Integer) dirsToShowModel.getValue() != data.getMaxDirsToShow()) return true;
-        if ((Integer) charsInNameModel.getValue() != data.getCharsInName()) return true;
-        if (!titleFormatTF.getText().equals(data.getTitleFormat())) return true;
-        if (!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) return true;
-        if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
-        if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) return true;
-        if (countFromStartCB.isSelected() != data.isCountMaxDirsFromStart()) return true;
+        }
+        if (extensionsTA.getText() != null ? !extensionsTA.getText().equals(data.getFilesExtensions()) : data.getFilesExtensions() != null) {
+            return true;
+        }
+        if ((Integer) dirsToShowModel.getValue() != data.getMaxDirsToShow()) {
+            return true;
+        }
+        if ((Integer) charsInNameModel.getValue() != data.getCharsInName()) {
+            return true;
+        }
+        if (!titleFormatTF.getText().equals(data.getTitleFormat())) {
+            return true;
+        }
+        if (!dirSeparatorTF.getText().trim().equals(data.getDirSeparator())) {
+            return true;
+        }
+        if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) {
+            return true;
+        }
+        if (useSwitchCB.getModel().getSelectedItem() != data.getUseExtensions()) {
+            return true;
+        }
+        if (countFromStartCB.isSelected() != data.isCountMaxDirsFromStart()) {
+            return true;
+        }
+        if (removeDuplicatesCB.isSelected() != data.isRemoveDuplicates()) {
+            return true;
+        }
         return false;
     }
 
