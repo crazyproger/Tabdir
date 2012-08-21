@@ -16,8 +16,6 @@
 
 package ru.crazycoder.plugins.tabdir;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import java.text.MessageFormat;
@@ -32,7 +30,7 @@ import static org.apache.commons.lang.StringUtils.*;
  */
 public class TitleFormatter {
 
-    private static final int MIN_DUPLICATE_LENGTH = 2;
+    private static final int MIN_DUPLICATE_LENGTH = 3;
 
     public static String format(LinkedHashMap<String, Set<String>> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixesWithRemoveDuplication(prefixes, configuration);
@@ -74,13 +72,13 @@ public class TitleFormatter {
         List<String> list = new ArrayList<String>(neighbours);
 
         // this neighbours unnecessary
-        CollectionUtils.filter(list, new Predicate() {
-            @Override
-            public boolean evaluate(Object o) {
-                String string = (String) o;
-                return getCommonPrefix(new String[]{string, key}).length() > MIN_DUPLICATE_LENGTH;
+        Iterator<String> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            String string = iterator.next();
+            if (getCommonPrefix(new String[]{string, key}).length() <= MIN_DUPLICATE_LENGTH) {
+                iterator.remove();
             }
-        });
+        }
 
         list.add(key);
         String commonPrefix = getCommonPrefix(list.toArray(new String[list.size()]));

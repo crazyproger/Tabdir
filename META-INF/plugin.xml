@@ -35,9 +35,9 @@
         ]]>
     </description>
 
-    <version>1.6</version>
+    <version>1.6.1</version>
     <vendor>Vladimir Rudev</vendor>
-    <idea-version since-build="111.69"/>
+    <idea-version since-build="122.0"/>
     <change-notes><![CDATA[
         <ul>
             <li>1.1 Add possibility to configure tab title format.</li>
@@ -47,6 +47,7 @@
             <li>1.4 Fixed NPE(was in phpstorm), update description.</li>
             <li>1.5 Tabdir-4 issue fixed, copyright updated</li>
             <li>1.6 Tabdir-9, Tabdir-10, Tabdir-11 issues fixed</li>
+            <li>1.6.1 Fix for IDEA 12</li>
         </ul>
         ]]>
     </change-notes>
@@ -70,7 +71,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.GlobalConfig"/>
-        <applicationConfigurable implementation="ru.crazycoder.plugins.tabdir.configuration.GlobalConfigConfigurable"/>
+        <applicationConfigurable instance="ru.crazycoder.plugins.tabdir.configuration.GlobalConfigConfigurable"/>
 
         <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.ProjectConfig"/>
 
