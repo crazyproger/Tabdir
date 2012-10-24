@@ -85,7 +85,7 @@ public class MappingEditor
         private final Project project;
 
         public BrowseFolderListener(Project project) {
-            super("Select Directory", "Select directory to which you want set configuration", configurationDirectoryTF, project,
+            super("Select Directory", "Select directory to which you want set config", configurationDirectoryTF, project,
                     new FileChooserDescriptor(false, true, false, false, false, false), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
             this.project = project;
         }
