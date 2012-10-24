@@ -37,7 +37,7 @@
 
     <version>1.6.1</version>
     <vendor>Vladimir Rudev</vendor>
-    <idea-version since-build="120.59" until-build="121.9999"/>
+    <idea-version since-build="122.519" until-build="122.9999"/>
     <change-notes><![CDATA[
         <ul>
             <li>1.1 Add possibility to configure tab title format.</li>
@@ -48,6 +48,7 @@
             <li>1.5 Tabdir-4 issue fixed, copyright updated</li>
             <li>1.6 Tabdir-9, Tabdir-10, Tabdir-11 issues fixed</li>
             <li>1.6.1 Fix for IDEA 12</li>
+            <li>1.6.2 IDEA 12(EAP) release only: fixed Tabdir-15</li>
         </ul>
         ]]>
     </change-notes>
