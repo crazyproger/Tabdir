@@ -163,7 +163,7 @@ public class MappingPanel
             modelList.add(new FolderMapping(entry.getKey(), configuration));
         }
         model = new ListTableModel<FolderMapping>(COLUMNS, modelList, 0, SortOrder.DESCENDING);
-        folderMappingTable.setModel(model);
+        folderMappingTable.setModelAndUpdateColumns(model);
     }
 
     @Override

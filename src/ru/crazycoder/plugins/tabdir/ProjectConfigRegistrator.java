@@ -71,11 +71,11 @@ public class ProjectConfigRegistrator
 
     public void checkAndRegister(boolean isNeedRegister) {
         try {
-            Object[] extensions = project.getExtensions(Configurable.PROJECT_CONFIGURABLES);
+            Object[] extensions = project.getExtensions(Configurable.PROJECT_CONFIGURABLE);
             ConfigurableEP ourExtension = null;
             for (Object extension : extensions) {
                 if (extension instanceof ConfigurableEP) {
-                    String implementationClass = ((ConfigurableEP) extension).implementationClass;
+                    String implementationClass = ((ConfigurableEP) extension).instanceClass;
                     if (StringUtils.equals(implementationClass, ProjectConfigConfigurable.class.getName())) {
                         ourExtension = (ConfigurableEP) extension;
                         break;
@@ -91,7 +91,7 @@ public class ProjectConfigRegistrator
                 if (configurableEP == null) {
                     configurableEP = new ConfigurableEP(project);
                     configurableEP.setPluginDescriptor(PluginManager.getPlugin(PluginId.getId("ru.crazycoder.plugins.tabdir")));
-                    configurableEP.implementationClass = ProjectConfigConfigurable.class.getName();
+                    configurableEP.instanceClass = ProjectConfigConfigurable.class.getName();
                 }
                 projectConfigurableEP.registerExtension(configurableEP);
             }
