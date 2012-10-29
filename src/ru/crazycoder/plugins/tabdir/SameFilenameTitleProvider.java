@@ -44,7 +44,6 @@ public class SameFilenameTitleProvider
         implements EditorTabTitleProvider {
 
     private final Logger log = Logger.getInstance(this.getClass().getCanonicalName());
-
     private final GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
     private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
         @Override
@@ -90,7 +89,10 @@ public class SameFilenameTitleProvider
         // search configuration where path(key in map) is biggest prefix for file
         for (Map.Entry<String, FolderConfiguration> entry : folderConfigs.entrySet()) {
             String key = entry.getKey();
-            if (file.getPath().startsWith(key) && biggestKeyLength < key.length()) {
+            String filePath = file.getPath();
+            String prefix = key.replaceAll("\\\\", "/");
+            boolean startsWith = filePath != null && filePath.startsWith(prefix);
+            if (startsWith && biggestKeyLength < prefix.length()) {
                 biggestKeyLength = key.length();
                 matchedConfiguration = entry.getValue();
             }
