@@ -63,6 +63,7 @@ public class SharedSettingsPanel {
         });
         dirsToShowSpinner.setModel(dirsToShowModel);
         charsInNameSpinner.setModel(charsInNameModel);
+        //noinspection unchecked
         useSwitchCB.setModel(new DefaultComboBoxModel(FolderConfiguration.UseExtensionsEnum.values()));
         dirSeparatorTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
         titleFormatTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
