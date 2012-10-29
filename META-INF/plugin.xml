@@ -35,7 +35,7 @@
         ]]>
     </description>
 
-    <version>1.6</version>
+    <version>1.6.3</version>
     <vendor>Vladimir Rudev</vendor>
     <idea-version since-build="111.69"/>
     <change-notes><![CDATA[
@@ -47,6 +47,9 @@
             <li>1.4 Fixed NPE(was in phpstorm), update description.</li>
             <li>1.5 Tabdir-4 issue fixed, copyright updated</li>
             <li>1.6 Tabdir-9, Tabdir-10, Tabdir-11 issues fixed</li>
+            <li>1.6.1 Fix for IDEA 12</li>
+            <li>1.6.2 IDEA 12(EAP) release only: fixed Tabdir-15</li>
+            <li>1.6.3 Rebuild in java1.6</li>
         </ul>
         ]]>
     </change-notes>
