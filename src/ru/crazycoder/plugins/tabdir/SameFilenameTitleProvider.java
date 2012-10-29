@@ -90,7 +90,10 @@ public class SameFilenameTitleProvider
         // search configuration where path(key in map) is biggest prefix for file
         for (Map.Entry<String, FolderConfiguration> entry : folderConfigs.entrySet()) {
             String key = entry.getKey();
-            if (file.getPath().startsWith(key) && biggestKeyLength < key.length()) {
+            String filePath = file.getPath();
+            String prefix = FileUtil.toSystemIndependentName(key);
+            boolean isStartsWith = filePath != null && filePath.startsWith(prefix);
+            if (isStartsWith && biggestKeyLength < prefix.length()) {
                 biggestKeyLength = key.length();
                 matchedConfiguration = entry.getValue();
             }
@@ -103,7 +106,9 @@ public class SameFilenameTitleProvider
     }
 
     private String titleRelativeTo(final VirtualFile file, final FolderConfiguration configuration) {
-        String relativePath = FileUtil.getRelativePath(configuration.getRelativeTo(), file.getPath(), File.separatorChar);
+        String basePath = FileUtil.toSystemDependentName(configuration.getRelativeTo());
+        String filePath = FileUtil.toSystemDependentName(file.getPath());
+        String relativePath = FileUtil.getRelativePath(basePath, filePath, File.separatorChar);
         String[] parts = StringUtils.split(relativePath, File.separatorChar);
         List<String> prefixes = new ArrayList<String>(Arrays.asList(parts));
         if (prefixes.size() > 1) {
