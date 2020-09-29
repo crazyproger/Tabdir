@@ -21,9 +21,9 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.ExtensionPoint;
+import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.extensions.PluginId;
-import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurableEP;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang.StringUtils;
@@ -71,7 +71,7 @@ public class ProjectConfigRegistrator
 
     public void checkAndRegister(boolean isNeedRegister) {
         try {
-            Object[] extensions = project.getExtensions(Configurable.PROJECT_CONFIGURABLE);
+            Object[] extensions = project.getExtensions(new ExtensionPointName<>("com.intellij.projectConfigurable"));
             ConfigurableEP ourExtension = null;
             for (Object extension : extensions) {
                 if (extension instanceof ConfigurableEP) {

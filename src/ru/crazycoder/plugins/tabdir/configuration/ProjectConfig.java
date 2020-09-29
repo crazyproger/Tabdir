@@ -33,8 +33,8 @@ import java.util.Map;
  */
 @State(
         name = "TabdirProjectConfiguration",
-        storages = {@Storage(id = "default", file = "$PROJECT_FILE$"), @Storage(id = "dir", file = "$PROJECT_CONFIG_DIR$/other.xml",
-                scheme = StorageScheme.DIRECTORY_BASED)})
+        storages = {@Storage(file = "$PROJECT_FILE$"),
+                @Storage(file = "$PROJECT_CONFIG_DIR$/other.xml")})
 public class ProjectConfig
         implements PersistentStateComponent<Element> {
 

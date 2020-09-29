@@ -35,9 +35,9 @@
         ]]>
     </description>
 
-    <version>1.6.5</version>
-    <vendor>Vladimir Rudev</vendor>
-    <idea-version since-build="122.519" until-build="123.9999"/>
+    <version>1.6.7</version>
+    <vendor>Vladimir Rudev (mod: vl)</vendor>
+    <idea-version since-build="122.519" until-build="400.*"/>
     <change-notes><![CDATA[
         <ul>
             <li>1.1 Add possibility to configure tab title format.</li>
@@ -52,6 +52,7 @@
             <li>1.6.3 Rebuild in java1.6</li>
             <li>1.6.4 Fixed Tabdir-16</li>
             <li>1.6.5 Merged Tabdir-16 into main</li>
+            <li>1.6.7 (mod: vl) Fixup for Idea 202+</li>
         </ul>
         ]]>
     </change-notes>
