@@ -35,7 +35,7 @@ import java.util.List;
  */
 @State(
         name = "TabdirConfiguration",
-        storages = {@Storage(id = "other", file = "$APP_CONFIG$/other.xml", scheme = StorageScheme.DIRECTORY_BASED)})
+        storages = {@Storage("$APP_CONFIG$/other.xml")})
 public class GlobalConfig
         extends FolderConfiguration
         implements PersistentStateComponent<Element> {
