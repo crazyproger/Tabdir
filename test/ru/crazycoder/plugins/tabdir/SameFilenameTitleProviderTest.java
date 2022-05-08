@@ -23,8 +23,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.PsiManagerImpl;
-import com.intellij.testFramework.IdeaTestCase;
 import com.intellij.testFramework.PsiTestUtil;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
@@ -36,15 +36,15 @@ import java.util.*;
  * User: crazyproger
  * Date: 28.04.12
  */
-public class SameFilenameTitleProviderTest extends IdeaTestCase {
+public class SameFilenameTitleProviderTest extends BasePlatformTestCase {
     public static final String FILE_NAME = "simpleTest.java";
     private VirtualFile root;
     protected PsiManagerImpl myPsiManager;
 
     public void setUp() throws Exception {
         super.setUp();
-        myPsiManager = (PsiManagerImpl) PsiManager.getInstance(myProject);
-        root = myProject.getBaseDir();
+        myPsiManager = (PsiManagerImpl) PsiManager.getInstance(getProject());
+        root = getProject().getBaseDir();
     }
 
     public void testTruncating() throws Exception {
@@ -159,7 +159,7 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
         VirtualFile target = myFileSystem.get(filePath);
 
         SameFilenameTitleProvider provider = new SameFilenameTitleProvider();
-        String title = provider.getEditorTabTitle(myProject, target);
+        String title = provider.getEditorTabTitle(getProject(), target);
         assertEquals(expectedTitle, title);
     }
 
@@ -214,7 +214,7 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
             type = CreatedType.FILE;
         }
         String absolutePath = created.getPath();
-        fileSystem.put(StringUtils.removeStart(absolutePath, myProject.getBasePath() + "/"), created);
+        fileSystem.put(StringUtils.removeStart(absolutePath, getProject().getBasePath() + "/"), created);
         return type;
     }
 
@@ -226,8 +226,8 @@ public class SameFilenameTitleProviderTest extends IdeaTestCase {
     }
 
     protected VirtualFile createFile(final VirtualFile vDir, final String fileName) throws IOException {
-        if (!ModuleRootManager.getInstance(myModule).getFileIndex().isInSourceContent(vDir)) {
-            PsiTestUtil.addSourceContentToRoots(myModule, vDir);
+        if (!ModuleRootManager.getInstance(getModule()).getFileIndex().isInSourceContent(vDir)) {
+            PsiTestUtil.addSourceContentToRoots(getModule(), vDir);
         }
 
         final VirtualFile vFile = vDir.createChildData(vDir, fileName);

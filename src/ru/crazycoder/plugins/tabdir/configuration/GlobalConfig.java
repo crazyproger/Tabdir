@@ -19,7 +19,6 @@ package ru.crazycoder.plugins.tabdir.configuration;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StorageScheme;
 import com.intellij.util.xmlb.XmlSerializer;
 import org.jdom.Element;
 import ru.crazycoder.plugins.tabdir.ProjectConfigRegistrator;
