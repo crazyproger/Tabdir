@@ -104,13 +104,13 @@ public class MappingEditor
         }
 
         @Override
-        protected void onFileChoosen(final VirtualFile chosenFile) {
+        protected void onFileChosen(final VirtualFile chosenFile) {
             FolderConfiguration configuration = configurationMap.get(chosenFile.getPath());
             if (configuration != null) {
                 sharedSettingsComp.setData(configuration);
                 configurationDirectoryTF.getChildComponent().setText(configuration.getRelativeTo());
             }
-            super.onFileChoosen(chosenFile);
+            super.onFileChosen(chosenFile);
         }
     }
 
