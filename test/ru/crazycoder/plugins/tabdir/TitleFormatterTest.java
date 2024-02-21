@@ -23,7 +23,7 @@ import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import java.util.Arrays;
 
 /**
- * User: crazyproger
+ * User: crazycoder
  * Date: 02.05.12
  */
 public class TitleFormatterTest {

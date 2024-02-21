@@ -16,7 +16,7 @@
 
 package ru.crazycoder.plugins.tabdir;
 
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.impl.EditorTabTitleProvider;
 import com.intellij.openapi.project.Project;
@@ -27,7 +27,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.ProjectScope;
 import com.intellij.util.indexing.FileBasedIndex;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
 import ru.crazycoder.plugins.tabdir.configuration.ProjectConfig;
@@ -45,16 +46,12 @@ public class SameFilenameTitleProvider
 
     private final Logger log = Logger.getInstance(this.getClass().getCanonicalName());
 
-    private final GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
-    private final Comparator<VirtualFile> comparator = new Comparator<VirtualFile>() {
-        @Override
-        public int compare(VirtualFile file1, VirtualFile file2) {
-            return file1.getPath().length() - file2.getPath().length();
-        }
-    };
+    private final GlobalConfig configuration = ApplicationManager.getApplication().getService(GlobalConfig.class);
+    private final Comparator<VirtualFile> comparator = Comparator.comparingInt(file -> file.getPath().length());
+
 
     @Override
-    public String getEditorTabTitle(Project project, VirtualFile file) {
+    public String getEditorTabTitle(@NotNull Project project, @NotNull VirtualFile file) {
         try {
             return getEditorTabTitleInternal(project, file);
         } catch (Exception e) {
@@ -83,7 +80,7 @@ public class SameFilenameTitleProvider
         if (!configuration.isProjectConfigEnabled()) {
             return configuration;
         }
-        ProjectConfig projectConfig = ServiceManager.getService(project, ProjectConfig.class);
+        ProjectConfig projectConfig = project.getService(ProjectConfig.class);
         Map<String, FolderConfiguration> folderConfigs = projectConfig.getFolderConfigurations();
         FolderConfiguration matchedConfiguration = null;
         int biggestKeyLength = 0;
@@ -92,7 +89,7 @@ public class SameFilenameTitleProvider
             String key = entry.getKey();
             String filePath = file.getPath();
             String prefix = FileUtil.toSystemIndependentName(key);
-            boolean isStartsWith = filePath != null && filePath.startsWith(prefix);
+            boolean isStartsWith = filePath.startsWith(prefix);
             if (isStartsWith && biggestKeyLength < prefix.length()) {
                 biggestKeyLength = key.length();
                 matchedConfiguration = entry.getValue();
@@ -110,28 +107,36 @@ public class SameFilenameTitleProvider
         String filePath = FileUtil.toSystemDependentName(file.getPath());
         String relativePath = FileUtil.getRelativePath(basePath, filePath, File.separatorChar);
         String[] parts = StringUtils.split(relativePath, File.separatorChar);
-        List<String> prefixes = new ArrayList<String>(Arrays.asList(parts));
-        if (prefixes.size() > 1) {
-            prefixes.remove(prefixes.size() - 1);
-            return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
-        } else {
-            return file.getPresentableName();
+        if (parts != null) {
+            List<String> prefixes = new ArrayList<>(Arrays.asList(parts));
+            if (prefixes.size() > 1) {
+                prefixes.remove(prefixes.size() - 1);
+                return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
+            }
         }
+        GlobalConfig globalConfig = ApplicationManager.getApplication().getService(GlobalConfig.class);
+        String globalEmptyPrefix = (globalConfig.getEmptyPathReplacement() != null) ? globalConfig.getEmptyPathReplacement() : "";
+        String emptyPrefix = (configuration.getEmptyPathReplacement() != null) ? configuration.getEmptyPathReplacement() : "";
+        if (emptyPrefix.isBlank()) {
+            emptyPrefix = globalEmptyPrefix;
+        }
+        return emptyPrefix + file.getPresentableName();
     }
 
     private String titleWithDiffs(final Project project, final VirtualFile file, final FolderConfiguration configuration) {
-        Collection<VirtualFile> similarFiles = FileBasedIndex.getInstance().getContainingFiles(FilenameIndex.NAME, file.getName(), ProjectScope.getProjectScope(project));
+        Collection<VirtualFile> similarFiles = FilenameIndex.getVirtualFilesByName(file.getName(), ProjectScope.getProjectScope(project));
+
         if (similarFiles.size() < 2) {
             return file.getPresentableName();
         }
         if (configuration.isRemoveDuplicates()) {
             LinkedHashMap<String, Set<String>> prefixesWithNeighbours = calculatePrefixesWithoutDuplicates(file, similarFiles);
-            if (prefixesWithNeighbours.size() > 0) {
+            if (!prefixesWithNeighbours.isEmpty()) {
                 return TitleFormatter.format(prefixesWithNeighbours, file.getPresentableName(), configuration);
             }
         } else {
             List<String> prefixes = calculatePrefixes(file, similarFiles);
-            if (prefixes.size() > 0) {
+            if (!prefixes.isEmpty()) {
                 return TitleFormatter.format(prefixes, file.getPresentableName(), configuration);
             }
         }
@@ -145,24 +150,22 @@ public class SameFilenameTitleProvider
      *         Keys in map stored in order as in {@link #titleWithDiffs(com.intellij.openapi.project.Project, com.intellij.openapi.vfs.VirtualFile, ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration)}
      */
     private LinkedHashMap<String, Set<String>> calculatePrefixesWithoutDuplicates(VirtualFile file, Collection<VirtualFile> similarFiles) {
-        LinkedHashMap<String, Set<String>> prefixes = new LinkedHashMap<String, Set<String>>();
+        LinkedHashMap<String, Set<String>> prefixes = new LinkedHashMap<>();
 
-        SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(comparator);
-        Map<VirtualFile, Set<VirtualFile>> filesWithSameAncestor = new HashMap<VirtualFile, Set<VirtualFile>>();
+        SortedSet<VirtualFile> ancestors = new TreeSet<>(comparator);
+        Map<VirtualFile, Set<VirtualFile>> filesWithSameAncestor = new HashMap<>();
         for (VirtualFile similarFile : similarFiles) {
             if (file.equals(similarFile)) {
                 continue;
             }
-            if (file.getPath() != null) {
-                VirtualFile ancestor = VfsUtil.getCommonAncestor(similarFile, file);
-                if (ancestor != null && ancestor.getPath() != null && !(ancestor.equals(file.getParent()))) {
-                    ancestors.add(ancestor);
-                    if (!filesWithSameAncestor.containsKey(ancestor)) {
-                        filesWithSameAncestor.put(ancestor, new HashSet<VirtualFile>());
-                    }
-                    Set<VirtualFile> files = filesWithSameAncestor.get(ancestor);
-                    files.add(similarFile);
+            VirtualFile ancestor = VfsUtil.getCommonAncestor(similarFile, file);
+            if (ancestor != null && !ancestor.getPath().isEmpty() && !(ancestor.equals(file.getParent()))) {
+                ancestors.add(ancestor);
+                if (!filesWithSameAncestor.containsKey(ancestor)) {
+                    filesWithSameAncestor.put(ancestor, new HashSet<>());
                 }
+                Set<VirtualFile> files = filesWithSameAncestor.get(ancestor);
+                files.add(similarFile);
             }
         }
 
@@ -177,7 +180,7 @@ public class SameFilenameTitleProvider
     }
 
     private Set<String> getNeighboursNames(VirtualFile ancestor, Set<VirtualFile> files) {
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
         for (VirtualFile file : files) {
             String folder = getFolderAfterAncestor(ancestor, file);
             result.add(folder);
@@ -186,15 +189,15 @@ public class SameFilenameTitleProvider
     }
 
     private List<String> calculatePrefixes(final VirtualFile file, final Collection<VirtualFile> similarFiles) {
-        List<String> prefixes = new ArrayList<String>();
-        SortedSet<VirtualFile> ancestors = new TreeSet<VirtualFile>(comparator);
+        List<String> prefixes = new ArrayList<>();
+        SortedSet<VirtualFile> ancestors = new TreeSet<>(comparator);
         for (VirtualFile similarFile : similarFiles) {
             if (file.equals(similarFile)) {
                 continue;
             }
-            if (file.getPath() != null) {
+            if (!file.getPath().isEmpty()) {
                 VirtualFile ancestor = VfsUtil.getCommonAncestor(similarFile, file);
-                if (ancestor != null && ancestor.getPath() != null) {
+                if (ancestor != null && !ancestor.getPath().isEmpty()) {
                     ancestors.add(ancestor);
                 }
             }

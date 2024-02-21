@@ -20,7 +20,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.*;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.apache.commons.lang.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
 
@@ -55,7 +54,7 @@ public class MappingEditor
         relativeToTF.getChildComponent().setText(folderConfiguration.getRelativeTo());
         sharedSettingsComp.setData(folderConfiguration);
         configurationDirectoryTF.addActionListener(new BrowseFolderListener(project));
-        relativeToTF.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener<JTextField>("Select Directory",
+        relativeToTF.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener<>("Select Directory",
                 "Select directory relative to which you want see path in tab", relativeToTF, project,
                 new FileChooserDescriptor(false, true, false, false, false, false), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
         setTitle("Folder Tabdir Configuration");
@@ -69,7 +68,7 @@ public class MappingEditor
 
     @Override
     protected ValidationInfo doValidate() {
-        boolean isBlank = StringUtils.isBlank(configurationDirectoryTF.getChildComponent().getText());
+        boolean isBlank = configurationDirectoryTF.getChildComponent().getText().isBlank();
         if (isBlank) {
             return new ValidationInfo("Target folder must be specified", configurationDirectoryTF);
         }
@@ -94,10 +93,13 @@ public class MappingEditor
         protected VirtualFile getInitialFile() {
             // suggest project base dir only if nothing is typed in the component.
             String text = getComponentText();
-            if (text.length() == 0) {
-                VirtualFile file = project.getBaseDir();
-                if (file != null) {
-                    return file;
+            if (text.isEmpty()) {
+                VirtualFile projectFile = project.getProjectFile();
+                if (projectFile != null) {
+                    VirtualFile file = projectFile.getParent();
+                    if (file != null) {
+                        return file;
+                    }
                 }
             }
             return super.getInitialFile();

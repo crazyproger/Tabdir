@@ -16,6 +16,8 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
+import java.util.Objects;
+
 /**
  * User: crazycoder
  * Date: 19.12.10
@@ -33,6 +35,7 @@ public class FolderConfiguration {
     private UseExtensionsEnum useExtensions;
     private boolean countMaxDirsFromStart = true;
     private boolean removeDuplicates = false;
+    private String emptyPathReplacement = "";
 
     public FolderConfiguration() {
     }
@@ -40,7 +43,7 @@ public class FolderConfiguration {
     public FolderConfiguration(final String relativeTo, boolean reduceDirNames, final String dirSeparator, final String titleFormat,
                                final int charsInName, final int maxDirsToShow, final String filesExtensions,
                                final UseExtensionsEnum useExtensions, final boolean countMaxDirsFromStart,
-                               final boolean removeDuplicates) {
+                               final boolean removeDuplicates, final String emptyPathReplacement) {
         this.relativeTo = relativeTo;
         this.reduceDirNames = reduceDirNames;
         this.dirSeparator = dirSeparator;
@@ -51,6 +54,7 @@ public class FolderConfiguration {
         this.useExtensions = useExtensions;
         this.countMaxDirsFromStart = countMaxDirsFromStart;
         this.removeDuplicates = removeDuplicates;
+        this.emptyPathReplacement = emptyPathReplacement;
     }
 
     public String getRelativeTo() {
@@ -133,6 +137,11 @@ public class FolderConfiguration {
         this.removeDuplicates = removeDuplicates;
     }
 
+    public String getEmptyPathReplacement() { return emptyPathReplacement; }
+
+    public void setEmptyPathReplacement(final String emptyPathReplacement) { this.emptyPathReplacement = emptyPathReplacement; }
+
+
     @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(final Object o) {
@@ -144,21 +153,21 @@ public class FolderConfiguration {
         if (charsInName != that.charsInName) return false;
         if (maxDirsToShow != that.maxDirsToShow) return false;
         if (reduceDirNames != that.reduceDirNames) return false;
-        if (dirSeparator != null ? !dirSeparator.equals(that.dirSeparator) : that.dirSeparator != null) return false;
-        if (filesExtensions != null ? !filesExtensions.equals(that.filesExtensions) : that.filesExtensions != null)
-            return false;
-        if (relativeTo != null ? !relativeTo.equals(that.relativeTo) : that.relativeTo != null) return false;
-        if (titleFormat != null ? !titleFormat.equals(that.titleFormat) : that.titleFormat != null) return false;
+        if (!Objects.equals(dirSeparator, that.dirSeparator)) return false;
+        if (!Objects.equals(filesExtensions, that.filesExtensions)) return false;
+        if (!Objects.equals(relativeTo, that.relativeTo)) return false;
+        if (!Objects.equals(titleFormat, that.titleFormat)) return false;
         if (useExtensions != that.useExtensions) return false;
         if (countMaxDirsFromStart != that.countMaxDirsFromStart) return false;
         if (removeDuplicates != that.removeDuplicates) return false;
+        if (!Objects.equals(emptyPathReplacement, that.emptyPathReplacement)) return false;
 
         return true;
     }
 
     public FolderConfiguration cloneMe() {
         return new FolderConfiguration(relativeTo, reduceDirNames, dirSeparator, titleFormat, charsInName, maxDirsToShow, filesExtensions,
-                useExtensions, countMaxDirsFromStart, removeDuplicates);
+                useExtensions, countMaxDirsFromStart, removeDuplicates, emptyPathReplacement);
     }
 
     public enum UseExtensionsEnum {

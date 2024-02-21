@@ -17,19 +17,18 @@
 package ru.crazycoder.plugins.tabdir;
 
 import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.ExtensionPoint;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.extensions.Extensions;
-import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.extensions.*;
 import com.intellij.openapi.options.ConfigurableEP;
+import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
 import ru.crazycoder.plugins.tabdir.configuration.ProjectConfigConfigurable;
+import java.util.List;
 
 /**
  * User: crazycoder
@@ -42,7 +41,7 @@ public class ProjectConfigRegistrator
         implements ProjectComponent {
 
     private final Project project;
-    private ConfigurableEP configurableEP;
+    private ConfigurableEP<UnnamedConfigurable> configurableEP;
 
     public ProjectConfigRegistrator(Project project) {
         this.project = project;
@@ -60,32 +59,31 @@ public class ProjectConfigRegistrator
     }
 
     public void projectOpened() {
-        GlobalConfig globalConfig = ServiceManager.getService(GlobalConfig.class);
+        GlobalConfig globalConfig = ApplicationManager.getApplication().getService(GlobalConfig.class);
         globalConfig.addProjectConfigListener(this);
         checkAndRegister(globalConfig.isProjectConfigEnabled());
     }
 
     public void projectClosed() {
-        ServiceManager.getService(GlobalConfig.class).removeProjectConfigListener(this);
+        ApplicationManager.getApplication().getService(GlobalConfig.class).removeProjectConfigListener(this);
     }
 
     public void checkAndRegister(boolean isNeedRegister) {
         try {
-            Object[] extensions = project.getExtensions(new ExtensionPointName<>("com.intellij.projectConfigurable"));
-            ConfigurableEP ourExtension = null;
+            List<Object> extensions = new ProjectExtensionPointName<>("com.intellij.projectConfigurable").getExtensionList(project);
+            ConfigurableEP<UnnamedConfigurable> ourExtension = null;
             for (Object extension : extensions) {
                 if (extension instanceof ConfigurableEP) {
                     String implementationClass = ((ConfigurableEP) extension).instanceClass;
-                    if (StringUtils.equals(implementationClass, ProjectConfigConfigurable.class.getName())) {
+                    if (implementationClass != null && implementationClass.equals(ProjectConfigConfigurable.class.getName())) {
                         ourExtension = (ConfigurableEP) extension;
                         break;
                     }
                 }
             }
-            ExtensionPoint<Object> projectConfigurableEP = Extensions.getArea(project)
-                    .getExtensionPoint("com.intellij.projectConfigurable");
+            ExtensionPoint<Object> projectConfigurableEP = Extensions.getArea(project).getExtensionPoint("com.intellij.projectConfigurable");
             if (ourExtension != null && !isNeedRegister) {
-                // alredy registered
+                // already registered
                 projectConfigurableEP.unregisterExtension(ourExtension);
             } else if (ourExtension == null && isNeedRegister) {
                 if (configurableEP == null) {
@@ -95,8 +93,8 @@ public class ProjectConfigRegistrator
                 }
                 projectConfigurableEP.registerExtension(configurableEP);
             }
-        } catch (Exception ignored) {
-            Logger.getInstance(this.getClass().getName()).error("", ignored);
+        } catch (Exception e) {
+            Logger.getInstance(this.getClass().getName()).error("", e);
         }
     }
 }

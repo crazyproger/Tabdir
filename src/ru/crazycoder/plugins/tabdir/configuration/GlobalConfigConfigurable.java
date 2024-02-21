@@ -16,7 +16,7 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import org.jetbrains.annotations.Nls;
@@ -33,7 +33,7 @@ public class GlobalConfigConfigurable
 
     private GlobalSettingsPanel globalSettingsPanel;
 
-    private final GlobalConfig configuration = ServiceManager.getService(GlobalConfig.class);
+    private final GlobalConfig configuration = ApplicationManager.getApplication().getService(GlobalConfig.class);
 
     @Override
     public JComponent createComponent() {

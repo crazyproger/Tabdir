@@ -20,11 +20,11 @@
     <dirname property="basedir" file="${ant.file}"/>
 
     <property file="build.properties"/>
-    <!-- Если Idea и JDK в вашей системе располагаются не по путям, указанным ниже,
-    то ваши пути можно указать в build.properties (пример в build.properties.example).
-    Если и так всё в порядке, файл build.properties может отсутствовать,
-    в этом случае следующие значения свойств определят пути к Idea и JDK
-    (ant не меняет значение свойства, если встречает его повторно) -->
+    <!-- If the Idea and JDK on your system are not located at the paths below,
+    you can specify your paths in build.properties (example in build.properties.example).
+    If everything is fine as it is, the build.properties file may not exist,
+    in which case the following property values will define the paths to Idea and the JDK
+    (ant does not change the property value if it encounters it repeatedly) -->
     <property name="idea.dir" value="/opt/idea/"/>
     <property name="jdk.dir" value="/usr/lib/jvm/java-6-sun/"/>
 
@@ -42,7 +42,11 @@
         <pathelement location="${javac2.home}/jdom.jar"/>
         <pathelement location="${javac2.home}/asm.jar"/>
         <pathelement location="${javac2.home}/asm-commons.jar"/>
+        <pathelement location="${javac2.home}/asm-all.jar"/>
         <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+        <pathelement location="${javac2.home}/3rd-party-rt.jar"/>
+        <pathelement location="${javac2.home}/util.jar"/>
+        <pathelement location="${javac2.home}/forms_rt.jar"/>
     </path>
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
 
@@ -58,7 +62,7 @@
     <target name="compile" depends="clean" description="Compile module tabdir">
         <mkdir dir="${build.dir}/classes"/>
         <javac2 srcdir="src/" destdir="${build.dir}/classes" debug="true" fork="true"
-                executable="${jdk.bin.dir}/javac" encoding="UTF-8">
+                executable="${jdk.bin.dir}/javac" encoding="UTF-8" includeantruntime="true">
             <exclude name="**/.svn/**"/>
         </javac2>
         <jar destfile="${tabdir.jar.file}">
@@ -75,7 +79,7 @@
         <delete dir="${deploy.path}/tabdir"/>
     </target>
 
-    <target name="deploy" depends="undeploy,compile" description="Записать плагин в папку плагинов запускаемой IDE">
+    <target name="deploy" depends="undeploy,compile" description="Write the plug-in to the plug-in folder of the IDE launcher">
         <copy todir="${deploy.path}" file="${tabdir.jar.file}"/>
     </target>
 
@@ -89,6 +93,6 @@
         </exec>
     </target>
 
-    <target name="run" depends="deploy,runIDE" description="Собрать плагин в zip-архив, запустить IDE с плагином"/>
+    <target name="run" depends="deploy,runIDE" description="Assemble the plug-in into a zip archive, run the IDE with the plug-in"/>
 
 </project>

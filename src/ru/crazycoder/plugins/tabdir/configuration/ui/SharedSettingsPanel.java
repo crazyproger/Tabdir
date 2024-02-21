@@ -47,19 +47,18 @@ public class SharedSettingsPanel {
     private JLabel dirsToShowL;
     private JCheckBox countFromStartCB;
     private JCheckBox removeDuplicatesCB;
+    private JLabel emptyPathReplacementLabel;
+    private JTextField emptyPathReplacementTF;
     private final SpinnerNumberModel dirsToShowModel = new SpinnerNumberModel(3, 1, 10, 1);
     private final SpinnerNumberModel charsInNameModel = new SpinnerNumberModel(3, 1, 20, 1);
 
     private boolean isValid = false;
 
     public SharedSettingsPanel() {
-        reduceDirNamesCB.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                boolean selected = reduceDirNamesCB.isSelected();
-                charsLabel.setEnabled(selected);
-                charsInNameSpinner.setEnabled(selected);
-            }
+        reduceDirNamesCB.addChangeListener(e -> {
+            boolean selected = reduceDirNamesCB.isSelected();
+            charsLabel.setEnabled(selected);
+            charsInNameSpinner.setEnabled(selected);
         });
         dirsToShowSpinner.setModel(dirsToShowModel);
         charsInNameSpinner.setModel(charsInNameModel);
@@ -70,6 +69,7 @@ public class SharedSettingsPanel {
         dirsToShowSpinner.addChangeListener(new ExampleUpdaterChangeListener());
         charsInNameSpinner.addChangeListener(new ExampleUpdaterChangeListener());
         countFromStartCB.addChangeListener(new ExampleUpdaterChangeListener());
+        emptyPathReplacementTF.getDocument().addDocumentListener(new ExampleUpdaterDocumentListener());
     }
 
     private void updateExample() {
@@ -102,6 +102,7 @@ public class SharedSettingsPanel {
         titleFormatTF.setText(data.getTitleFormat());
         countFromStartCB.setSelected(data.isCountMaxDirsFromStart());
         removeDuplicatesCB.setSelected(data.isRemoveDuplicates());
+        emptyPathReplacementTF.setText(data.getEmptyPathReplacement());
         updateExample();
     }
 
@@ -115,6 +116,7 @@ public class SharedSettingsPanel {
         data.setDirSeparator(dirSeparatorTF.getText().trim());
         data.setCountMaxDirsFromStart(countFromStartCB.isSelected());
         data.setRemoveDuplicates(removeDuplicatesCB.isSelected());
+        data.setEmptyPathReplacement(emptyPathReplacementTF.getText());
     }
 
     @SuppressWarnings("RedundantIfStatement")
@@ -147,6 +149,9 @@ public class SharedSettingsPanel {
             return true;
         }
         if (removeDuplicatesCB.isSelected() != data.isRemoveDuplicates()) {
+            return true;
+        }
+        if (!emptyPathReplacementTF.getText().equals(data.getEmptyPathReplacement())) {
             return true;
         }
         return false;

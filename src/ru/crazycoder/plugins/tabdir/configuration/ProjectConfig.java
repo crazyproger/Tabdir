@@ -31,11 +31,12 @@ import java.util.Map;
  * Date: Aug 15, 2010
  * Time: 6:48:00 PM
  */
+@Service(Service.Level.PROJECT)
 @State(
         name = "TabdirProjectConfiguration",
-        storages = {@Storage(file = "$PROJECT_FILE$"),
-                @Storage(file = "$PROJECT_CONFIG_DIR$/other.xml")})
-public class ProjectConfig
+        storages = {@Storage("$PROJECT_FILE$"),
+                @Storage("$PROJECT_CONFIG_DIR$/other.xml")})
+final public class ProjectConfig
         implements PersistentStateComponent<Element> {
 
     private final Logger log = Logger.getInstance(this.getClass().getCanonicalName());
@@ -48,7 +49,7 @@ public class ProjectConfig
 
     public ProjectConfig(Project project) {
 
-        folderConfigurations = new HashMap<String, FolderConfiguration>();
+        folderConfigurations = new HashMap<>();
         macroManager = PathMacroManager.getInstance(project);
     }
 
@@ -76,14 +77,13 @@ public class ProjectConfig
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void loadState(Element state) {
         Element configurationsElement = state.getChild(FOLDER_CONFIGURATIONS_NAME);
         if (configurationsElement == null) {
             log.debug("no config element");
             return;
         }
-        Map<String, FolderConfiguration> folderConfigurations = new HashMap<String, FolderConfiguration>();
+        Map<String, FolderConfiguration> folderConfigurations = new HashMap<>();
         List<Element> entries = configurationsElement.getChildren("Entry");
         for (Element entry : entries) {
             String key = macroManager.expandPath(entry.getAttributeValue("folder"));
