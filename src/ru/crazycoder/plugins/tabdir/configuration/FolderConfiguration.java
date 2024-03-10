@@ -137,9 +137,13 @@ public class FolderConfiguration {
         this.removeDuplicates = removeDuplicates;
     }
 
-    public String getEmptyPathReplacement() { return emptyPathReplacement; }
+    public String getEmptyPathReplacement() {
+        return emptyPathReplacement;
+    }
 
-    public void setEmptyPathReplacement(final String emptyPathReplacement) { this.emptyPathReplacement = emptyPathReplacement; }
+    public void setEmptyPathReplacement(final String emptyPathReplacement) {
+        this.emptyPathReplacement = emptyPathReplacement;
+    }
 
 
     @SuppressWarnings("RedundantIfStatement")
