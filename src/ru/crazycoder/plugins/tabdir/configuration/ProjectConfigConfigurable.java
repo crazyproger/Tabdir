@@ -16,7 +16,6 @@
 
 package ru.crazycoder.plugins.tabdir.configuration;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
@@ -40,7 +39,7 @@ public class ProjectConfigConfigurable
 
     public ProjectConfigConfigurable(final Project project) {
         this.project = project;
-        projectConfig = ServiceManager.getService(project, ProjectConfig.class);
+        this.projectConfig = project.getService(ProjectConfig.class);
     }
 
     @NotNull

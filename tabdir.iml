@@ -11,6 +11,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="test" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="lib" level="project" />
+    <orderEntry type="library" name="apache.commons.text" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
@@ -202,4 +204,3 @@
     </option>
   </component>
 </module>
-

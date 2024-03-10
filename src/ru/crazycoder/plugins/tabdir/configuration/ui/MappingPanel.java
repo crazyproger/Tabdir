@@ -20,6 +20,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.PanelWithButtons;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.table.TableView;
+import com.intellij.openapi.ui.ComboBox;
+
 import com.intellij.util.ui.AbstractTableCellEditor;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
@@ -27,14 +29,10 @@ import ru.crazycoder.plugins.tabdir.TitleFormatter;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 
@@ -56,14 +54,14 @@ public class MappingPanel
     // creating new mappings.
     private Map<String, FolderConfiguration> configurationsMap;
 
-    private final ColumnInfo<FolderMapping, String> DIRECTORY = new ColumnInfo<FolderMapping, String>("Directory") {
+    private final ColumnInfo<FolderMapping, String> DIRECTORY = new ColumnInfo<>("Directory") {
 
         @Override
         public String valueOf(final FolderMapping folderMapping) {
             return folderMapping.folder;
         }
     };
-    private final ColumnInfo<FolderMapping, String> PREVIEW = new ColumnInfo<FolderMapping, String>("Tab preview") {
+    private final ColumnInfo<FolderMapping, String> PREVIEW = new ColumnInfo<>("Tab Preview") {
 
         @Override
         public String valueOf(final FolderMapping folderMapping) {
@@ -126,24 +124,15 @@ public class MappingPanel
     public MappingPanel(Project project) {
         this.project = project;
         JLabel label = new JLabel();
-        Dimension preferredSize = new JComboBox().getPreferredSize();
+        Dimension preferredSize = new ComboBox<Dimension>().getPreferredSize();
         label.setPreferredSize(preferredSize);
         labelWithButton = new LabelWithBrowseButton(label, null);
-        labelWithButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                editMapping();
-            }
-        });
+        labelWithButton.addActionListener(e -> editMapping());
 
-        folderMappingTable = new TableView<FolderMapping>();
+        folderMappingTable = new TableView<>();
         folderMappingTable.setRowHeight(preferredSize.height);
         folderMappingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        folderMappingTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(final ListSelectionEvent e) {
-                updateButtons();
-            }
-        });
+        folderMappingTable.getSelectionModel().addListSelectionListener(e -> updateButtons());
 
         initPanel();
         updateButtons();
@@ -155,14 +144,14 @@ public class MappingPanel
     }
 
     public void initializeModel(Map<String, FolderConfiguration> configurations) {
-        List<FolderMapping> modelList = new ArrayList<FolderMapping>(configurations.size());
-        configurationsMap = new HashMap<String, FolderConfiguration>(configurations.size());
+        List<FolderMapping> modelList = new ArrayList<>(configurations.size());
+        configurationsMap = new HashMap<>(configurations.size());
         for (Map.Entry<String, FolderConfiguration> entry : configurations.entrySet()) {
             FolderConfiguration configuration = entry.getValue().cloneMe();
             configurationsMap.put(entry.getKey(), configuration);
             modelList.add(new FolderMapping(entry.getKey(), configuration));
         }
-        model = new ListTableModel<FolderMapping>(COLUMNS, modelList, 0, SortOrder.DESCENDING);
+        model = new ListTableModel<>(COLUMNS, modelList, 0, SortOrder.DESCENDING);
         folderMappingTable.setModelAndUpdateColumns(model);
     }
 
@@ -174,26 +163,11 @@ public class MappingPanel
     @Override
     protected JButton[] createButtons() {
         addButton = new JButton("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                addMapping();
-            }
-        });
+        addButton.addActionListener(e -> addMapping());
         deleteButton = new JButton("Delete");
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                deleteMapping();
-            }
-        });
+        deleteButton.addActionListener(e -> deleteMapping());
         editButton = new JButton("Edit");
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                editMapping();
-            }
-        });
+        editButton.addActionListener(e -> editMapping());
         return new JButton[]{addButton, deleteButton, editButton};
     }
 
@@ -234,7 +208,7 @@ public class MappingPanel
     }
 
     private void deleteMapping() {
-        List<FolderMapping> mappings = new ArrayList<FolderMapping>(model.getItems());
+        List<FolderMapping> mappings = new ArrayList<>(model.getItems());
         int index = folderMappingTable.getSelectionModel().getMinSelectionIndex();
         Collection<FolderMapping> selection = folderMappingTable.getSelection();
         mappings.removeAll(selection);
@@ -242,7 +216,7 @@ public class MappingPanel
             configurationsMap.remove(mapping.folder);
         }
         model.setItems(mappings);
-        if (mappings.size() > 0) {
+        if (!mappings.isEmpty()) {
             if (index >= mappings.size()) {
                 index = mappings.size() - 1;
             }
@@ -276,7 +250,7 @@ public class MappingPanel
         deleteButton.setEnabled((!isDisabled) && hasSelection);
     }
 
-    private class FolderMapping {
+    private static class FolderMapping {
 
         String folder;
         FolderConfiguration myConfig;

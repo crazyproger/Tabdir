@@ -25,7 +25,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.testFramework.PsiTestUtil;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import ru.crazycoder.plugins.tabdir.configuration.FolderConfiguration;
 import ru.crazycoder.plugins.tabdir.configuration.GlobalConfig;
 
@@ -132,7 +132,6 @@ public class SameFilenameTitleProviderTest extends BasePlatformTestCase {
         assertTitleEquals(myFileSystem, "[a" + D + "b" + D + "ccccc] " + FILE_NAME, "aaaaa-bbbbbb-cccccc/" + FILE_NAME);
         assertTitleEquals(myFileSystem, "[a" + D + "b" + D + "eeeee] " + FILE_NAME, "aaaaa-bbbbbb-eeeeee/" + FILE_NAME);
     }
-
 
     public void testRemoveMultiDuplicates3() throws Exception {
         Map<String, VirtualFile> myFileSystem = createTree(Arrays.asList(

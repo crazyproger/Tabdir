@@ -17,32 +17,28 @@
 package ru.crazycoder.plugins.tabdir.configuration;
 
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializer;
 import org.jdom.Element;
-import ru.crazycoder.plugins.tabdir.ProjectConfigRegistrator;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * User: crazycoder
  * Date: Aug 15, 2010
  * Time: 6:42:34 PM
  */
+@Service
 @State(
         name = "TabdirConfiguration",
         storages = {@Storage("$APP_CONFIG$/other.xml")})
-public class GlobalConfig
+final public class GlobalConfig
         extends FolderConfiguration
         implements PersistentStateComponent<Element> {
 
     private static final String DEFAULT_TITLE_FORMAT = "[{0}] {1}";
     private static final String DEFAULT_DIR_SEPARATOR = "|";
-    private final List<ProjectConfigRegistrator> projectConfigListeners = Collections
-            .synchronizedList(new LinkedList<ProjectConfigRegistrator>());
 
     private boolean projectConfigEnabled;
 
@@ -55,6 +51,7 @@ public class GlobalConfig
         this.setTitleFormat(DEFAULT_TITLE_FORMAT);
         this.setReduceDirNames(true);
         this.setCountMaxDirsFromStart(true);
+        this.setEmptyPathReplacement("");
         projectConfigEnabled = false;
     }
 
@@ -64,7 +61,7 @@ public class GlobalConfig
     }
 
     @Override
-    public void loadState(final Element state) {
+    public void loadState(@NotNull final Element state) {
         XmlSerializer.deserializeInto(this, state);
     }
 
@@ -74,18 +71,5 @@ public class GlobalConfig
 
     public void setProjectConfigEnabled(final boolean projectConfigEnabled) {
         this.projectConfigEnabled = projectConfigEnabled;
-        synchronized (projectConfigListeners) {
-            for (ProjectConfigRegistrator projectConfigListener : projectConfigListeners) {
-                projectConfigListener.checkAndRegister(projectConfigEnabled);
-            }
-        }
-    }
-
-    public void addProjectConfigListener(ProjectConfigRegistrator listener) {
-        projectConfigListeners.add(listener);
-    }
-
-    public void removeProjectConfigListener(ProjectConfigRegistrator listener) {
-        projectConfigListeners.remove(listener);
     }
 }

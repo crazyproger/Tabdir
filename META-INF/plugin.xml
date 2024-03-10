@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<idea-plugin version="2" url="https://github.com/crazyproger/Tabdir">
+<idea-plugin url="https://github.com/crazyproger/Tabdir">
     <id>ru.crazycoder.plugins.tabdir</id>
     <name>Tabdir</name>
     <description><![CDATA[
@@ -24,7 +24,7 @@
             It only shows path differences so if you have "blog/controllers/index" and "news/controllers/index" it will
             add either [blog] or [news].
             In setting tab 'Tabdir' you can control how prefixes will be formatted.</p>
-        <p>Per-project configuration allow specify different formatting rules for each directory in project.
+        <p>Per-project configuration allows specifying different formatting rules for each directory in project.
             To enable per-project configuration enable "<b>Use per project configuration</b>" checkbox(see screenshot
             №3)
             and reopen settings window(need close with Ok or Apply buttons). After this you will find 'Tabdir'
@@ -35,9 +35,9 @@
         ]]>
     </description>
 
-    <version>1.6.7</version>
+    <version>1.7.0</version>
     <vendor>Vladimir Rudev (mod: vl)</vendor>
-    <idea-version since-build="122.519" until-build="400.*"/>
+    <idea-version since-build="233.13135.103" until-build="400.*"/>
     <change-notes><![CDATA[
         <ul>
             <li>1.1 Add possibility to configure tab title format.</li>
@@ -53,22 +53,14 @@
             <li>1.6.4 Fixed Tabdir-16</li>
             <li>1.6.5 Merged Tabdir-16 into main</li>
             <li>1.6.7 (mod: vl) Fixup for Idea 202+</li>
+            <li>1.7.0 (mod: vl) Fixup for Idea 233+ (2023.3.2+), add empty path prefixes</li>
         </ul>
         ]]>
     </change-notes>
 
-    <!--This allow plugin to be installed on another IntelliJ Platform products-->
-    <depends>com.intellij.modules.lang</depends>
+    <!--This allows plugin to be installed on another IntelliJ Platform products-->
+    <depends>com.intellij.modules.platform</depends>
 
-    <application-components>
-        <!-- Add your application components here -->
-    </application-components>
-
-    <project-components>
-        <component>
-            <implementation-class>ru.crazycoder.plugins.tabdir.ProjectConfigRegistrator</implementation-class>
-        </component>
-    </project-components>
 
     <actions>
         <!-- Add your actions here -->
@@ -76,12 +68,17 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.GlobalConfig"/>
-        <applicationConfigurable instance="ru.crazycoder.plugins.tabdir.configuration.GlobalConfigConfigurable"/>
+        <applicationConfigurable instance="ru.crazycoder.plugins.tabdir.configuration.GlobalConfigConfigurable"
+                                 displayName="Tabdir"/>
 
-        <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.configuration.ProjectConfig"/>
+        <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"/>
+        <projectConfigurable
+                parentId="other"
+                instance="ru.crazycoder.plugins.tabdir.configuration.ProjectConfigConfigurable"
+                id="ru.crazycoder.plugins.tabdir.configuration.ProjectConfigConfigurable"
+                displayName="Tabdir Project Settings"
+                nonDefaultProject="true"/>
 
-        <projectService serviceImplementation="ru.crazycoder.plugins.tabdir.TitleFormatter"
-                        serviceInterface="ru.crazycoder.plugins.tabdir.TitleFormatter"/>
         <editorTabTitleProvider implementation="ru.crazycoder.plugins.tabdir.SameFilenameTitleProvider"/>
         <!-- Add your extensions here -->
     </extensions>
