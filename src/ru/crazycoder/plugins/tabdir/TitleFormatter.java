@@ -105,10 +105,11 @@ public class TitleFormatter {
 
     public static String format(List<String> prefixes, String tabName, FolderConfiguration configuration) {
         String joinedPrefixes = joinPrefixes(prefixes, configuration);
+        String tabTitle = MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
         if (joinedPrefixes.isBlank()) {
-            return configuration.getEmptyPathReplacement() + MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
+            return configuration.getEmptyPathReplacement() + tabTitle;
         }
-        return MessageFormat.format(configuration.getTitleFormat(), joinedPrefixes, tabName);
+        return tabTitle;
     }
 
     private static String joinPrefixes(List<String> prefixes, FolderConfiguration configuration) {
